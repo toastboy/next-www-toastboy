@@ -1,12 +1,10 @@
-import { Flex, Group, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 import z from 'zod';
 
-import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { GameDayList } from '@/components/GameDayList/GameDayList';
-import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
+import { YearPageShell } from '@/components/YearPageShell/YearPageShell';
 import { getYearName } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -118,36 +116,20 @@ const GamesPage = async (props: PageProps) => {
     const gameDays = await gameDayService.getAll({ year });
 
     return (
-        <Flex
-            direction="column"
+        <YearPageShell
+            title="Games: "
+            year={year}
+            validYears={allYears}
+            autoRefreshChannels={[FootyChannel.Games, FootyChannel.Results]}
             align="center"
             gap="lg"
+            subheading={subhead}
         >
-            <AutoRefresh
-                channels={[FootyChannel.Games, FootyChannel.Results]}
-            />
-            <Group
-                justify="center"
-                w="100%"
-            >
-                <TitleWithYearDropdown
-                    order={1}
-                    title="Games: "
-                    year={year}
-                    validYears={allYears}
-                />
-            </Group>
-            <Title
-                order={2}
-                mb="xl"
-            >
-                {subhead}
-            </Title>
             <GameDayList
                 gameDays={gameDays}
                 year={year}
             />
-        </Flex>
+        </YearPageShell>
     );
 };
 

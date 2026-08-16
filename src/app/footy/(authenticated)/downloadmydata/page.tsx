@@ -1,8 +1,8 @@
-import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import type { DownloadMyDataPayload } from '@/components/DownloadMyData/DownloadMyData';
 import { DownloadMyData } from '@/components/DownloadMyData/DownloadMyData';
+import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
 import { getCurrentUser } from '@/lib/auth.server';
 import { config } from '@/lib/config';
 import clubSupporterService from '@/services/ClubSupporter';
@@ -19,12 +19,11 @@ const Page = async () => {
 
     if (!playerId) {
         return (
-            <Notification
+            <StatusNotification
                 icon={<IconX size={config.notificationIconSize} />}
                 color="red"
-            >
-                This account is not linked to a player profile yet.
-            </Notification>
+                message="This account is not linked to a player profile yet."
+            />
         );
     }
 
@@ -40,12 +39,11 @@ const Page = async () => {
 
     if (!player) {
         return (
-            <Notification
+            <StatusNotification
                 icon={<IconX size={config.notificationIconSize} />}
                 color="red"
-            >
-                Failed to load player data.
-            </Notification>
+                message="Failed to load player data."
+            />
         );
     }
 

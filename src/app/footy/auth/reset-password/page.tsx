@@ -1,7 +1,7 @@
-import { Notification, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { PasswordResetForm } from '@/components/PasswordResetForm/PasswordResetForm';
+import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
 import { config } from '@/lib/config';
 
 interface PageProps {
@@ -18,12 +18,11 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     if (!token) {
         return (
-            <Notification
+            <StatusNotification
                 icon={<IconX size={config.notificationIconSize} />}
                 color="red"
-            >
-                <Text>Password reset link is missing or invalid.</Text>
-            </Notification>
+                message="Password reset link is missing or invalid."
+            />
         );
     }
 

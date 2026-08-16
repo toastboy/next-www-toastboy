@@ -1,7 +1,6 @@
-import { Anchor, Text } from '@mantine/core';
-
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
+import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
 import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
 
 interface PageProps {
@@ -16,10 +15,11 @@ const Page = async ({ params }: PageProps) => {
 
     if (!details) {
         return (
-            <>
-                <Text>Invitation details are missing.</Text>
-                <Anchor href="/footy/game">Go to the game page</Anchor>
-            </>
+            <StatusNotification
+                variant="plain"
+                message="Invitation details are missing."
+                anchor={{ href: '/footy/game', label: 'Go to the game page' }}
+            />
         );
     }
 

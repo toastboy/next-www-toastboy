@@ -1,8 +1,8 @@
-import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
+import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
@@ -36,13 +36,12 @@ const Page = async ({ params }: PageProps) => {
 
     if (!invitation) {
         return (
-            <Notification
+            <StatusNotification
                 icon={<IconX size={config.notificationIconSize} />}
                 color="red"
                 withCloseButton={false}
-            >
-                {errorMessage}
-            </Notification>
+                message={errorMessage}
+            />
         );
     }
 

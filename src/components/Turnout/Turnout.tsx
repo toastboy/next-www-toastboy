@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Paper, Table } from '@mantine/core';
+import { Button, Paper, Stack, Table } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useId } from 'react';
@@ -38,70 +38,75 @@ export const Turnout = ({ turnout }: Props) => {
     ));
 
     return (
-        <Paper
-            p="sm"
-            maw="24rem"
+        <Stack
+            p="xl"
+            align="center"
         >
-            <Table
-                stickyHeader
-                stickyHeaderOffset={0}
-                layout="fixed"
+            <Paper
+                p="sm"
+                maw="24rem"
             >
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th className={styles.verticalHeader}>
-                            <span className={styles.verticalHeaderText}>
-                                Year
-                            </span>
-                        </Table.Th>
-                        <Table.Th className={styles.verticalHeader}>
-                            <span className={styles.verticalHeaderText}>
-                                Played
-                            </span>
-                        </Table.Th>
-                        <Table.Th className={styles.verticalHeader}>
-                            <span className={styles.verticalHeaderText}>
-                                Cancelled
-                            </span>
-                        </Table.Th>
-                        <Table.Th className={styles.verticalHeader}>
-                            <span className={styles.verticalHeaderText}>
-                                Response Rate
-                            </span>
-                        </Table.Th>
-                        <Table.Th className={styles.verticalHeader}>
-                            <span className={styles.verticalHeaderText}>
-                                Yes Rate
-                            </span>
-                        </Table.Th>
-                        <Table.Th className={styles.verticalHeader}>
-                            <span className={styles.verticalHeaderText}>
-                                Turnout Rate
-                            </span>
-                        </Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody id={tbodyId}>{rows}</Table.Tbody>
-            </Table>
-            {hiddenCount > 0 && (
-                <Button
-                    onClick={toggle}
-                    variant="subtle"
-                    fullWidth
-                    mt="xs"
-                    aria-expanded={opened}
-                    aria-controls={tbodyId}
-                    rightSection={
-                        opened ? (
-                            <IconChevronUp size={16} />
-                        ) : (
-                            <IconChevronDown size={16} />
-                        )
-                    }
+                <Table
+                    stickyHeader
+                    stickyHeaderOffset={0}
+                    layout="fixed"
                 >
-                    {opened ? 'Show less' : `Show ${hiddenCount} more`}
-                </Button>
-            )}
-        </Paper>
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th className={styles.verticalHeader}>
+                                <span className={styles.verticalHeaderText}>
+                                    Year
+                                </span>
+                            </Table.Th>
+                            <Table.Th className={styles.verticalHeader}>
+                                <span className={styles.verticalHeaderText}>
+                                    Played
+                                </span>
+                            </Table.Th>
+                            <Table.Th className={styles.verticalHeader}>
+                                <span className={styles.verticalHeaderText}>
+                                    Cancelled
+                                </span>
+                            </Table.Th>
+                            <Table.Th className={styles.verticalHeader}>
+                                <span className={styles.verticalHeaderText}>
+                                    Response Rate
+                                </span>
+                            </Table.Th>
+                            <Table.Th className={styles.verticalHeader}>
+                                <span className={styles.verticalHeaderText}>
+                                    Yes Rate
+                                </span>
+                            </Table.Th>
+                            <Table.Th className={styles.verticalHeader}>
+                                <span className={styles.verticalHeaderText}>
+                                    Turnout Rate
+                                </span>
+                            </Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody id={tbodyId}>{rows}</Table.Tbody>
+                </Table>
+                {hiddenCount > 0 && (
+                    <Button
+                        onClick={toggle}
+                        variant="subtle"
+                        fullWidth
+                        mt="xs"
+                        aria-expanded={opened}
+                        aria-controls={tbodyId}
+                        rightSection={
+                            opened ? (
+                                <IconChevronUp size={16} />
+                            ) : (
+                                <IconChevronDown size={16} />
+                            )
+                        }
+                    >
+                        {opened ? 'Show less' : `Show ${hiddenCount} more`}
+                    </Button>
+                )}
+            </Paper>
+        </Stack>
     );
 };

@@ -1,5 +1,3 @@
-import { Stack } from '@mantine/core';
-
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { Turnout } from '@/components/Turnout/Turnout';
 import outcomeService from '@/services/Outcome';
@@ -11,15 +9,12 @@ const TurnoutPage = async () => {
     const turnout = await outcomeService.getTurnoutByYear();
 
     return (
-        <Stack
-            p="xl"
-            align="center"
-        >
+        <>
             <AutoRefresh
                 channels={[FootyChannel.Games, FootyChannel.Results]}
             />
             <Turnout turnout={turnout} />
-        </Stack>
+        </>
     );
 };
 

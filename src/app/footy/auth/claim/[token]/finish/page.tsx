@@ -1,8 +1,8 @@
-import { Anchor, Notification, Stack } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 import { redirect } from 'next/navigation';
 
 import { finalizePlayerInvitationClaim } from '@/actions/claimPlayerInvitation';
+import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
@@ -32,16 +32,13 @@ const Page = async ({ params }: PageProps) => {
 
     if (errorMessage) {
         return (
-            <Stack>
-                <Notification
-                    icon={<IconX size={config.notificationIconSize} />}
-                    color="red"
-                    withCloseButton={false}
-                >
-                    {errorMessage}
-                </Notification>
-                <Anchor href="/footy">Return to the home page</Anchor>
-            </Stack>
+            <StatusNotification
+                icon={<IconX size={config.notificationIconSize} />}
+                color="red"
+                withCloseButton={false}
+                message={errorMessage}
+                anchor={{ href: '/footy', label: 'Return to the home page' }}
+            />
         );
     }
 

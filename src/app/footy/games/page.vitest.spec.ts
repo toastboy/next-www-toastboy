@@ -18,25 +18,12 @@ vi.mock('react', async () => {
     return { ...actual, cache: (fn: unknown) => fn };
 });
 
-vi.mock('@mantine/core', () => ({
-    Flex: ({ children }: { children?: unknown }) => children,
-    Group: ({ children }: { children?: unknown }) => children,
-    Title: ({ children }: { children?: unknown }) => children,
-}));
-
-vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: () => null,
-}));
-
-vi.mock('@/components/GameDayList/GameDayList', () => ({
-    GameDayList: () => null,
-}));
-
-vi.mock('@/components/TitleWithYearDropdown/TitleWithYearDropdown', () => ({
-    TitleWithYearDropdown: () => null,
+vi.mock('@/components/YearPageShell/YearPageShell', () => ({
+    YearPageShell: vi.fn(() => null),
 }));
 
 import GamesPage, { generateMetadata } from '@/app/footy/games/page';
+import { YearPageShell } from '@/components/YearPageShell/YearPageShell';
 import gameDayService from '@/services/GameDay';
 
 describe('Games page', () => {
@@ -84,15 +71,17 @@ describe('Games page', () => {
         expect(gameDayService.getGamesRemaining).toHaveBeenCalledTimes(1);
     });
 
-    it('passes gamesPlayed and gamesRemaining to the rendered output', async () => {
-        const element = await GamesPage({
-            searchParams: Promise.resolve({ year: '2024' }),
-        });
-        const html = renderToStaticMarkup(element);
+    it('passes the played/cancelled/confirmed subhead to YearPageShell', async () => {
+        renderToStaticMarkup(
+            await GamesPage({
+                searchParams: Promise.resolve({ year: '2024' }),
+            }),
+        );
 
-        expect(html).toContain('5 played');
-        expect(html).toContain('1 cancelled');
-        expect(html).toContain('3 confirmed');
+        const [props] = (YearPageShell as Mock).mock.calls[0] as [
+            { subheading: unknown },
+        ];
+        expect(props.subheading).toBe('5 played, 1 cancelled, 3 confirmed');
     });
 
     it('handles service errors gracefully', async () => {
@@ -139,13 +128,10 @@ describe('Games page', () => {
         expect(metadata.title).toBe('2024 Games');
     });
 
-    it('does not redirect when year=0 is already explicit in the query, and omits the year prefix from the subhead title', async () => {
-        const element = await GamesPage({
-            searchParams: Promise.resolve({ year: '0' }),
-        });
-        const html = renderToStaticMarkup(element);
-
-        expect(html).not.toContain('0 Games');
+    it('does not redirect when year=0 is already explicit in the query', async () => {
+        await expect(
+            GamesPage({ searchParams: Promise.resolve({ year: '0' }) }),
+        ).resolves.toBeDefined();
     });
 
     it('omits played/cancelled/confirmed counts from the subhead when they are zero', async () => {
@@ -153,13 +139,15 @@ describe('Games page', () => {
         (gameDayService.getGamesCancelled as Mock).mockResolvedValue(0);
         (gameDayService.getGamesRemaining as Mock).mockResolvedValue(0);
 
-        const element = await GamesPage({
-            searchParams: Promise.resolve({ year: '2024' }),
-        });
-        const html = renderToStaticMarkup(element);
+        renderToStaticMarkup(
+            await GamesPage({
+                searchParams: Promise.resolve({ year: '2024' }),
+            }),
+        );
 
-        expect(html).not.toContain('played');
-        expect(html).not.toContain('cancelled');
-        expect(html).not.toContain('confirmed');
+        const [props] = (YearPageShell as Mock).mock.calls[0] as [
+            { subheading: unknown },
+        ];
+        expect(props.subheading).toBe('');
     });
 });

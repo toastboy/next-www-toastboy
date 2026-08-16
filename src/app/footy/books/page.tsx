@@ -1,11 +1,10 @@
-import { Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 import z from 'zod';
 
 import { MoneyChart } from '@/components/MoneyChart/MoneyChart';
-import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
+import { YearPageShell } from '@/components/YearPageShell/YearPageShell';
 import { getYearName } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
 import moneyService from '@/services/Money';
@@ -76,23 +75,16 @@ const BooksPage = async (props: PageProps) => {
     const chartData = await moneyService.getChartData(year);
 
     return (
-        <Stack>
-            <Group
-                justify="center"
-                w="100%"
-            >
-                <TitleWithYearDropdown
-                    order={1}
-                    title="Books: "
-                    year={year}
-                    validYears={allYears}
-                />
-            </Group>
+        <YearPageShell
+            title="Books: "
+            year={year}
+            validYears={allYears}
+        >
             <MoneyChart
                 data={chartData}
                 linkBase={year === 0 ? '/footy/books?year=' : undefined}
             />
-        </Stack>
+        </YearPageShell>
     );
 };
 

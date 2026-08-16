@@ -149,6 +149,10 @@ export class SomeModelService {
 
 - Test files: `*.vitest.spec.ts(x)` placed next to the file they test — never in a `__tests__/` subdirectory
 - Mocks: `__mocks__/` as sibling to the target code
+- **Every component under `src/components/**` must ship with both an auto-mock and a Storybook story**, added in the same commit that adds the component:
+  - `__mocks__/ComponentName.tsx` — a lightweight placeholder any other test can pull in via `vi.mock('@/components/ComponentName/ComponentName')` with no factory. Render `<div>ComponentName: {JSON.stringify(props)}</div>` (props-carrying) or `<div>ComponentName</div>` (no props), and set `ComponentName.displayName`. Needed even if nothing currently imports the component — it's for whichever future composing component does.
+  - `ComponentName.stories.tsx` — a real `@storybook/nextjs-vite` story (`title`, `component`, `tags: ['autodocs']`, at least one `args`-driven story) so `npm run test:storybook` exercises the component. Add a `play` function when there's real interactive or conditional behaviour to verify; a plain args-only story is fine for static/presentational components, matching most of the existing suite.
+  - **Exception:** a component that renders nothing itself (a side-effect-only component like `AutoRefresh`) or a dev-only debug overlay (`Debug*`) doesn't need a story — it has nothing to render.
 - Use accessible selectors (`getByRole`, `getByLabelText`, `getByText`) over `data-testid`
 - Do not rely on Mantine internals in tests (for example generated class names, internal DOM wrappers, or implementation-specific structure). Prefer selectors and assertions that reflect real user interactions and visible behaviour.
 - Prefer the generic overload (`getByRole<HTMLInputElement>(…)`) over a type assertion (`as HTMLInputElement`) when narrowing query results — ESLint strips assertions but preserves generics

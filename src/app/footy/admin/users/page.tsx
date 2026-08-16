@@ -1,8 +1,7 @@
-import { Text } from '@mantine/core';
-
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
+import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
 import { UserWithRolePayload } from '@/lib/core/auth';
 import { toPublicMessage } from '@/lib/errors/AppError';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
@@ -23,9 +22,11 @@ export default async function Page() {
             route: '/footy/admin/users',
         });
         return (
-            <Text c="red">
-                {toPublicMessage(error, 'Failed to fetch users.')}
-            </Text>
+            <StatusNotification
+                variant="plain"
+                color="red"
+                message={toPublicMessage(error, 'Failed to fetch users.')}
+            />
         );
     }
 

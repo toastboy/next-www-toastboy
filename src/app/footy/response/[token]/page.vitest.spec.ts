@@ -9,10 +9,8 @@ vi.mock('@/actions/submitGameInvitationResponse', () => ({
     submitGameInvitationResponse: vi.fn(),
 }));
 
-vi.mock('@mantine/core', () => ({
-    Anchor: ({ children }: { children?: unknown }) => children,
-    Box: ({ children }: { children?: unknown }) => children,
-    Text: ({ children }: { children?: unknown }) => children,
+vi.mock('@/components/StatusNotification/StatusNotification', () => ({
+    StatusNotification: vi.fn(() => null),
 }));
 
 vi.mock(
@@ -28,6 +26,7 @@ vi.mock('@/lib/gameInvitations', () => ({
 
 import Page from '@/app/footy/response/[token]/page';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
+import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
 import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
 
 const sampleDetails = {
@@ -69,12 +68,20 @@ describe('Game Invitation Response page', () => {
     it('renders a missing-details message when the invitation cannot be found', async () => {
         (getGameInvitationResponseDetails as Mock).mockResolvedValue(null);
 
-        const element = await Page({
-            params: Promise.resolve({ token: 'missing-token' }),
-        });
+        renderToStaticMarkup(
+            await Page({
+                params: Promise.resolve({ token: 'missing-token' }),
+            }),
+        );
 
-        const html = renderToStaticMarkup(element);
-        expect(html).toContain('Invitation details are missing.');
-        expect(html).toContain('Go to the game page');
+        const [props] = (StatusNotification as Mock).mock.calls[0] as [
+            { variant: unknown; message: unknown; anchor: unknown },
+        ];
+        expect(props.variant).toBe('plain');
+        expect(props.message).toBe('Invitation details are missing.');
+        expect(props.anchor).toEqual({
+            href: '/footy/game',
+            label: 'Go to the game page',
+        });
     });
 });

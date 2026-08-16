@@ -1,13 +1,11 @@
-import { Flex, Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
-import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
-import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
+import { WinnersGrid } from '@/components/WinnersGrid/WinnersGrid';
+import { YearPageShell } from '@/components/YearPageShell/YearPageShell';
 import { getYearName } from '@/lib/tables';
 import playerRecordService from '@/services/PlayerRecord';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -87,42 +85,18 @@ const WinnersPage = async (props: PageProps) => {
     );
 
     return (
-        <Stack
+        <YearPageShell
+            title="Winners: "
+            year={year}
+            validYears={allYears}
+            autoRefreshChannels={FootyChannel.Results}
             align="stretch"
             justify="center"
             gap="md"
+            groupMb="xl"
         >
-            <AutoRefresh channels={FootyChannel.Results} />
-            <Group
-                justify="center"
-                w="100%"
-                mb="xl"
-            >
-                <TitleWithYearDropdown
-                    order={1}
-                    title="Winners: "
-                    year={year}
-                    validYears={allYears}
-                />
-            </Group>
-            <Flex
-                wrap="wrap"
-                gap="md"
-                justify="center"
-                align="stretch"
-                w="100%"
-            >
-                {winners.map(({ table, records }) => {
-                    return (
-                        <WinnersTable
-                            table={table}
-                            records={records}
-                            key={table}
-                        />
-                    );
-                })}
-            </Flex>
-        </Stack>
+            <WinnersGrid winners={winners} />
+        </YearPageShell>
     );
 };
 

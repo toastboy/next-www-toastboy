@@ -1,12 +1,10 @@
-import { Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
-import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
-import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
+import { YearPageShell } from '@/components/YearPageShell/YearPageShell';
 import { YearTable } from '@/components/YearTable/YearTable';
 import { QualifiedTableName, TableTitle } from '@/lib/tables';
 import playerRecordService from '@/services/PlayerRecord';
@@ -125,32 +123,22 @@ const TablePage = async (props: PageProps) => {
     ]);
 
     return (
-        <Stack
+        <YearPageShell
+            title={`${TableTitle(table)}: `}
+            year={year}
+            validYears={allYears}
+            autoRefreshChannels={[FootyChannel.Results, FootyChannel.Players]}
             p="xl"
             align="center"
+            groupMb="xl"
         >
-            <AutoRefresh
-                channels={[FootyChannel.Results, FootyChannel.Players]}
-            />
-            <Group
-                justify="center"
-                w="100%"
-                mb="xl"
-            >
-                <TitleWithYearDropdown
-                    order={1}
-                    title={`${TableTitle(table)}: `}
-                    year={year}
-                    validYears={allYears}
-                />
-            </Group>
             <YearTable
                 table={table}
                 year={year}
                 qualified={tableQualified}
                 unqualified={tableUnqualified}
             />
-        </Stack>
+        </YearPageShell>
     );
 };
 

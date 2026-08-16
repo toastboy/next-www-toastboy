@@ -358,7 +358,10 @@ const config = [
             ],
         },
     },
-    // Next.js App Router pages must be server pages
+    // Next.js App Router pages must be server pages, and must only fetch
+    // data, wire up server actions, and compose components — never render
+    // Mantine JSX directly. Move any Mantine usage into a child component
+    // under src/components.
     {
         files: ['src/app/**/page.{ts,tsx}'],
         ignores: ['**/*.vitest.spec.*', '**/*.test.*', '**/*.stories.*'],
@@ -370,6 +373,18 @@ const config = [
                         "Program > ExpressionStatement[directive='use client']",
                     message:
                         'App Router pages must be server pages. Move client logic into child components.',
+                },
+            ],
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: ['@mantine/*'],
+                            message:
+                                'Pages must not import Mantine directly. Move the JSX into a component under src/components and pass data down as props.',
+                        },
+                    ],
                 },
             ],
         },

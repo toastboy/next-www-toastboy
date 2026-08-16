@@ -1,11 +1,10 @@
-import { Flex, Group } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 import z from 'zod';
 
 import { CurseOfTheBibs } from '@/components/CurseOfTheBibs/CurseOfTheBibs';
-import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
+import { YearPageShell } from '@/components/YearPageShell/YearPageShell';
 import { getYearName } from '@/lib/tables';
 import outcomeService from '@/services/Outcome';
 import playerRecordService from '@/services/PlayerRecord';
@@ -83,23 +82,15 @@ const CurseOfTheBibsPage = async (props: PageProps) => {
     const bibsData = await outcomeService.getByBibs({ year });
 
     return (
-        <Flex
-            direction="column"
+        <YearPageShell
+            title="Curse of the Bibs: "
+            year={year}
+            validYears={allYears}
             align="center"
+            gap={0}
         >
-            <Group
-                justify="center"
-                w="100%"
-            >
-                <TitleWithYearDropdown
-                    order={1}
-                    title="Curse of the Bibs: "
-                    year={year}
-                    validYears={allYears}
-                />
-            </Group>
             <CurseOfTheBibs bibsData={bibsData} />
-        </Flex>
+        </YearPageShell>
     );
 };
 

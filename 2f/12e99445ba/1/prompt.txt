@@ -1,0 +1,57 @@
+Help me organise and simplify my claude settings.json
+
+---
+
+resume
+
+---
+
+Yes
+
+---
+
+I've copied sensible lines from the local settings into the one intended to be committed. Review it for risks and incosistencies - and suggest similar level entries that are missing
+
+---
+
+OK, move the ones you recommend to a new local settings file
+
+---
+
+Yes
+
+---
+
+op run is OK because 1password itself prompts for authentication
+
+---
+
+In that case, add explicit entries for each of the 'op run' commands which appear in package.json
+
+---
+
+Oh, I meant vs code tasks.json
+
+---
+
+Add chromatic, storybook, better auth and any other docs domains for libraries and tools being used in this project
+
+---
+
+Add d3
+
+---
+
+One more check before I commit
+
+---
+
+Add git check ignore
+
+---
+
+Any other git read-only commands worth adding?
+
+---
+
+Both

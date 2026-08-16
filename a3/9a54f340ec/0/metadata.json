@@ -1,0 +1,253 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "a39a54f340ec",
+  "session_id": "11debe98-ecb3-45e6-87bd-14a68596fac3",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-16T15:30:36.010686Z",
+  "branch": "main",
+  "checkpoints_count": 12,
+  "save_step_count": 12,
+  "files_touched": [
+    "CLAUDE.md",
+    "eslint.config.mjs",
+    "src/app/footy/(authenticated)/downloadmydata/page.tsx",
+    "src/app/footy/(authenticated)/profile/page.tsx",
+    "src/app/footy/admin/page.tsx",
+    "src/app/footy/admin/page.vitest.spec.ts",
+    "src/app/footy/admin/users/page.tsx",
+    "src/app/footy/auth/accountdeleted/page.tsx",
+    "src/app/footy/auth/claim/[token]/finish/page.tsx",
+    "src/app/footy/auth/claim/[token]/page.tsx",
+    "src/app/footy/auth/reset-password/page.tsx",
+    "src/app/footy/auth/verify/enquiry/[token]/page.tsx",
+    "src/app/footy/auth/verify/extra-email/[token]/page.tsx",
+    "src/app/footy/books/page.tsx",
+    "src/app/footy/countrymap/page.tsx",
+    "src/app/footy/curse/page.tsx",
+    "src/app/footy/familytree/page.tsx",
+    "src/app/footy/games/page.tsx",
+    "src/app/footy/games/page.vitest.spec.ts",
+    "src/app/footy/info/page.tsx",
+    "src/app/footy/page.tsx",
+    "src/app/footy/response/[token]/page.tsx",
+    "src/app/footy/response/[token]/page.vitest.spec.ts",
+    "src/app/footy/rules/page.tsx",
+    "src/app/footy/table/[table]/page.tsx",
+    "src/app/footy/tables/page.tsx",
+    "src/app/footy/turnout/page.tsx",
+    "src/app/footy/winners/page.tsx",
+    "src/components/AdminDashboard/AdminDashboard.stories.tsx",
+    "src/components/AdminDashboard/AdminDashboard.tsx",
+    "src/components/AdminDashboard/AdminDashboard.vitest.spec.tsx",
+    "src/components/AdminDashboard/__mocks__/AdminDashboard.tsx",
+    "src/components/AutoRefresh/__mocks__/AutoRefresh.tsx",
+    "src/components/CountryMapShell/CountryMapShell.stories.tsx",
+    "src/components/CountryMapShell/CountryMapShell.tsx",
+    "src/components/CountryMapShell/CountryMapShell.vitest.spec.tsx",
+    "src/components/CountryMapShell/__mocks__/CountryMapShell.tsx",
+    "src/components/FamilyTreeShell/FamilyTreeShell.stories.tsx",
+    "src/components/FamilyTreeShell/FamilyTreeShell.tsx",
+    "src/components/FamilyTreeShell/FamilyTreeShell.vitest.spec.tsx",
+    "src/components/FamilyTreeShell/__mocks__/FamilyTreeShell.tsx",
+    "src/components/HomeContent/HomeContent.stories.tsx",
+    "src/components/HomeContent/HomeContent.tsx",
+    "src/components/HomeContent/HomeContent.vitest.spec.tsx",
+    "src/components/HomeContent/__mocks__/HomeContent.tsx",
+    "src/components/InfoContent/InfoContent.stories.tsx",
+    "src/components/InfoContent/InfoContent.tsx",
+    "src/components/InfoContent/InfoContent.vitest.spec.tsx",
+    "src/components/InfoContent/__mocks__/InfoContent.tsx",
+    "src/components/RulesContent/RulesContent.stories.tsx",
+    "src/components/RulesContent/RulesContent.tsx",
+    "src/components/RulesContent/RulesContent.vitest.spec.tsx",
+    "src/components/RulesContent/__mocks__/RulesContent.tsx",
+    "src/components/StatusNotification/StatusNotification.stories.tsx",
+    "src/components/StatusNotification/StatusNotification.tsx",
+    "src/components/StatusNotification/StatusNotification.vitest.spec.tsx",
+    "src/components/StatusNotification/__mocks__/StatusNotification.tsx",
+    "src/components/TablesShell/TablesShell.stories.tsx",
+    "src/components/TablesShell/TablesShell.tsx",
+    "src/components/TablesShell/TablesShell.vitest.spec.tsx",
+    "src/components/TablesShell/__mocks__/TablesShell.tsx",
+    "src/components/Turnout/Turnout.tsx",
+    "src/components/WinnersGrid/WinnersGrid.stories.tsx",
+    "src/components/WinnersGrid/WinnersGrid.tsx",
+    "src/components/WinnersGrid/WinnersGrid.vitest.spec.tsx",
+    "src/components/WinnersGrid/__mocks__/WinnersGrid.tsx",
+    "src/components/YearPageShell/YearPageShell.stories.tsx",
+    "src/components/YearPageShell/YearPageShell.tsx",
+    "src/components/YearPageShell/YearPageShell.vitest.spec.tsx",
+    "src/components/YearPageShell/__mocks__/YearPageShell.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "ebb0760fe975",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 456,
+    "cache_creation_tokens": 1568601,
+    "cache_read_tokens": 65645376,
+    "output_tokens": 181778,
+    "api_call_count": 230,
+    "subagent_tokens": {
+      "input_tokens": 20,
+      "cache_creation_tokens": 92136,
+      "cache_read_tokens": 151711,
+      "output_tokens": 18053,
+      "api_call_count": 10
+    }
+  },
+  "session_metrics": {
+    "turn_count": 12
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-16T15:30:35.847405Z",
+    "agent_lines": 1809,
+    "agent_removed": 683,
+    "human_added": 0,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 1810,
+    "total_lines_changed": 2493,
+    "agent_percentage": 99.95988768551946,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1409,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1409,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1409,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1765,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1765,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1765,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1765,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1765,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1804,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1804,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 66,
+      "user_lines_removed": 1,
+      "agent_lines_added": 1810,
+      "agent_lines_removed": 684,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64,
+        "src/components/InfoContent/InfoContent.tsx": 1
+      },
+      "user_removed_per_file": {
+        "src/components/InfoContent/InfoContent.tsx": 1
+      }
+    }
+  ]
+}

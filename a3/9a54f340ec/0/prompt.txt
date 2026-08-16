@@ -1,0 +1,542 @@
+Plan the changes
+
+---
+
+<task-notification>
+<task-id>a7dbae41df2369eab</task-id>
+<tool-use-id>toolu_01KY4NLxsv2q4mMxH42JhT6N</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/11debe98-ecb3-45e6-87bd-14a68596fac3/tasks/a7dbae41df2369eab.output</output-file>
+<status>completed</status>
+<summary>Agent "Explore turnout and admin dashboard pages" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>## 1. `turnout/page.tsx` and `Turnout` component
+
+**`src/app/footy/turnout/page.tsx`** (full file, 27 lines):
+```tsx
+import { Stack } from '@mantine/core';
+
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
+import { Turnout } from '@/components/Turnout/Turnout';
+import outcomeService from '@/services/Outcome';
+import { FootyChannel } from '@/types/FootyChannel';
+
+export const metadata = { title: 'Turnout' };
+
+const TurnoutPage = async () =&gt; {
+    const turnout = await outcomeService.getTurnoutByYear();
+
+    return (
+        &lt;Stack p="xl" align="center"&gt;
+            &lt;AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} /&gt;
+            &lt;Turnout turnout={turnout} /&gt;
+        &lt;/Stack&gt;
+    );
+};
+
+export default TurnoutPage;
+```
+Note: the wrapper is `&lt;Stack p="xl" align="center"&gt;` — no `w="100%"` prop is actually present in the current code (your description mentioned `w="100%"` but it isn't there). It wraps **both** `AutoRefresh` and `Turnout` together.
+
+**Turnout's current props interface** (`src/components/Turnout/Turnout.tsx`):
+```tsx
+export interface Props {
+    turnout: TurnoutByYearType[];
+}
+```
+
+**Turnout's current top-level returned JSX**: a `&lt;Paper p="sm" maw="24rem"&gt;` wrapping a `&lt;Table&gt;` (sticky header) and a conditional `&lt;Button&gt;` ("Show more/less"). No outer Stack/Flex — `Paper` is the sole top-level element already.
+
+**What the page wrapper adds that would need to move**: `p="xl"` and `align="center"` (Stack props) — these aren't equivalent to anything currently on `Turnout`'s `Paper` (`p="sm" maw="24rem"`). If folding into `Turnout`, you'd need to decide whether to keep `Paper`'s own `p="sm"` and just add outer padding/centering (e.g. wrap `Paper` in a `Stack p="xl" align="center"` inside `Turnout`, or apply `align`/`p` directly on `Paper` — semantics differ since `Stack align="center"` centers a block within its parent's width while `Paper` alone doesn't). Also note `AutoRefresh` is currently a sibling inside the Stack, not something `Turnout` renders — per the game/page.tsx model (see #3), `AutoRefresh` should stay in the page as a `&lt;&gt;...&lt;/&gt;` sibling, not be absorbed into `Turnout`.
+
+## 2. `src/app/footy/admin/page.tsx` (full file, 41 lines)
+
+Imports:
+```tsx
+import { Center, Container, Flex, Title } from '@mantine/core';
+
+import { authExport } from '@/actions/auth-export';
+import { getProgress } from '@/actions/getProgress';
+import { updatePlayerRecords } from '@/actions/updatePlayerRecords';
+import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
+import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
+```
+
+Two widgets rendered with props:
+```tsx
+&lt;AdminUpdatePlayerRecords
+    onUpdatePlayerRecords={updatePlayerRecords}
+    getProgress={getProgress}
+/&gt;
+&lt;AdminExportAuth onExportAuth={authExport} /&gt;
+```
+
+Exact wrapper structure:
+```tsx
+&lt;Container size="xs" mt="xl"&gt;
+    &lt;Center&gt;
+        &lt;Title order={1} mb="md"&gt;
+            Admin Dashboard
+        &lt;/Title&gt;
+    &lt;/Center&gt;
+
+    &lt;Flex mb="lg" gap="md" wrap="wrap" justify="center"&gt;
+        &lt;AdminUpdatePlayerRecords ... /&gt;
+        &lt;AdminExportAuth ... /&gt;
+    &lt;/Flex&gt;
+&lt;/Container&gt;
+```
+No `src/components/AdminDashboard`-style component currently exists — this would need to be created new (e.g. `src/components/AdminDashboard/AdminDashboard.tsx`) to absorb `Container`/`Center`/`Title`/`Flex`, since (unlike Turnout) there's no existing single component wrapping both widgets.
+
+## 3. Reference pattern: `game/[id]/page.tsx` + `GameDaySummary`
+
+**`src/app/footy/game/[id]/page.tsx`** — the refactored page's return is exactly:
+```tsx
+return (
+    &lt;&gt;
+        &lt;AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} /&gt;
+        &lt;GameDaySummary
+            gameDay={gameDay}
+            prevGameDay={prevGameDay}
+            nextGameDay={nextGameDay}
+            teamA={teamA}
+            teamB={teamB}
+            isAdmin={role === 'admin'}
+            setGameResult={setGameResult}
+        /&gt;
+    &lt;/&gt;
+);
+```
+No Mantine import in this page file at all — `AutoRefresh` and the single dedicated component are rendered as siblings in a bare Fragment.
+
+**`GameDaySummary` props interface** (`src/components/GameDaySummary/GameDaySummary.tsx`):
+```tsx
+export interface Props {
+    gameDay: GameDayType;
+    prevGameDay: GameDayType | null;
+    nextGameDay: GameDayType | null;
+    teamA: TeamPlayerType[];
+    teamB: TeamPlayerType[];
+    isAdmin: boolean;
+    setGameResult: SetGameResultProxy;
+}
+```
+Top-level returned JSX: `&lt;Flex direction="column" gap="sm"&gt;` wrapping a `&lt;Group justify="space-between" gap="xs"&gt;` (nav row) and presumably more below (not read past top). All Mantine JSX (including the equivalent of page-level Stack styling) lives inside the component; the page itself imports zero Mantine components.
+
+**Implication for admin/page.tsx**: to match this exact model, admin/page.tsx should become:
+```tsx
+return (
+    &lt;AdminDashboard
+        onUpdatePlayerRecords={updatePlayerRecords}
+        getProgress={getProgress}
+        onExportAuth={authExport}
+    /&gt;
+);
+```
+(no `&lt;&gt;...&lt;/&gt;` needed unless AutoRefresh is added — see #4) with a new `AdminDashboard` client component owning `Container`/`Center`/`Title`/`Flex` and rendering `AdminUpdatePlayerRecords`/`AdminExportAuth` inside.
+
+## 4. `AutoRefresh` usage check
+
+`src/components/AutoRefresh/AutoRefresh.tsx` — prop shape:
+```tsx
+interface AutoRefreshProps {
+    channels: FootyChannel | FootyChannel[];
+}
+```
+It's a `'use client'` component, renders `null`, side-effect only (calls `useAutoRefresh(channels)`).
+
+- **`turnout/page.tsx`**: already uses it — `&lt;AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} /&gt;`, currently a sibling of `&lt;Turnout&gt;` inside the Mantine `Stack`.
+- **`admin/page.tsx`**: does **not** use `AutoRefresh` at all — no import, no usage. So unlike turnout/game, admin's refactor doesn't need to account for it (its page return can be a single bare component call with no Fragment needed, unless you intend to add AutoRefresh as new scope — not currently present).</result>
+<usage><subagent_tokens>23780</subagent_tokens><tool_uses>6</tool_uses><duration_ms>27417</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a386cd990a3eca702</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/11debe98-ecb3-45e6-87bd-14a68596fac3/tasks/a386cd990a3eca702.output</output-file>
+<status>completed</status>
+<summary>Agent "Explore group-1 static content pages" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I now have everything needed. Here's the report.
+
+## 1. `src/app/footy/rules/page.tsx` (74 lines)
+
+- **Imports**: `{ Flex, Text, Title }` from `@mantine/core`. No other imports.
+- **Exports besides default**: `export const metadata = { title: 'Rules' };`
+- **Data fetching**: None. Pure static content, not async.
+- **Mantine usage**:
+  - `Flex` — props: `gap="md"`, `align="flex-start"`, `direction="column"`, `p="xl"` (wraps everything)
+  - `Title` — `order={1}`, text "Toastboy FC: Rules"
+  - `Text` × 7 — no props, each containing a paragraph of static rules copy (apostrophes/quotes as HTML entities: `&amp;apos;`, `&amp;ldquo;`, `&amp;rdquo;`, `&amp;lsquo;`, `&amp;rsquo;`, and a literal `:-&amp;gt;`)
+- **Existing rendered component**: None — entirely inline Mantine primitives, no custom component currently.
+- **JSX structure**: `&lt;&gt; &lt;Flex ...&gt; &lt;Title/&gt; &lt;Text/&gt;×7 &lt;/Flex&gt; &lt;/&gt;`
+
+This is the simplest case: whole body is static text inside layout primitives. A `RulesContent` (or similar) Client Component could just wrap the `Flex`+`Title`+`Text` block verbatim; the page would keep only `metadata` and render `&lt;RulesContent /&gt;`.
+
+## 2. `src/app/footy/familytree/page.tsx` (39 lines)
+
+- **Imports**: `{ Flex, Text, Title }` from `@mantine/core`; `{ FamilyTree }` from `@/components/FamilyTree/FamilyTree`; `playerService` from `@/services/Player`.
+- **Exports besides default**: `export const metadata = { title: 'Family Tree' };`
+- **Data fetching**: `async` component — `const tree = await playerService.getFamilyTree();` (server-side fetch, stays in page).
+- **Mantine usage**:
+  - `Flex` — `direction="column"`, `align="center"`, `gap="lg"`
+  - `Title` — `order={2}`, `mb="md"`, text "Toastboy FC Family Tree"
+  - `Text` — `mb="md"`, explanatory paragraph about Rob/Jon and zoom/click instructions
+- **Existing rendered component**: **Yes** — already imports and renders `&lt;FamilyTree data={tree} /&gt;` from `src/components/FamilyTree/FamilyTree.tsx`.
+  - `FamilyTree.tsx` is already `'use client'`. Its `Props` interface: `{ data: FamilyTreeNodeType }` (from `@/types`). It internally uses Mantine (`Box`, `Paper`, `Tooltip`) plus d3 (d3-array, d3-hierarchy, d3-selection, d3-shape, d3-zoom) and `next/navigation`'s `useRouter`.
+  - Sibling files exist: `familyTreeRadius.ts`, `.vitest.spec.tsx`, `.stories.tsx`, `__mocks__/FamilyTree.tsx`.
+- **JSX structure**: `&lt;Flex ...&gt;&lt;Title/&gt;&lt;Text/&gt;&lt;FamilyTree data={tree} /&gt;&lt;/Flex&gt;`
+
+For SYS-600, the remaining Mantine (`Flex`, `Title`, `Text` wrapper) is the only thing left in the page — `FamilyTree` itself is already client-side. Could either fold the heading/text into a new wrapper client component (e.g. extend `FamilyTree` or add a `FamilyTreePageContent`), keeping `await playerService.getFamilyTree()` in the page and passing `tree` down as a prop.
+
+## 3. `src/app/footy/tables/page.tsx` (26 lines)
+
+- **Imports**: `{ Stack, Title }` from `@mantine/core`; `{ TableIndexList }` from `@/components/TableIndexList/TableIndexList`.
+- **Exports besides default**: `export const metadata = { title: 'Tables' };`
+- **Data fetching**: None — not async, no service calls in the page itself (presumably `TableIndexList` does its own fetching/is client-side, not verified here since not asked to expand).
+- **Mantine usage**:
+  - `Stack` — `p="xl"`, `align="center"`
+  - `Title` — `order={2}`, `mb="xs"`, `w="100%"`, `ta="center"`, text "The League Tables"
+- **Existing rendered component**: `&lt;TableIndexList /&gt;` (no props passed) — already imported from `src/components/TableIndexList/TableIndexList`, not read in detail per instructions (only FamilyTree was requested), but note it exists and is already a separate component.
+- **JSX structure**: `&lt;Stack ...&gt;&lt;Title/&gt;&lt;TableIndexList /&gt;&lt;/Stack&gt;`
+
+## 4. `src/app/footy/countrymap/page.tsx` (39 lines)
+
+- **Imports**: `{ Text, Title }` from `@mantine/core`; `{ PlayerCountryMap }` from `@/components/PlayerCountryMap/PlayerCountryMap`; `countrySupporterService` from `@/services/CountrySupporter`.
+- **Exports besides default**: `export const metadata = { title: 'Country Map' };`
+- **Data fetching**: `async` component — `await countrySupporterService.getAllWithCountryAndPlayer()`, then derives `uniqueCountryFifaCodes` (a `Set` of `fifaCode`s) via plain JS, used to interpolate a count into the `Text` copy.
+- **Mantine usage**:
+  - `Title` — `order={2}`, `mb="md"`, text "Toastboy FC World Map"
+  - `Text` — `mb="md"`, dynamic content: `` This map highlights the {uniqueCountryFifaCodes.size} different countries supported by players. Hover over a country to see player details (scrollable). ``
+- **Existing rendered component**: `&lt;PlayerCountryMap countries={countries} /&gt;` — already a separate component (not read in detail; not requested).
+- **JSX structure**: `&lt;&gt; &lt;Title/&gt;&lt;Text/&gt;&lt;PlayerCountryMap countries={countries} /&gt; &lt;/&gt;`
+
+Note: the `Text` needs the derived `uniqueCountryFifaCodes.size` value, so a wrapper component would need that count (or the raw `countries` array) passed as a prop from the page, since the `Set` computation could either stay server-side (pass the number) or move client-side (pass `countries`).
+
+## 5. `src/app/footy/info/page.tsx` (94 lines)
+
+- **Imports**: `{ Anchor, Container, Flex, Text, Title }` from `@mantine/core`; `{ sendEnquiry }` from `@/actions/sendEnquiry`; `{ EnquiryForm }` from `@/components/EnquiryForm/EnquiryForm`.
+- **Exports besides default**: `export const metadata = { title: 'Info' };`
+- **Data fetching**: None — not async. `sendEnquiry` is a server action passed as a prop, not fetched data.
+- **Mantine usage**:
+  - `Flex` — `gap="md"`, `align="flex-start"`, `direction="column"`, `p="xl"` (outer wrapper)
+  - `Title` — `order={1}`, text "Toastboy FC: Tuesday Night Football"
+  - `Text` × 8 (various, no consistent props) containing: intro paragraph with `Anchor href="http://www.kelseykerridge.co.uk/"` (Kelsey Kerridge Sports Centre); paragraph linking `Anchor href="/footy/rules"`; paragraph with `Anchor href="/footy/points"`; paragraph with `Anchor href="/footy/averages"`; paragraph with `Anchor href="/footy/stalwart"`; paragraph about the picker/costs; paragraph with `Anchor href="/footy/speedy"` (Captain Speedy); closing "looking for players" paragraph.
+  - `Container` — `fluid` prop, wraps a raw `&lt;iframe&gt;` (Google Maps embed of Kelsey Kerridge Sports Centre) — not itself Mantine content but nested inside Mantine `Container`.
+  - Multiple `Anchor` components as noted above (6 total: kelseykerridge.co.uk, /footy/rules, /footy/points, /footy/averages, /footy/stalwart, /footy/speedy).
+- **Existing rendered component**: `&lt;EnquiryForm onSendEnquiry={sendEnquiry} /&gt;` at the end — already a separate component from `@/components/EnquiryForm/EnquiryForm`, receiving the `sendEnquiry` server action as a prop (not read in detail; not requested but note the `onSendEnquiry` prop signature take-away for wrapper design — the server action must still be imported/passed from the page, or from a client wrapper that itself imports the action... actually server actions can be imported directly into client components too, so this is flexible).
+- **JSX structure**: `&lt;&gt; &lt;Flex ...&gt; &lt;Title/&gt; &lt;Text&gt;(anchor)&lt;/Text&gt; &lt;Container fluid&gt;&lt;iframe/&gt;&lt;/Container&gt; &lt;Text&gt;(anchor)&lt;/Text&gt; &lt;Text&gt;(anchor)&lt;/Text&gt; &lt;Text&gt;(anchor)&lt;/Text&gt; &lt;Text&gt;(anchor)&lt;/Text&gt; &lt;Text/&gt; &lt;Text&gt;(anchor)&lt;/Text&gt; &lt;Text/&gt; &lt;EnquiryForm .../&gt; &lt;/Flex&gt; &lt;/&gt;`
+
+This is the largest/most content-heavy page — six internal/external links plus an iframe embed, all static, good candidate for a straightforward wrapper client component with no props needed except possibly passing `sendEnquiry` through if the action must be invoked from the client boundary.
+
+## 6. `src/app/footy/page.tsx` (95 lines) — footy home page
+
+- **Imports**: `{ Anchor, Divider, Flex, Group, Image, Stack, Text, Title }` from `@mantine/core`; `notFound` from `next/navigation`; `TableNameSchema` from `prisma/zod/schemas`; `{ AutoRefresh }` from `@/components/AutoRefresh/AutoRefresh`; `{ RecordsTable }` from `@/components/RecordsTable/RecordsTable`; `{ ShortTableTitle }` from `@/lib/tables`; `gameDayService` from `@/services/GameDay`; `playerRecordService` from `@/services/PlayerRecord`; `{ FootyChannel }` from `@/types/FootyChannel`.
+- **Exports besides default**: None extra — no `metadata` export in this file (unusual vs. the others).
+- **Data fetching**: `async` component.
+  - `tables` = fixed tuple `[points, averages, stalwart]` from `TableNameSchema.enum`
+  - `year = await gameDayService.getCurrentYear()`; if falsy → `return notFound();`
+  - `tableRecords = await Promise.all(tables.map(table =&gt; playerRecordService.getTable(table, year, true, 3)))`
+- **Mantine usage**:
+  - `Stack` — `p="xl"`, `align="center"` (outer wrapper)
+  - `Image` — `src="/crest.jpg"`, `width={283}`, `height={342}`, `alt="Toastboy FC Crest"`, `fit="contain"`
+  - `Divider` × 2 — `my="md"`, `w="100%"`
+  - `Group` — `justify="center"`, `w="100%"`, contains `&lt;Title order={2}&gt;Table Leaders&lt;/Title&gt;`
+  - `Flex` — `wrap="wrap"`, `gap="md"`, `justify="center"` — maps over `tables`, each item a `Stack key={table} align="center"` containing `Title order={3}` (via `ShortTableTitle(table)`) and `&lt;RecordsTable table={table} year={year} records={tableRecords[i]} /&gt;`
+  - `Text` × 2 — one `mt="md"` containing "Who are we? " + `Anchor href="/footy/info"` ("Information about Toastboy FC"); one `mt="md"` static "Crest design ©2003 by Joe Bright"
+- **Existing rendered components**:
+  - `&lt;AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} /&gt;` — already imported from `src/components/AutoRefresh/AutoRefresh` (see below for its shape).
+  - `&lt;RecordsTable table={table} year={year} records={tableRecords[i]} /&gt;` × 3 — already a separate component, not read in detail here (not requested).
+- **JSX structure**: `&lt;Stack ...&gt; &lt;AutoRefresh channels={[...]} /&gt; &lt;Image/&gt; &lt;Divider/&gt; &lt;Group&gt;&lt;Title/&gt;&lt;/Group&gt; &lt;Flex&gt;{tables.map(...)}&lt;/Flex&gt; &lt;Divider/&gt; &lt;Text&gt;(anchor)&lt;/Text&gt; &lt;Text/&gt; &lt;/Stack&gt;`
+
+This page is the most complex: it has real conditional control flow (`notFound()`) tied to server-fetched `year`, and derived array data (`tableRecords`) that must be threaded down as props to any new client wrapper. Since `notFound()` must run server-side, that early-return logic should stay in the page (or a thin server wrapper) even after refactor — only the Mantine JSX below it moves into a client component that receives `year`, `tables`, `tableRecords` as props.
+
+## `AutoRefresh` component check
+
+`src/components/AutoRefresh/AutoRefresh.tsx` exists. It's `'use client'`, renders nothing (`return null`), pure side-effect component. Prop shape:
+
+```ts
+interface AutoRefreshProps {
+    channels: FootyChannel | FootyChannel[];
+}
+```
+
+It calls `useAutoRefresh(channels)` from `@/hooks/useAutoRefresh`. It has no Mantine dependency itself, so it's not part of the "remove @mantine/* from page.tsx" problem directly, but since it's already a Client Component rendered from `footy/page.tsx`, the pattern (page fetches data server-side, passes primitives as props to a small client component) is a good template for the other five pages' refactor. It also has a companion `AutoRefresh.vitest.spec.tsx` for test coverage reference.
+
+## Summary table
+
+| Page | Mantine components used | Existing custom component already rendered | Extra Next.js exports | Async / data fetch |
+|---|---|---|---|---|
+| `rules/page.tsx` | Flex, Text×7, Title | none | `metadata` | no |
+| `familytree/page.tsx` | Flex, Text, Title | `FamilyTree` (client, `Props: { data: FamilyTreeNodeType }`) | `metadata` | yes — `playerService.getFamilyTree()` |
+| `tables/page.tsx` | Stack, Title | `TableIndexList` (no props) | `metadata` | no |
+| `countrymap/page.tsx` | Text, Title | `PlayerCountryMap` (`countries` prop) | `metadata` | yes — `countrySupporterService.getAllWithCountryAndPlayer()` |
+| `info/page.tsx` | Anchor×6, Container, Flex, Text×8, Title | `EnquiryForm` (`onSendEnquiry` prop) | `metadata` | no (server action imported) |
+| `page.tsx` (footy home) | Anchor, Divider×2, Flex, Group, Image, Stack, Text×2, Title | `AutoRefresh` (`channels` prop), `RecordsTable` (`table`/`year`/`records` props) | none (no `metadata`!) | yes — `gameDayService.getCurrentYear()` + `playerRecordService.getTable()`×3, plus `notFound()` control flow |</result>
+<usage><subagent_tokens>26664</subagent_tokens><tool_uses>11</tool_uses><duration_ms>58142</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a5d1f71deb9ffc42e</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/11debe98-ecb3-45e6-87bd-14a68596fac3/tasks/a5d1f71deb9ffc42e.output</output-file>
+<status>completed</status>
+<summary>Agent "Explore year-shell and notification pages" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>## PART A — "year page shell" pattern
+
+### Common shape across all 5
+All five are `async` Server Components. Each has:
+1. A `PageProps` interface with `searchParams?: Promise&lt;{ year?: string }&gt;` (table page also has `params: Promise&lt;{ table: string }&gt;`).
+2. A `cache()`-wrapped `unpackParams` helper that validates `year` via `zod`, calls `notFound()`/`permanentRedirect()`, and returns `{ year, allYears, ... }`.
+3. A `generateMetadata` export.
+4. Mantine imports only for **layout primitives** (`Stack`/`Flex`/`Group`) plus (in `games/page.tsx`) `Title`.
+5. JSX shape: a single Mantine layout wrapper (`Stack` or `Flex`) containing (in order): optional `AutoRefresh`, a `Group` wrapping `TitleWithYearDropdown`, then the page's data component(s).
+
+`TitleWithYearDropdown` props are identical in all 5 call sites:
+```
+order={1}
+title={string}          // page-specific literal, always ends with ": "
+year={year}
+validYears={allYears}
+```
+
+### File-by-file
+
+**`src/app/footy/winners/page.tsx`**
+- Mantine imports: `Flex, Group, Stack` from `@mantine/core`.
+- Other imports: `AutoRefresh`, `TitleWithYearDropdown`, `WinnersTable`, `getYearName`, `playerRecordService`, `FootyChannel`.
+- Layout: `&lt;Stack align="stretch" justify="center" gap="md"&gt;` → `&lt;AutoRefresh channels={FootyChannel.Results} /&gt;` → `&lt;Group justify="center" w="100%" mb="xl"&gt;` wrapping `&lt;TitleWithYearDropdown title="Winners: " .../&gt;` → `&lt;Flex wrap="wrap" gap="md" justify="center" align="stretch" w="100%"&gt;` mapping over `winners` to render `&lt;WinnersTable table={table} records={records} key={table} /&gt;` (multiple instances, one per `TableNameSchema.options`).
+- Data component props: `WinnersTable` gets `table` and `records` (array), no `year` prop passed directly (baked into `records` computed server-side).
+- Difference: the only file with a `.map()` producing multiple instances of the inner data component instead of one; also the only one using both `Stack` and `Flex` together.
+
+**`src/app/footy/books/page.tsx`**
+- Mantine imports: `Group, Stack`.
+- Other imports: `MoneyChart`, `TitleWithYearDropdown`, `getYearName`, `gameDayService`, `moneyService`.
+- Layout: `&lt;Stack&gt;` (no props) → `&lt;Group justify="center" w="100%"&gt;` wrapping `&lt;TitleWithYearDropdown title="Books: " .../&gt;` → `&lt;MoneyChart data={chartData} linkBase={year === 0 ? '/footy/books?year=' : undefined} /&gt;`.
+- No `AutoRefresh`.
+- Difference: `MoneyChart` has a conditional `linkBase` prop based on `year === 0`; simplest/most minimal shell of the five (bare `Stack`, no extra props).
+
+**`src/app/footy/curse/page.tsx`**
+- Mantine imports: `Flex, Group` (no `Stack`).
+- Other imports: `CurseOfTheBibs`, `TitleWithYearDropdown`, `getYearName`, `outcomeService`, `playerRecordService`.
+- Layout: `&lt;Flex direction="column" align="center"&gt;` → `&lt;Group justify="center" w="100%"&gt;` wrapping `&lt;TitleWithYearDropdown title="Curse of the Bibs: " .../&gt;` → `&lt;CurseOfTheBibs bibsData={bibsData} /&gt;`.
+- No `AutoRefresh`.
+- Difference: outer wrapper is `Flex` with `direction="column" align="center"` (not `Stack`); has a redundant defensive `if (!allYears.includes(year)) return notFound();` check right in the page body (duplicate of the check inside `unpackParams`, annotated with a v8 ignore comment).
+
+**`src/app/footy/games/page.tsx`**
+- Mantine imports: `Flex, Group, Title`.
+- Other imports: `AutoRefresh`, `GameDayList`, `TitleWithYearDropdown`, `getYearName`, `gameDayService`, `FootyChannel`.
+- Layout: `&lt;Flex direction="column" align="center" gap="lg"&gt;` → `&lt;AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} /&gt;` → `&lt;Group justify="center" w="100%"&gt;` wrapping `&lt;TitleWithYearDropdown title="Games: " .../&gt;` → `&lt;Title order={2} mb="xl"&gt;{subhead}&lt;/Title&gt;` → `&lt;GameDayList gameDays={gameDays} year={year} /&gt;`.
+- Difference: the only file that renders an **extra** Mantine element (`Title order={2}`) between the dropdown group and the data component, showing a computed `subhead` string (e.g. "N played, M cancelled, K confirmed"). `AutoRefresh` takes an array of two channels here vs. a single channel in `winners`. `GameDayList` gets `year` as an extra prop (unlike `WinnersTable`/`CurseOfTheBibs`/`MoneyChart` which don't take `year`).
+
+**`src/app/footy/table/[table]/page.tsx`**
+- Mantine imports: `Group, Stack`.
+- Other imports: `AutoRefresh`, `TitleWithYearDropdown`, `YearTable`, `QualifiedTableName`/`TableTitle` from `@/lib/tables`, `playerRecordService`, `FootyChannel`.
+- Extra route param: `params: Promise&lt;{ table: string }&gt;`, validated via `TableNameSchema.safeParse` inside `unpackParams` (unique — this is the only page with a dynamic path segment in this group; `unpackParams` here takes two args `(params, searchParams)` vs. one arg in the other four).
+- Layout: `&lt;Stack p="xl" align="center"&gt;` → `&lt;AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} /&gt;` → `&lt;Group justify="center" w="100%" mb="xl"&gt;` wrapping `&lt;TitleWithYearDropdown title={`${TableTitle(table)}: `} .../&gt;` (dynamic title, not a literal) → `&lt;YearTable table={table} year={year} qualified={tableQualified} unqualified={tableUnqualified} /&gt;`.
+- Difference: title is computed (`TableTitle(table)`) rather than a string literal; `YearTable` takes four props (`table`, `year`, `qualified`, `unqualified`) — the richest prop set of any inner data component; `Stack` has `p="xl"` (padding) unlike others.
+
+### `TitleWithYearDropdown` component
+File: `/Volumes/Development/next-www-toastboy/src/components/TitleWithYearDropdown/TitleWithYearDropdown.tsx`
+- Already a `'use client'` component.
+- Props interface:
+```ts
+export interface Props {
+    title: string;
+    order: TitleOrder;
+    year: number;
+    validYears: number[];
+}
+```
+- Internally it already renders its own `&lt;Group justify="center" align="baseline" gap="xs" wrap="wrap"&gt;` containing a `Title` and a `Menu`/`UnstyledButton` year-picker driven by `usePathname`/`useSearchParams`/`useRouter`.
+- Note for the refactor: every one of the 5 pages wraps `TitleWithYearDropdown` in its **own** outer `&lt;Group justify="center" w="100%" ...&gt;`, which is redundant since the component already centers itself internally via its own `Group`. That outer `Group` in each page is really just being used as a generic "full-width centering box" — worth folding into a shared shell component along with the outer `Stack`/`Flex`, rather than treated as page-specific layout.
+
+---
+
+## PART B — "status notification" pattern
+
+Shared building blocks across all files: `Notification` from `@mantine/core`, `IconX`/`IconCheck` from `@tabler/icons-react`, `icon={&lt;IconX size={config.notificationIconSize} /&gt;}` (config value `18`, from `/Volumes/Development/next-www-toastboy/src/lib/config.ts`). Error branches consistently use `color="red"` (except `accountdeleted` which uses `color="blue"` for a non-error info message, and `verify/enquiry` success branch uses `color="teal"`).
+
+**1. `src/app/footy/auth/accountdeleted/page.tsx`**
+- Single unconditional branch, no data fetching, no auth check.
+- `&lt;Notification icon={&lt;IconX .../&gt;} color="blue"&gt;` (note: blue, not red — this is an informational, not error, notification, despite using `IconX`) wrapping `&lt;Text&gt;Your account has been successfully deleted.&lt;/Text&gt;`.
+- No `withCloseButton` prop set (defaults true). No anchor. Notification is the ONLY content on the page.
+
+**2. `src/app/footy/auth/reset-password/page.tsx`**
+- Conditional on `token` presence (from `searchParams`).
+- Failure branch: `&lt;Notification icon={&lt;IconX/&gt;} color="red"&gt;` + `&lt;Text&gt;Password reset link is missing or invalid.&lt;/Text&gt;`. No `withCloseButton` prop. No anchor. Sole content.
+- Success branch: renders `&lt;PasswordResetForm token={token} /&gt;` (no Mantine, not a notification at all).
+
+**3. `src/app/footy/auth/claim/[token]/page.tsx`**
+- Calls `claimPlayerInvitation(token)` in try/catch; captures error via `captureUnexpectedError`; `errorMessage = toPublicMessage(error, 'This invitation link is invalid.')`.
+- Failure branch (`!invitation`): `&lt;Notification icon={&lt;IconX/&gt;} color="red" withCloseButton={false}&gt;{errorMessage}&lt;/Notification&gt;` — message is a **variable** (dynamic string), not literal JSX/Text wrapper (children passed directly, no `&lt;Text&gt;`). Sole content, no anchor.
+- Success branch: renders `&lt;ClaimSignup name={...} email={...} token={...} /&gt;` — not a notification.
+
+**4. `src/app/footy/auth/claim/[token]/finish/page.tsx`**
+- Calls `finalizePlayerInvitationClaim(token)`; catches, sets `errorMessage` via `toPublicMessage(error, 'Unable to finalize invitation.')`.
+- Failure branch: `&lt;Stack&gt;` wrapping `&lt;Notification icon={&lt;IconX/&gt;} color="red" withCloseButton={false}&gt;{errorMessage}&lt;/Notification&gt;` **plus** `&lt;Anchor href="/footy"&gt;Return to the home page&lt;/Anchor&gt;` as a sibling.
+- Success branch: `redirect('/footy/profile')` (no JSX rendered at all on success).
+- Notification is NOT the only content here — always paired with an `Anchor` inside a `Stack`.
+
+**5. `src/app/footy/auth/verify/enquiry/[token]/page.tsx`**
+- Calls `deliverContactEnquiry(token)`; catches, `errorMessage = toPublicMessage(error, 'Unable to deliver your message.')`.
+- Failure branch: `&lt;Stack&gt;` + `&lt;Notification icon={&lt;IconX/&gt;} color="red" withCloseButton={false}&gt;{errorMessage}&lt;/Notification&gt;` + `&lt;Anchor href="/footy"&gt;Return to the home page&lt;/Anchor&gt;`.
+- Success branch (no errorMessage): `&lt;Stack&gt;` + `&lt;Notification icon={&lt;IconCheck/&gt;} color="teal" withCloseButton={false}&gt;Thanks for your message. We will get back to you soon.&lt;/Notification&gt;` + `&lt;Anchor href="/footy"&gt;Return to the home page&lt;/Anchor&gt;`.
+- This is the only file with BOTH a success notification (green/teal + check icon) and a failure notification, each paired with the same anchor. Confirms the pattern needs a `color`/`icon` that varies for success vs failure, plus a literal message string for success and dynamic string for failure.
+
+**6. `src/app/footy/auth/verify/extra-email/[token]/page.tsx`**
+- Calls `verifyEmail(token)`; catches, `errorMessage = toPublicMessage(error, 'Unable to verify email.')`.
+- Failure branch: `&lt;Stack&gt;` + `&lt;Notification icon={&lt;IconX/&gt;} color="red" withCloseButton={false}&gt;{errorMessage}&lt;/Notification&gt;` + `&lt;Anchor href="/footy/profile"&gt;Return to your profile&lt;/Anchor&gt;` (different href/label than #4/#5 — "Return to your profile").
+- Success branch: `redirect('/footy/profile')`, no JSX.
+
+**7. `src/app/footy/(authenticated)/downloadmydata/page.tsx`**
+- Two independent failure branches, both plain `&lt;Notification icon={&lt;IconX/&gt;} color="red"&gt;` (no `withCloseButton` prop set — defaults true, unlike files 3/4/5/6 which explicitly set `false`):
+  - No `playerId` (from `getCurrentUser()`): children = literal JSX text `This account is not linked to a player profile yet.` (no `&lt;Text&gt;` wrapper, no variable).
+  - `!player` after fetching: children = literal `Failed to load player data.`
+- No anchor in either branch; each Notification is the sole content.
+- Success branch: builds a `payload` object and renders `&lt;DownloadMyData data={serialisedPayload} /&gt;` — not a notification, substantial data-fetch/transform logic (5 parallel service calls + totals computation).
+
+**8. `src/app/footy/(authenticated)/profile/page.tsx`**
+- Structurally identical pattern to #7: two failure branches with plain `&lt;Notification icon={&lt;IconX/&gt;} color="red"&gt;` (no `withCloseButton`), literal text children (`This account is not linked to a player profile yet.` and `Failed to load player profile.`), no anchor, sole content each.
+- Success branch: renders `&lt;&gt;&lt;AutoRefresh channels={FootyChannel.Players} /&gt;&lt;PlayerProfileForm .../&gt;&lt;/&gt;` — not a notification.
+
+**9. `src/app/footy/admin/users/page.tsx`**
+- Different variant: uses `&lt;Text c="red"&gt;{toPublicMessage(error, 'Failed to fetch users.')}&lt;/Text&gt;` directly — NOT a `Notification` component at all, no icon, no color prop on a Notification (just Mantine `Text` color prop). This is the "Box+Text" style variant referenced in the prompt (though it's bare `Text`, no `Box`/`Anchor`).
+- Triggered inside a try/catch around `listUsersAction()`.
+- Success branch: `&lt;&gt;&lt;AutoRefresh channels={FootyChannel.Users} /&gt;&lt;AdminUserList users={users} setAdminRole={setAdminRoleAction} /&gt;&lt;/&gt;`.
+- Structural outlier: no icon, no `Notification` wrapper — just colored text.
+
+**10. `src/app/footy/response/[token]/page.tsx`**
+- Another outlier: no `Notification` at all. Uses `&lt;Text&gt;Invitation details are missing.&lt;/Text&gt;` + `&lt;Anchor href="/footy/game"&gt;Go to the game page&lt;/Anchor&gt;` inside a fragment `&lt;&gt;...&lt;/&gt;` when `getGameInvitationResponseDetails(token)` returns falsy. No icon, no color prop anywhere.
+- Success branch: renders `&lt;GameInvitationResponseForm details={details} onSubmitGameInvitationResponse={submitGameInvitationResponse} /&gt;`.
+
+### Assessment: can one `StatusNotification` component cover all 10?
+
+Not cleanly with a single trivial `{message, color, icon, variant, anchor}` API — there are real structural differences to account for:
+
+- **Two distinct rendering families**: `Notification`-based (files 1,2,3,4,5,6,7,8 — 8 of 10) vs plain `Text`(+`Anchor`)-based with no icon/notification chrome at all (files 9 and 10). A shared component would need a `variant: 'notification' | 'text'` prop (matching the "Box+Text+Anchor variant" the prompt anticipated) to cover 9 and 10, or those two could reasonably be left out of the shared component (they're not really the same visual pattern — no icon, no colored notification box).
+- **`withCloseButton`**: explicitly `false` in files 3,4,5,6; left at default (`true`) in files 1,2,7,8. Needs to be a prop (default true, override false) — not a hardcoded constant.
+- **Anchor is optional and varies**: absent in 1,2,3,7,8,9(has one)/10(has one); present in 4,5,6 (all `red`/error) each with different `href`/label (`/footy` "Return to the home page" ×2, `/footy/profile` "Return to your profile"); present in 9/10 style too. So `anchor?: { href: string; label: string }` fits well for the `Notification`-family files that have one (4, 5, 6) plus the two `Text` outliers (9 doesn't have an anchor, 10 does).
+- **Message content type varies**: literal hardcoded JSX text (1, 7, 8) vs dynamic string variables from `toPublicMessage()` (3, 4, 5 error branch, 6, 9). A `message: React.ReactNode` prop handles both.
+- **Color/icon pairing varies**: `red`+`IconX` (2,3,4,5 err,6,7,8), `blue`+`IconX` (1 — non-error info), `teal`+`IconCheck` (5 success). So `color` and `icon` must be independent props, not derived from a single `severity` enum, unless you add a `'blue'` info variant.
+- **Wrapping context differs**: standalone (1,2,3,7,8) vs wrapped in `&lt;Stack&gt;` with a sibling `&lt;Anchor&gt;` (4,5,6) — but this is just consumption-side layout, easily handled by having the shared component itself optionally render the anchor internally (via the `anchor` prop) rather than requiring callers to wrap in `Stack`.
+- **File 5 is the only site needing two calls of the component** (error state and success state) in the same page — not a structural blocker, just confirms the component must support both colors/icons via props rather than being error-only.
+- **Files 9 and 10 have no icon/Notification chrome at all** — forcing them into a `Notification`-styled shared component would change their visual appearance unless the component supports a `variant='plain'` (bare colored `Text` + optional `Anchor`, no `Notification` box) as literally the "Box+Text+Anchor" variant mentioned in your prompt.
+
+**Conclusion**: A `StatusNotification` component with props like `{ variant: 'notification' | 'plain', message: ReactNode, color: MantineColor, icon?: ReactNode, withCloseButton?: boolean, anchor?: { href: string; label: string } }` would cover all 10 call sites structurally, but note it's genuinely two different visual variants (8 Notification-box sites + 2 plain-Text sites), and files 7/8 have identical dual-branch logic that could even share a slightly higher-level "PlayerNotLinked" pattern on top of the base component. No site has additional non-trivial JSX inside the notification itself beyond text/variable content, so the "message" prop as `ReactNode` is sufficient everywhere.</result>
+<usage><subagent_tokens>38151</subagent_tokens><tool_uses>18</tool_uses><duration_ms>74647</duration_ms></usage>
+</task-notification>
+
+---
+
+Resume
+
+---
+
+Try again
+
+---
+
+Pick up where you left off
+
+---
+
+Pick up where you left off
+
+---
+
+Pick up where you left off
+
+---
+
+I've resumed Claude after losing internet connection - resume what you were doing
+
+---
+
+Remind me how to show dot-folders in a MacOS file chooser dialog
+
+---
+
+Write a new Jira ticket to fix these warnings:
+
+❯ npm run test:coverage                          
+
+> test:coverage
+> vitest run --config vitest.unit.config.ts --coverage
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.unit.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.actions.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.api.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.components.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.pages.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.lib.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.services.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+---
+
+Now all the new components you introduced have no matching mocks or Storybook tests! I would have thought CLAUDE.md had that as a hard and fast rule: if not, then add it. All components must be auto-mocked (just in case: I realise some of these will not actually be exercised) and must have Storybook test coverage.
+
+---
+
+<task-notification>
+<task-id>b56eozaiw</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/dcf14753-418c-45be-bb81-64b36100987b/tasks/b56eozaiw.output</output-file>
+<status>failed</status>
+<summary>Background command "Run full Storybook test suite (proper background flag)" failed with exit code 1</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bnvc3cm8a</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/dcf14753-418c-45be-bb81-64b36100987b/tasks/bnvc3cm8a.output</output-file>
+<status>failed</status>
+<summary>Background command "Run full Storybook suite cleanly, no concurrent processes" failed with exit code 1</summary>
+</task-notification>
+
+---
+
+Yes, new ticket for improving mock data
+
+---
+
+The new components with the name suffix 'Intro' would be better suffixed 'Shell', I think. Rename them.
+
+---
+
+This renders an empty <h2> when callers pass an empty string (e.g. subheading=''). That can create confusing/empty headings for screen readers and affect layout. Consider omitting the subheading when it’s an empty/whitespace-only string (or change upstream code to pass undefined instead of '').
+
+---
+
+This review comment is probably now moot, but check anyway
+
+
+There’s coverage for subheading omitted, but not for the common case where callers pass an empty string (which currently renders an empty heading). Add a test asserting that subheading=\"\" (and possibly whitespace) does not render a heading, or adjust the contract so callers must pass undefined instead of an empty string.
+
+---
+
+Using Mantine <Anchor href> for internal navigation can trigger full page reloads in Next.js. Consider integrating with next/link (e.g., render Mantine Anchor with component={Link}) or allow the anchor prop to accept a ReactNode so callers can supply an app-router-friendly link.
+
+---
+
+The embedded map iframe will eagerly load and can be relatively heavy. Consider adding loading=\"lazy\" to defer loading until it’s near the viewport (and optionally set an explicit style/sandbox policy if your security posture requires it).

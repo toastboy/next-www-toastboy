@@ -37,6 +37,9 @@ next-env.d.ts
 /blob-report/
 /playwright/.cache/
 
+# Also ignore CI/CD playwright reports copied locally for AI analysis
+/playwright-report-*/
+
 # Terraform local files
 terraform/.terraform*
 terraform/*.tfstate
@@ -72,6 +75,7 @@ www-toastboy
 
 # Claude Code local files (worktrees are nested git repos, not submodules)
 .claude/worktrees/
+.claude/settings.local.json
 
 # VS Code Edge Profile
 .vscode/.edge-profile/

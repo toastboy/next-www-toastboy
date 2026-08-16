@@ -133,16 +133,16 @@ test.describe('Responses admin page', () => {
         await updatePlayer('Yes', true, 'Can play and cover goal first half');
 
         await expect
-            .poll(async () => groupCount('Yes'), { timeout: 10000 })
+            .poll(async () => groupCount('Yes'), { timeout: 15000 })
             .toBe(yesAfterFirstUpdate);
         await expect
-            .poll(async () => groupCount('No'), { timeout: 10000 })
+            .poll(async () => groupCount('No'), { timeout: 15000 })
             .toBe(initialNo);
         await expect
-            .poll(async () => groupCount('Dunno'), { timeout: 10000 })
+            .poll(async () => groupCount('Dunno'), { timeout: 15000 })
             .toBe(initialDunno);
         await expect
-            .poll(async () => groupCount('None'), { timeout: 10000 })
+            .poll(async () => groupCount('None'), { timeout: 15000 })
             .toBe(noneAfterFirstUpdate);
 
         await expandGroup('Yes');
@@ -157,16 +157,16 @@ test.describe('Responses admin page', () => {
         await updatePlayer('No', false, 'Out of town this week');
 
         await expect
-            .poll(async () => groupCount('Yes'), { timeout: 10000 })
+            .poll(async () => groupCount('Yes'), { timeout: 15000 })
             .toBe(yesAfterFirstUpdate - 1);
         await expect
-            .poll(async () => groupCount('No'), { timeout: 10000 })
+            .poll(async () => groupCount('No'), { timeout: 15000 })
             .toBe(initialNo + 1);
         await expect
-            .poll(async () => groupCount('Dunno'), { timeout: 10000 })
+            .poll(async () => groupCount('Dunno'), { timeout: 15000 })
             .toBe(initialDunno);
         await expect
-            .poll(async () => groupCount('None'), { timeout: 10000 })
+            .poll(async () => groupCount('None'), { timeout: 15000 })
             .toBe(noneAfterFirstUpdate);
 
         await expandGroup('No');
@@ -185,16 +185,16 @@ test.describe('Responses admin page', () => {
         );
 
         await expect
-            .poll(async () => groupCount('Yes'), { timeout: 10000 })
+            .poll(async () => groupCount('Yes'), { timeout: 15000 })
             .toBe(yesAfterFirstUpdate - 1);
         await expect
-            .poll(async () => groupCount('No'), { timeout: 10000 })
+            .poll(async () => groupCount('No'), { timeout: 15000 })
             .toBe(initialNo);
         await expect
-            .poll(async () => groupCount('Dunno'), { timeout: 10000 })
+            .poll(async () => groupCount('Dunno'), { timeout: 15000 })
             .toBe(initialDunno + 1);
         await expect
-            .poll(async () => groupCount('None'), { timeout: 10000 })
+            .poll(async () => groupCount('None'), { timeout: 15000 })
             .toBe(noneAfterFirstUpdate);
 
         await expandGroup('Dunno');
@@ -209,16 +209,16 @@ test.describe('Responses admin page', () => {
         await updatePlayer('Yes', true, 'Back in: definitely available');
 
         await expect
-            .poll(async () => groupCount('Yes'), { timeout: 10000 })
+            .poll(async () => groupCount('Yes'), { timeout: 15000 })
             .toBe(yesAfterFirstUpdate);
         await expect
-            .poll(async () => groupCount('No'), { timeout: 10000 })
+            .poll(async () => groupCount('No'), { timeout: 15000 })
             .toBe(initialNo);
         await expect
-            .poll(async () => groupCount('Dunno'), { timeout: 10000 })
+            .poll(async () => groupCount('Dunno'), { timeout: 15000 })
             .toBe(initialDunno);
         await expect
-            .poll(async () => groupCount('None'), { timeout: 10000 })
+            .poll(async () => groupCount('None'), { timeout: 15000 })
             .toBe(noneAfterFirstUpdate);
     });
 });

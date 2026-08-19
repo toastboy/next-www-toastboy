@@ -1,0 +1,112 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "c46807061a5e",
+  "session_id": "a47ae693-9bed-472e-a735-f322dd4f24a7",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-19T12:14:48.40508Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    ".github/workflows/playwright.yml"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "2b20644042ba",
+  "checkpoint_transcript_start": 6040,
+  "transcript_lines_at_start": 6040,
+  "compact_transcript_start": 1194,
+  "token_usage": {
+    "input_tokens": 44,
+    "cache_creation_tokens": 294975,
+    "cache_read_tokens": 6284581,
+    "output_tokens": 28503,
+    "api_call_count": 22,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-08-17T07:32:03.768672Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "bb93bb471a54",
+      "timestamp": "2026-08-17T07:32:03.768672Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-08-17T20:27:13.72546Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "27e3ca678afd",
+      "timestamp": "2026-08-17T20:27:13.72546Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 25
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-19T12:14:47.744336Z",
+    "agent_lines": 33,
+    "agent_removed": 4,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 33,
+    "total_lines_changed": 37,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 3,
+      "user_lines_removed": 3,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "src/lib/core/submitResponse/index.ts": 1,
+        "src/lib/core/submitResponse/submitResponse.ts": 2
+      },
+      "user_removed_per_file": {
+        "src/lib/core/submitResponse/index.ts": 1,
+        "src/lib/core/submitResponse/submitResponse.ts": 2
+      }
+    }
+  ]
+}

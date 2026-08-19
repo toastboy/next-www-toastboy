@@ -1,0 +1,589 @@
+I need the CI Playwright database seeding to be updated to keep up with these changes:
+
+2026-08-19T11:57:12.3810624Z Current runner version: '2.336.0'
+2026-08-19T11:57:12.3844289Z ##[group]Runner Image Provisioner
+2026-08-19T11:57:12.3845850Z Hosted Compute Agent
+2026-08-19T11:57:12.3846725Z Version: 20260729.566
+2026-08-19T11:57:12.3847965Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+2026-08-19T11:57:12.3849461Z Build Date: 2026-07-29T19:17:02Z
+2026-08-19T11:57:12.3850622Z Worker ID: {256adf3a-2bb3-4c08-a2ec-192696961003}
+2026-08-19T11:57:12.3851861Z Azure Region: eastus
+2026-08-19T11:57:12.3852767Z ##[endgroup]
+2026-08-19T11:57:12.3855250Z ##[group]Operating System
+2026-08-19T11:57:12.3856316Z Ubuntu
+2026-08-19T11:57:12.3857173Z 24.04.4
+2026-08-19T11:57:12.3857979Z LTS
+2026-08-19T11:57:12.3859078Z ##[endgroup]
+2026-08-19T11:57:12.3860072Z ##[group]Runner Image
+2026-08-19T11:57:12.3860997Z Image: ubuntu-24.04
+2026-08-19T11:57:12.3861904Z Version: 20260816.277.1
+2026-08-19T11:57:12.3863963Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260816.277/images/ubuntu/Ubuntu2404-Readme.md
+2026-08-19T11:57:12.3866714Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260816.277
+2026-08-19T11:57:12.3868687Z ##[endgroup]
+2026-08-19T11:57:12.3870682Z ##[group]GITHUB_TOKEN Permissions
+2026-08-19T11:57:12.3873733Z Contents: read
+2026-08-19T11:57:12.3874729Z Metadata: read
+2026-08-19T11:57:12.3875648Z Packages: read
+2026-08-19T11:57:12.3876543Z ##[endgroup]
+2026-08-19T11:57:12.3879828Z Secret source: Actions
+2026-08-19T11:57:12.3881452Z Prepare workflow directory
+2026-08-19T11:57:12.4615089Z Prepare all required actions
+2026-08-19T11:57:12.4664136Z Getting action download info
+2026-08-19T11:57:12.6305902Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-08-19T11:57:12.7528586Z Download action repository 'actions/setup-node@v7' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+2026-08-19T11:57:12.8341223Z Download action repository 'docker/login-action@v4.6.0' (SHA:dbcb813823bdd20940b903addbd779551569679f)
+2026-08-19T11:57:13.0251635Z Download action repository 'actions/upload-artifact@v7' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+2026-08-19T11:57:13.1978402Z Complete job name: test (chromium, chromium)
+2026-08-19T11:57:13.2669098Z ##[group]Run actions/checkout@v7
+2026-08-19T11:57:13.2670066Z with:
+2026-08-19T11:57:13.2670516Z   repository: toastboy/next-www-toastboy
+2026-08-19T11:57:13.2674278Z   token: ***
+2026-08-19T11:57:13.2674754Z   ssh-strict: true
+2026-08-19T11:57:13.2675181Z   ssh-user: git
+2026-08-19T11:57:13.2675617Z   persist-credentials: true
+2026-08-19T11:57:13.2676084Z   clean: true
+2026-08-19T11:57:13.2676517Z   sparse-checkout-cone-mode: true
+2026-08-19T11:57:13.2677026Z   fetch-depth: 1
+2026-08-19T11:57:13.2677441Z   fetch-tags: false
+2026-08-19T11:57:13.2677856Z   show-progress: true
+2026-08-19T11:57:13.2678459Z   lfs: false
+2026-08-19T11:57:13.2678864Z   submodules: false
+2026-08-19T11:57:13.2679289Z   set-safe-directory: true
+2026-08-19T11:57:13.2679785Z   allow-unsafe-pr-checkout: false
+2026-08-19T11:57:13.2680562Z env:
+2026-08-19T11:57:13.2681000Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:57:13.2681744Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:57:13.2682485Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:57:13.2683256Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:57:13.2683934Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:57:13.2684614Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:57:13.2685328Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:57:13.2686157Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:57:13.2686873Z ##[endgroup]
+2026-08-19T11:57:13.3701421Z Syncing repository: toastboy/next-www-toastboy
+2026-08-19T11:57:13.3704231Z ##[group]Getting Git version info
+2026-08-19T11:57:13.3705554Z Working directory is '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-08-19T11:57:13.3707244Z [command]/usr/bin/git version
+2026-08-19T11:57:13.3782406Z git version 2.55.0
+2026-08-19T11:57:13.3814059Z ##[endgroup]
+2026-08-19T11:57:13.3826334Z Temporarily overriding HOME='/home/runner/work/_temp/df71c7fa-bd0a-45e8-8b20-fc921786afff' before making global git config changes
+2026-08-19T11:57:13.3828992Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T11:57:13.3834192Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-19T11:57:13.3890677Z Deleting the contents of '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-08-19T11:57:13.3894654Z ##[group]Determining repository object format
+2026-08-19T11:57:13.3896643Z ##[endgroup]
+2026-08-19T11:57:13.3897764Z ##[group]Initializing the repository
+2026-08-19T11:57:13.3902640Z [command]/usr/bin/git init /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-19T11:57:13.4036834Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-19T11:57:13.4039347Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-19T11:57:13.4043032Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-19T11:57:13.4044405Z hint: call:
+2026-08-19T11:57:13.4045163Z hint:
+2026-08-19T11:57:13.4046170Z hint:     git config --global init.defaultBranch <name>
+2026-08-19T11:57:13.4047191Z hint:
+2026-08-19T11:57:13.4048421Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-19T11:57:13.4049937Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-19T11:57:13.4051159Z hint:
+2026-08-19T11:57:13.4051872Z hint:     git branch -m <name>
+2026-08-19T11:57:13.4052602Z hint:
+2026-08-19T11:57:13.4053604Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-19T11:57:13.4055773Z Initialized empty Git repository in /home/runner/work/next-www-toastboy/next-www-toastboy/.git/
+2026-08-19T11:57:13.4068498Z [command]/usr/bin/git remote add origin https://github.com/toastboy/next-www-toastboy
+2026-08-19T11:57:13.4113543Z ##[endgroup]
+2026-08-19T11:57:13.4119800Z ##[group]Disabling automatic garbage collection
+2026-08-19T11:57:13.4120554Z [command]/usr/bin/git config --local gc.auto 0
+2026-08-19T11:57:13.4151163Z ##[endgroup]
+2026-08-19T11:57:13.4152569Z ##[group]Setting up auth
+2026-08-19T11:57:13.4153365Z Removing SSH command configuration
+2026-08-19T11:57:13.4159399Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T11:57:13.4197387Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T11:57:13.4578795Z Removing HTTP extra header
+2026-08-19T11:57:13.4584646Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T11:57:13.4619453Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T11:57:13.4833444Z Removing includeIf entries pointing to credentials config files
+2026-08-19T11:57:13.4838582Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T11:57:13.4869308Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T11:57:13.5095530Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-19T11:57:13.5131206Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path /home/runner/work/_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:57:13.5161079Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:57:13.5197146Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:57:13.5226375Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:57:13.5253238Z ##[endgroup]
+2026-08-19T11:57:13.5254565Z ##[group]Fetching the repository
+2026-08-19T11:57:13.5262210Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +436e745a871eeb6d5cd6ac7ec72a6d1acd581cbd:refs/remotes/origin/main
+2026-08-19T11:57:14.2608123Z From https://github.com/toastboy/next-www-toastboy
+2026-08-19T11:57:14.2610481Z  * [new ref]         436e745a871eeb6d5cd6ac7ec72a6d1acd581cbd -> origin/main
+2026-08-19T11:57:14.2619199Z [command]/usr/bin/git branch --list --remote origin/main
+2026-08-19T11:57:14.2645587Z   origin/main
+2026-08-19T11:57:14.2656247Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-08-19T11:57:14.2680677Z 436e745a871eeb6d5cd6ac7ec72a6d1acd581cbd
+2026-08-19T11:57:14.2685633Z ##[endgroup]
+2026-08-19T11:57:14.2686957Z ##[group]Determining the checkout info
+2026-08-19T11:57:14.2688550Z ##[endgroup]
+2026-08-19T11:57:14.2692017Z [command]/usr/bin/git sparse-checkout disable
+2026-08-19T11:57:14.2749530Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-08-19T11:57:14.2782736Z ##[group]Checking out the ref
+2026-08-19T11:57:14.2871116Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-08-19T11:57:14.3725778Z Switched to a new branch 'main'
+2026-08-19T11:57:14.3731603Z branch 'main' set up to track 'origin/main'.
+2026-08-19T11:57:14.3740049Z ##[endgroup]
+2026-08-19T11:57:14.3786529Z [command]/usr/bin/git log -1 --format=%H
+2026-08-19T11:57:14.3810616Z 436e745a871eeb6d5cd6ac7ec72a6d1acd581cbd
+2026-08-19T11:57:14.4134692Z ##[group]Run actions/setup-node@v7
+2026-08-19T11:57:14.4135484Z with:
+2026-08-19T11:57:14.4135988Z   node-version: 24
+2026-08-19T11:57:14.4136547Z   check-latest: false
+2026-08-19T11:57:14.4145604Z   token: ***
+2026-08-19T11:57:14.4146154Z   package-manager-cache: true
+2026-08-19T11:57:14.4146806Z env:
+2026-08-19T11:57:14.4147298Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:57:14.4148576Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:57:14.4149773Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:57:14.4151093Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:57:14.4152190Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:57:14.4153325Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:57:14.4154534Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:57:14.4156033Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:57:14.4157285Z ##[endgroup]
+2026-08-19T11:57:14.5429425Z Found in cache @ /opt/hostedtoolcache/node/24.19.0/x64
+2026-08-19T11:57:14.5434103Z ##[group]Environment details
+2026-08-19T11:57:14.9910528Z node: v24.19.0
+2026-08-19T11:57:14.9912021Z npm: 11.17.0
+2026-08-19T11:57:14.9912760Z yarn: 1.22.22
+2026-08-19T11:57:14.9914298Z ##[endgroup]
+2026-08-19T11:57:15.0083296Z ##[group]Run npm ci
+2026-08-19T11:57:15.0084532Z [36;1mnpm ci[0m
+2026-08-19T11:57:15.0134697Z shell: /usr/bin/bash -e {0}
+2026-08-19T11:57:15.0135923Z env:
+2026-08-19T11:57:15.0136980Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:57:15.0139030Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:57:15.0140671Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:57:15.0142426Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:57:15.0143951Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:57:15.0145817Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:57:15.0147494Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:57:15.0149569Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:57:15.0151199Z ##[endgroup]
+2026-08-19T11:57:22.8291625Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-08-19T11:57:25.8844867Z npm warn deprecated tsconfck@3.1.6: unmaintained
+2026-08-19T11:58:16.6282134Z 
+2026-08-19T11:58:16.6285372Z added 1402 packages, and audited 1403 packages in 1m
+2026-08-19T11:58:16.6286280Z 
+2026-08-19T11:58:16.6286865Z 434 packages are looking for funding
+2026-08-19T11:58:16.6287780Z   run `npm fund` for details
+2026-08-19T11:58:16.7455013Z 
+2026-08-19T11:58:16.7455934Z 8 high severity vulnerabilities
+2026-08-19T11:58:16.7456355Z 
+2026-08-19T11:58:16.7456898Z To address all issues possible (including breaking changes), run:
+2026-08-19T11:58:16.7457744Z   npm audit fix --force
+2026-08-19T11:58:16.7458050Z 
+2026-08-19T11:58:16.7458779Z Some issues need review, and may require choosing
+2026-08-19T11:58:16.7459436Z a different dependency.
+2026-08-19T11:58:16.7459749Z 
+2026-08-19T11:58:16.7460020Z Run `npm audit` for details.
+2026-08-19T11:58:16.7486374Z npm warn allow-scripts 10 packages have install scripts not yet covered by allowScripts:
+2026-08-19T11:58:16.7487800Z npm warn allow-scripts   @playwright/browser-chromium@1.62.1 (install: node install.js)
+2026-08-19T11:58:16.7489330Z npm warn allow-scripts   @playwright/browser-firefox@1.62.1 (install: node install.js)
+2026-08-19T11:58:16.7490362Z npm warn allow-scripts   @playwright/browser-webkit@1.62.1 (install: node install.js)
+2026-08-19T11:58:16.7491240Z npm warn allow-scripts   @prisma/engines@7.9.1 (postinstall: node scripts/postinstall.js)
+2026-08-19T11:58:16.7492102Z npm warn allow-scripts   @sentry/cli@2.58.6 (postinstall: node ./scripts/install.js)
+2026-08-19T11:58:16.7492874Z npm warn allow-scripts   esbuild@0.28.2 (postinstall: node install.js)
+2026-08-19T11:58:16.7493853Z npm warn allow-scripts   msw@2.15.0 (postinstall: node -e "import('./config/scripts/postinstall.js').catch(() => void 0)")
+2026-08-19T11:58:16.7495174Z npm warn allow-scripts   prisma@7.9.1 (preinstall: node scripts/preinstall-entry.js)
+2026-08-19T11:58:16.7496533Z npm warn allow-scripts   prisma-zod-generator@3.1.0 (postinstall: node scripts/postinstall.js)
+2026-08-19T11:58:16.7498117Z npm warn allow-scripts   unrs-resolver@1.12.2 (postinstall: node postinstall.js)
+2026-08-19T11:58:16.7499326Z npm warn allow-scripts
+2026-08-19T11:58:16.7500578Z npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+2026-08-19T11:58:16.8584853Z ##[group]Run docker/login-action@v4.6.0
+2026-08-19T11:58:16.8585164Z with:
+2026-08-19T11:58:16.8585347Z   registry: ghcr.io
+2026-08-19T11:58:16.8585555Z   username: toastboy70
+2026-08-19T11:58:16.8588073Z   password: ***
+2026-08-19T11:58:16.8588695Z   logout: true
+2026-08-19T11:58:16.8588919Z env:
+2026-08-19T11:58:16.8589119Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:58:16.8589530Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:58:16.8589901Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:58:16.8590313Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:58:16.8590656Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:58:16.8591001Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:58:16.8591364Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:58:16.8591805Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:58:16.8592215Z ##[endgroup]
+2026-08-19T11:58:17.0676906Z Logging into ghcr.io...
+2026-08-19T11:58:17.3221981Z Login Succeeded!
+2026-08-19T11:58:17.3353516Z ##[group]Run docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+2026-08-19T11:58:17.3354311Z [36;1mdocker compose -f docker-compose.yml -f docker-compose.ci.yml up -d[0m
+2026-08-19T11:58:17.3392330Z shell: /usr/bin/bash -e {0}
+2026-08-19T11:58:17.3392568Z env:
+2026-08-19T11:58:17.3392769Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:58:17.3393284Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:58:17.3393667Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:58:17.3394080Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:58:17.3394419Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:58:17.3394778Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:58:17.3395146Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:58:17.3395587Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:58:17.3396001Z ##[endgroup]
+2026-08-19T11:58:17.7127753Z  db-test Pulling 
+2026-08-19T11:58:17.7128581Z  mailpit Pulling 
+2026-08-19T11:58:17.7130558Z  db Pulling 
+2026-08-19T11:58:18.0076424Z  55afa1ecc21d Already exists 
+2026-08-19T11:58:18.0076998Z  2ee0d20bc50e Pulling fs layer 
+2026-08-19T11:58:18.0077349Z  ec7aabb6b04e Pulling fs layer 
+2026-08-19T11:58:18.0310291Z  ec7aabb6b04e Downloading [==>                                                ]  15.79kB/364.5kB
+2026-08-19T11:58:18.0353642Z  2ee0d20bc50e Downloading [>                                                  ]  114.1kB/10.15MB
+2026-08-19T11:58:18.0394553Z  ec7aabb6b04e Downloading [==================================================>]  364.5kB/364.5kB
+2026-08-19T11:58:18.0396195Z  ec7aabb6b04e Verifying Checksum 
+2026-08-19T11:58:18.0397436Z  ec7aabb6b04e Download complete 
+2026-08-19T11:58:18.0450510Z  0926a8eb0e60 Pulling fs layer 
+2026-08-19T11:58:18.0451767Z  71fc539b309a Pulling fs layer 
+2026-08-19T11:58:18.0454130Z  0823aa11c04c Pulling fs layer 
+2026-08-19T11:58:18.0455193Z  ef4e113f30b9 Pulling fs layer 
+2026-08-19T11:58:18.0456432Z  0b9fa11a3618 Pulling fs layer 
+2026-08-19T11:58:18.0458267Z  4373608fb269 Pulling fs layer 
+2026-08-19T11:58:18.0459855Z  f4b83b8f70d2 Pulling fs layer 
+2026-08-19T11:58:18.0461378Z  6d1c2cce3f0a Pulling fs layer 
+2026-08-19T11:58:18.0462031Z  0823aa11c04c Waiting 
+2026-08-19T11:58:18.0463391Z  ef4e113f30b9 Waiting 
+2026-08-19T11:58:18.0464293Z  0b9fa11a3618 Waiting 
+2026-08-19T11:58:18.0464990Z  4373608fb269 Waiting 
+2026-08-19T11:58:18.0465634Z  f4b83b8f70d2 Waiting 
+2026-08-19T11:58:18.0786373Z  71fc539b309a Downloading [==================================================>]  1.342kB/1.342kB
+2026-08-19T11:58:18.0791032Z  71fc539b309a Verifying Checksum 
+2026-08-19T11:58:18.0792434Z  71fc539b309a Download complete 
+2026-08-19T11:58:18.0895185Z  0926a8eb0e60 Downloading [>                                                  ]  310.7kB/29.75MB
+2026-08-19T11:58:18.0910713Z  2ee0d20bc50e Verifying Checksum 
+2026-08-19T11:58:18.0911427Z  2ee0d20bc50e Download complete 
+2026-08-19T11:58:18.0936410Z  2ee0d20bc50e Extracting [>                                                  ]  131.1kB/10.15MB
+2026-08-19T11:58:18.1107905Z  0823aa11c04c Downloading [>                                                  ]  64.94kB/5.246MB
+2026-08-19T11:58:18.1198109Z  ef4e113f30b9 Downloading [==================================================>]     116B/116B
+2026-08-19T11:58:18.1203905Z  ef4e113f30b9 Verifying Checksum 
+2026-08-19T11:58:18.1206034Z  ef4e113f30b9 Download complete 
+2026-08-19T11:58:18.1477915Z  0823aa11c04c Verifying Checksum 
+2026-08-19T11:58:18.1535178Z  0b9fa11a3618 Downloading [==================================================>]     330B/330B
+2026-08-19T11:58:18.1536284Z  0b9fa11a3618 Verifying Checksum 
+2026-08-19T11:58:18.1538591Z  0b9fa11a3618 Download complete 
+2026-08-19T11:58:18.1856137Z  f4b83b8f70d2 Downloading [===========================================>       ]  3.503kB/4.034kB
+2026-08-19T11:58:18.1860828Z  f4b83b8f70d2 Downloading [==================================================>]  4.034kB/4.034kB
+2026-08-19T11:58:18.1862134Z  f4b83b8f70d2 Verifying Checksum 
+2026-08-19T11:58:18.1863323Z  f4b83b8f70d2 Download complete 
+2026-08-19T11:58:18.1874755Z  4373608fb269 Downloading [>                                                  ]  534.1kB/70.29MB
+2026-08-19T11:58:18.1904860Z  0926a8eb0e60 Downloading [====================================>              ]  21.48MB/29.75MB
+2026-08-19T11:58:18.1960344Z  2ee0d20bc50e Extracting [======================>                            ]  4.588MB/10.15MB
+2026-08-19T11:58:18.1963196Z  41140838cd96 Pulling fs layer 
+2026-08-19T11:58:18.1964558Z  d18d73b371db Pulling fs layer 
+2026-08-19T11:58:18.1966230Z  0509ab96435e Pulling fs layer 
+2026-08-19T11:58:18.1967461Z  7d139c1d2a03 Pulling fs layer 
+2026-08-19T11:58:18.1968374Z  f8917dad17dd Pulling fs layer 
+2026-08-19T11:58:18.1977058Z  8968c4a6b703 Pulling fs layer 
+2026-08-19T11:58:18.1977767Z  93f279b7c180 Pulling fs layer 
+2026-08-19T11:58:18.1978652Z  8f0e385cdc59 Pulling fs layer 
+2026-08-19T11:58:18.1979340Z  cc994a858d87 Pulling fs layer 
+2026-08-19T11:58:18.1980805Z  f8917dad17dd Waiting 
+2026-08-19T11:58:18.1981526Z  8968c4a6b703 Waiting 
+2026-08-19T11:58:18.1982718Z  93f279b7c180 Waiting 
+2026-08-19T11:58:18.1983765Z  8f0e385cdc59 Waiting 
+2026-08-19T11:58:18.1984923Z  cc994a858d87 Waiting 
+2026-08-19T11:58:18.1985624Z  41140838cd96 Waiting 
+2026-08-19T11:58:18.1986597Z  d18d73b371db Waiting 
+2026-08-19T11:58:18.1987110Z  0509ab96435e Waiting 
+2026-08-19T11:58:18.1987548Z  7d139c1d2a03 Waiting 
+2026-08-19T11:58:18.2171858Z  6d1c2cce3f0a Downloading [====================>                              ]  3.503kB/8.492kB
+2026-08-19T11:58:18.2179408Z  6d1c2cce3f0a Downloading [==================================================>]  8.492kB/8.492kB
+2026-08-19T11:58:18.2187188Z  6d1c2cce3f0a Verifying Checksum 
+2026-08-19T11:58:18.2187856Z  6d1c2cce3f0a Download complete 
+2026-08-19T11:58:18.2228685Z  0926a8eb0e60 Verifying Checksum 
+2026-08-19T11:58:18.2229435Z  0926a8eb0e60 Download complete 
+2026-08-19T11:58:18.2881956Z  4373608fb269 Downloading [================>                                  ]   23.5MB/70.29MB
+2026-08-19T11:58:18.2918042Z  0926a8eb0e60 Extracting [>                                                  ]  327.7kB/29.75MB
+2026-08-19T11:58:18.2963456Z  2ee0d20bc50e Extracting [=============================================>     ]  9.175MB/10.15MB
+2026-08-19T11:58:18.3181963Z  2ee0d20bc50e Extracting [==================================================>]  10.15MB/10.15MB
+2026-08-19T11:58:18.3885000Z  4373608fb269 Downloading [=====================================>             ]  52.34MB/70.29MB
+2026-08-19T11:58:18.3973009Z  0926a8eb0e60 Extracting [======>                                            ]  3.604MB/29.75MB
+2026-08-19T11:58:18.4034044Z  d18d73b371db Downloading [==================================================>]  1.343kB/1.343kB
+2026-08-19T11:58:18.4035042Z  d18d73b371db Verifying Checksum 
+2026-08-19T11:58:18.4037139Z  d18d73b371db Download complete 
+2026-08-19T11:58:18.4233294Z  41140838cd96 Downloading [>                                                  ]  311.3kB/30.6MB
+2026-08-19T11:58:18.4563818Z  4373608fb269 Verifying Checksum 
+2026-08-19T11:58:18.4564987Z  4373608fb269 Download complete 
+2026-08-19T11:58:18.5046012Z  0926a8eb0e60 Extracting [============>                                      ]  7.209MB/29.75MB
+2026-08-19T11:58:18.5236780Z  41140838cd96 Downloading [=============================================>     ]  28.12MB/30.6MB
+2026-08-19T11:58:18.5312504Z  41140838cd96 Verifying Checksum 
+2026-08-19T11:58:18.5315837Z  41140838cd96 Download complete 
+2026-08-19T11:58:18.5799545Z  0509ab96435e Downloading [>                                                  ]  65.54kB/5.246MB
+2026-08-19T11:58:18.6037066Z  0509ab96435e Verifying Checksum 
+2026-08-19T11:58:18.6038750Z  0509ab96435e Download complete 
+2026-08-19T11:58:18.6046375Z  0926a8eb0e60 Extracting [===============>                                   ]  9.503MB/29.75MB
+2026-08-19T11:58:18.6497681Z  7d139c1d2a03 Downloading [==================================================>]     116B/116B
+2026-08-19T11:58:18.6500043Z  7d139c1d2a03 Verifying Checksum 
+2026-08-19T11:58:18.6500535Z  7d139c1d2a03 Download complete 
+2026-08-19T11:58:18.7069651Z  0926a8eb0e60 Extracting [==========================>                        ]  16.06MB/29.75MB
+2026-08-19T11:58:18.7350604Z  f8917dad17dd Downloading [==================================================>]     329B/329B
+2026-08-19T11:58:18.7351410Z  f8917dad17dd Verifying Checksum 
+2026-08-19T11:58:18.7353376Z  f8917dad17dd Download complete 
+2026-08-19T11:58:18.8099783Z  0926a8eb0e60 Extracting [========================================>          ]  24.25MB/29.75MB
+2026-08-19T11:58:18.8165065Z  8968c4a6b703 Downloading [>                                                  ]  538.6kB/72.7MB
+2026-08-19T11:58:18.8410472Z  93f279b7c180 Downloading [=================>                                 ]  1.378kB/4.033kB
+2026-08-19T11:58:18.9335339Z  8f0e385cdc59 Downloading [========>                                          ]  1.378kB/8.493kB
+2026-08-19T11:58:18.9906509Z  8f0e385cdc59 Downloading [==================================================>]  8.493kB/8.493kB
+2026-08-19T11:58:18.9907934Z  8f0e385cdc59 Verifying Checksum 
+2026-08-19T11:58:18.9908746Z  8f0e385cdc59 Download complete 
+2026-08-19T11:58:18.9909558Z  93f279b7c180 Downloading [==================================>                ]  2.756kB/4.033kB
+2026-08-19T11:58:18.9911166Z  93f279b7c180 Downloading [==================================================>]  4.033kB/4.033kB
+2026-08-19T11:58:18.9911932Z  93f279b7c180 Verifying Checksum 
+2026-08-19T11:58:18.9912482Z  93f279b7c180 Download complete 
+2026-08-19T11:58:18.9929793Z  8968c4a6b703 Downloading [====>                                              ]  5.879MB/72.7MB
+2026-08-19T11:58:18.9957316Z  0926a8eb0e60 Extracting [=========================================>         ]   24.9MB/29.75MB
+2026-08-19T11:58:19.0923553Z  8968c4a6b703 Downloading [=========================>                         ]   37.4MB/72.7MB
+2026-08-19T11:58:19.1544514Z  cc994a858d87 Downloading [>                                                  ]  49.15kB/3.444MB
+2026-08-19T11:58:19.1838060Z  cc994a858d87 Verifying Checksum 
+2026-08-19T11:58:19.1838919Z  cc994a858d87 Download complete 
+2026-08-19T11:58:19.1894127Z  8968c4a6b703 Verifying Checksum 
+2026-08-19T11:58:19.1894628Z  8968c4a6b703 Download complete 
+2026-08-19T11:58:19.2269710Z  41140838cd96 Extracting [>                                                  ]  327.7kB/30.6MB
+2026-08-19T11:58:19.3473915Z  41140838cd96 Extracting [======>                                            ]  3.932MB/30.6MB
+2026-08-19T11:58:19.3668023Z  0926a8eb0e60 Extracting [==========================================>        ]  25.56MB/29.75MB
+2026-08-19T11:58:19.4933406Z  41140838cd96 Extracting [=============>                                     ]  8.192MB/30.6MB
+2026-08-19T11:58:19.5082047Z  0926a8eb0e60 Extracting [==============================================>    ]  27.85MB/29.75MB
+2026-08-19T11:58:19.6507649Z  0926a8eb0e60 Extracting [===============================================>   ]  28.18MB/29.75MB
+2026-08-19T11:58:19.6531501Z  41140838cd96 Extracting [==============>                                    ]  9.175MB/30.6MB
+2026-08-19T11:58:19.7567511Z  41140838cd96 Extracting [======================>                            ]  13.76MB/30.6MB
+2026-08-19T11:58:19.8249722Z  0926a8eb0e60 Extracting [=================================================> ]  29.49MB/29.75MB
+2026-08-19T11:58:19.8597784Z  41140838cd96 Extracting [==================================>                ]   21.3MB/30.6MB
+2026-08-19T11:58:19.9201704Z  0926a8eb0e60 Extracting [==================================================>]  29.75MB/29.75MB
+2026-08-19T11:58:20.0826871Z  41140838cd96 Extracting [==========================================>        ]  26.21MB/30.6MB
+2026-08-19T11:58:20.1909689Z  41140838cd96 Extracting [===============================================>   ]  28.84MB/30.6MB
+2026-08-19T11:58:20.3290938Z  41140838cd96 Extracting [=================================================> ]  30.15MB/30.6MB
+2026-08-19T11:58:20.4675349Z  41140838cd96 Extracting [=================================================> ]  30.47MB/30.6MB
+2026-08-19T11:58:20.5666209Z  41140838cd96 Extracting [==================================================>]   30.6MB/30.6MB
+2026-08-19T11:58:20.7386921Z  0926a8eb0e60 Pull complete 
+2026-08-19T11:58:20.9942927Z  71fc539b309a Extracting [==================================================>]  1.342kB/1.342kB
+2026-08-19T11:58:20.9947962Z  71fc539b309a Extracting [==================================================>]  1.342kB/1.342kB
+2026-08-19T11:58:20.9953114Z  41140838cd96 Pull complete 
+2026-08-19T11:58:20.9988656Z  d18d73b371db Extracting [==================================================>]  1.343kB/1.343kB
+2026-08-19T11:58:21.0009015Z  d18d73b371db Extracting [==================================================>]  1.343kB/1.343kB
+2026-08-19T11:58:21.0507941Z  d18d73b371db Pull complete 
+2026-08-19T11:58:21.0553231Z  0509ab96435e Extracting [>                                                  ]  65.54kB/5.246MB
+2026-08-19T11:58:21.0935050Z  2ee0d20bc50e Pull complete 
+2026-08-19T11:58:21.1346745Z  ec7aabb6b04e Extracting [====>                                              ]  32.77kB/364.5kB
+2026-08-19T11:58:21.1965222Z  ec7aabb6b04e Extracting [==================================================>]  364.5kB/364.5kB
+2026-08-19T11:58:21.2170243Z  0509ab96435e Extracting [==>                                                ]  262.1kB/5.246MB
+2026-08-19T11:58:21.2185681Z  ec7aabb6b04e Extracting [==================================================>]  364.5kB/364.5kB
+2026-08-19T11:58:21.2969864Z  71fc539b309a Pull complete 
+2026-08-19T11:58:21.2989205Z  0823aa11c04c Extracting [>                                                  ]  65.54kB/5.246MB
+2026-08-19T11:58:21.3175506Z  0509ab96435e Extracting [=================================>                 ]  3.539MB/5.246MB
+2026-08-19T11:58:21.3675753Z  ec7aabb6b04e Pull complete 
+2026-08-19T11:58:21.3769668Z  mailpit Pulled 
+2026-08-19T11:58:21.3993874Z  0823aa11c04c Extracting [====================>                              ]  2.163MB/5.246MB
+2026-08-19T11:58:21.4307998Z  0509ab96435e Extracting [============================================>      ]  4.653MB/5.246MB
+2026-08-19T11:58:21.5275838Z  0823aa11c04c Extracting [============================================>      ]  4.653MB/5.246MB
+2026-08-19T11:58:21.5429400Z  0509ab96435e Extracting [=============================================>     ]  4.784MB/5.246MB
+2026-08-19T11:58:21.5822530Z  0509ab96435e Extracting [==================================================>]  5.246MB/5.246MB
+2026-08-19T11:58:21.6174788Z  0509ab96435e Pull complete 
+2026-08-19T11:58:21.6189737Z  7d139c1d2a03 Extracting [==================================================>]     116B/116B
+2026-08-19T11:58:21.6196080Z  7d139c1d2a03 Extracting [==================================================>]     116B/116B
+2026-08-19T11:58:21.6268556Z  7d139c1d2a03 Pull complete 
+2026-08-19T11:58:21.6281261Z  f8917dad17dd Extracting [==================================================>]     329B/329B
+2026-08-19T11:58:21.6288423Z  f8917dad17dd Extracting [==================================================>]     329B/329B
+2026-08-19T11:58:21.6358054Z  0823aa11c04c Extracting [=============================================>     ]  4.784MB/5.246MB
+2026-08-19T11:58:21.6375084Z  f8917dad17dd Pull complete 
+2026-08-19T11:58:21.6767599Z  8968c4a6b703 Extracting [>                                                  ]  557.1kB/72.7MB
+2026-08-19T11:58:21.6789141Z  0823aa11c04c Extracting [==================================================>]  5.246MB/5.246MB
+2026-08-19T11:58:21.7057203Z  0823aa11c04c Pull complete 
+2026-08-19T11:58:21.7073647Z  ef4e113f30b9 Extracting [==================================================>]     116B/116B
+2026-08-19T11:58:21.7081536Z  ef4e113f30b9 Extracting [==================================================>]     116B/116B
+2026-08-19T11:58:21.7161723Z  ef4e113f30b9 Pull complete 
+2026-08-19T11:58:21.7178598Z  0b9fa11a3618 Extracting [==================================================>]     330B/330B
+2026-08-19T11:58:21.7181864Z  0b9fa11a3618 Extracting [==================================================>]     330B/330B
+2026-08-19T11:58:21.7311060Z  0b9fa11a3618 Pull complete 
+2026-08-19T11:58:21.7736652Z  4373608fb269 Extracting [>                                                  ]  557.1kB/70.29MB
+2026-08-19T11:58:21.7805742Z  8968c4a6b703 Extracting [===>                                               ]  5.571MB/72.7MB
+2026-08-19T11:58:21.8800608Z  4373608fb269 Extracting [===>                                               ]  5.571MB/70.29MB
+2026-08-19T11:58:21.8834398Z  8968c4a6b703 Extracting [=======>                                           ]  11.14MB/72.7MB
+2026-08-19T11:58:21.9806449Z  4373608fb269 Extracting [=======>                                           ]  11.14MB/70.29MB
+2026-08-19T11:58:21.9981386Z  8968c4a6b703 Extracting [============>                                      ]  17.83MB/72.7MB
+2026-08-19T11:58:22.0943848Z  4373608fb269 Extracting [============>                                      ]  17.83MB/70.29MB
+2026-08-19T11:58:22.1026670Z  8968c4a6b703 Extracting [===============>                                   ]  22.28MB/72.7MB
+2026-08-19T11:58:22.2005176Z  4373608fb269 Extracting [================>                                  ]  22.84MB/70.29MB
+2026-08-19T11:58:22.2099789Z  8968c4a6b703 Extracting [==================>                                ]   27.3MB/72.7MB
+2026-08-19T11:58:22.3114689Z  4373608fb269 Extracting [===================>                               ]  27.85MB/70.29MB
+2026-08-19T11:58:22.3129552Z  8968c4a6b703 Extracting [=====================>                             ]  31.75MB/72.7MB
+2026-08-19T11:58:22.4167045Z  4373608fb269 Extracting [========================>                          ]  33.98MB/70.29MB
+2026-08-19T11:58:22.4202773Z  8968c4a6b703 Extracting [===========================>                       ]  39.55MB/72.7MB
+2026-08-19T11:58:22.5278823Z  4373608fb269 Extracting [==============================>                    ]  42.34MB/70.29MB
+2026-08-19T11:58:22.5438730Z  8968c4a6b703 Extracting [===============================>                   ]  45.68MB/72.7MB
+2026-08-19T11:58:22.6281545Z  4373608fb269 Extracting [=================================>                 ]  47.35MB/70.29MB
+2026-08-19T11:58:22.6580078Z  8968c4a6b703 Extracting [==================================>                ]  50.14MB/72.7MB
+2026-08-19T11:58:22.7543023Z  4373608fb269 Extracting [===================================>               ]  49.58MB/70.29MB
+2026-08-19T11:58:22.7595056Z  8968c4a6b703 Extracting [====================================>              ]  52.92MB/72.7MB
+2026-08-19T11:58:22.8822493Z  8968c4a6b703 Extracting [=====================================>             ]  55.15MB/72.7MB
+2026-08-19T11:58:22.8967192Z  4373608fb269 Extracting [======================================>            ]  53.48MB/70.29MB
+2026-08-19T11:58:23.0006330Z  4373608fb269 Extracting [===========================================>       ]  60.72MB/70.29MB
+2026-08-19T11:58:23.1163906Z  4373608fb269 Extracting [=============================================>     ]  64.06MB/70.29MB
+2026-08-19T11:58:23.1579167Z  8968c4a6b703 Extracting [======================================>            ]  55.71MB/72.7MB
+2026-08-19T11:58:23.2442735Z  4373608fb269 Extracting [===============================================>   ]  66.29MB/70.29MB
+2026-08-19T11:58:23.2588040Z  8968c4a6b703 Extracting [==========================================>        ]  61.28MB/72.7MB
+2026-08-19T11:58:23.3880439Z  8968c4a6b703 Extracting [=============================================>     ]  66.29MB/72.7MB
+2026-08-19T11:58:23.3997420Z  4373608fb269 Extracting [================================================>  ]  67.96MB/70.29MB
+2026-08-19T11:58:23.5253283Z  8968c4a6b703 Extracting [===============================================>   ]  68.52MB/72.7MB
+2026-08-19T11:58:23.5883081Z  4373608fb269 Extracting [=================================================> ]  69.63MB/70.29MB
+2026-08-19T11:58:23.6646445Z  8968c4a6b703 Extracting [================================================>  ]  70.19MB/72.7MB
+2026-08-19T11:58:23.7434137Z  4373608fb269 Extracting [==================================================>]  70.29MB/70.29MB
+2026-08-19T11:58:23.7733196Z  8968c4a6b703 Extracting [=================================================> ]  71.86MB/72.7MB
+2026-08-19T11:58:24.3005231Z  8968c4a6b703 Extracting [=================================================> ]  72.42MB/72.7MB
+2026-08-19T11:58:24.4388685Z  8968c4a6b703 Extracting [==================================================>]   72.7MB/72.7MB
+2026-08-19T11:58:24.6966315Z  4373608fb269 Pull complete 
+2026-08-19T11:58:24.6986060Z  f4b83b8f70d2 Extracting [==================================================>]  4.034kB/4.034kB
+2026-08-19T11:58:24.6996636Z  f4b83b8f70d2 Extracting [==================================================>]  4.034kB/4.034kB
+2026-08-19T11:58:24.7021789Z  8968c4a6b703 Pull complete 
+2026-08-19T11:58:24.7046707Z  93f279b7c180 Extracting [==================================================>]  4.033kB/4.033kB
+2026-08-19T11:58:24.7062329Z  93f279b7c180 Extracting [==================================================>]  4.033kB/4.033kB
+2026-08-19T11:58:24.7151169Z  f4b83b8f70d2 Pull complete 
+2026-08-19T11:58:24.7169739Z  6d1c2cce3f0a Extracting [==================================================>]  8.492kB/8.492kB
+2026-08-19T11:58:24.7171009Z  6d1c2cce3f0a Extracting [==================================================>]  8.492kB/8.492kB
+2026-08-19T11:58:24.7187730Z  93f279b7c180 Pull complete 
+2026-08-19T11:58:24.7201821Z  8f0e385cdc59 Extracting [==================================================>]  8.493kB/8.493kB
+2026-08-19T11:58:24.7203910Z  8f0e385cdc59 Extracting [==================================================>]  8.493kB/8.493kB
+2026-08-19T11:58:24.7323577Z  6d1c2cce3f0a Pull complete 
+2026-08-19T11:58:24.7346431Z  8f0e385cdc59 Pull complete 
+2026-08-19T11:58:24.7366068Z  cc994a858d87 Extracting [>                                                  ]  65.54kB/3.444MB
+2026-08-19T11:58:24.7387272Z  db-test Pulled 
+2026-08-19T11:58:24.8433039Z  cc994a858d87 Extracting [===================================>               ]  2.425MB/3.444MB
+2026-08-19T11:58:25.0707402Z  cc994a858d87 Extracting [====================================>              ]   2.49MB/3.444MB
+2026-08-19T11:58:25.1714780Z  cc994a858d87 Extracting [======================================>            ]  2.621MB/3.444MB
+2026-08-19T11:58:25.1975053Z  cc994a858d87 Extracting [==================================================>]  3.444MB/3.444MB
+2026-08-19T11:58:25.1980084Z  cc994a858d87 Extracting [==================================================>]  3.444MB/3.444MB
+2026-08-19T11:58:25.4330872Z  cc994a858d87 Pull complete 
+2026-08-19T11:58:25.4380640Z  db Pulled 
+2026-08-19T11:58:25.4404241Z  Network next-www-toastboy_default  Creating
+2026-08-19T11:58:25.4773057Z  Network next-www-toastboy_default  Created
+2026-08-19T11:58:25.4839814Z  Volume "next-www-toastboy_db_test_data"  Creating
+2026-08-19T11:58:25.4863277Z  Volume "next-www-toastboy_db_test_data"  Created
+2026-08-19T11:58:25.4866350Z  Container next-www-toastboy-db-1  Creating
+2026-08-19T11:58:25.4870735Z  Container next-www-toastboy-mailpit-1  Creating
+2026-08-19T11:58:25.4872722Z  Container next-www-toastboy-db-test-1  Creating
+2026-08-19T11:58:25.5275688Z  Container next-www-toastboy-mailpit-1  Created
+2026-08-19T11:58:25.5278886Z  Container next-www-toastboy-db-test-1  Created
+2026-08-19T11:58:25.8425025Z  Container next-www-toastboy-db-1  Created
+2026-08-19T11:58:25.8439106Z  Container next-www-toastboy-mailpit-1  Starting
+2026-08-19T11:58:25.8451287Z  Container next-www-toastboy-db-1  Starting
+2026-08-19T11:58:25.8452377Z  Container next-www-toastboy-db-test-1  Starting
+2026-08-19T11:58:26.1282688Z  Container next-www-toastboy-db-1  Started
+2026-08-19T11:58:26.1402457Z  Container next-www-toastboy-db-test-1  Started
+2026-08-19T11:58:26.1537901Z  Container next-www-toastboy-mailpit-1  Started
+2026-08-19T11:58:26.1776616Z ##[group]Run for i in {1..30}; do
+2026-08-19T11:58:26.1777152Z [36;1mfor i in {1..30}; do[0m
+2026-08-19T11:58:26.1777990Z [36;1m  if [ "$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q db))" = "healthy" ]; then[0m
+2026-08-19T11:58:26.1779086Z [36;1m    exit 0[0m
+2026-08-19T11:58:26.1779430Z [36;1m  fi[0m
+2026-08-19T11:58:26.1779755Z [36;1m  sleep 2[0m
+2026-08-19T11:58:26.1780091Z [36;1mdone[0m
+2026-08-19T11:58:26.1780432Z [36;1mdocker compose logs db[0m
+2026-08-19T11:58:26.1780836Z [36;1mexit 1[0m
+2026-08-19T11:58:26.1834195Z shell: /usr/bin/bash -e {0}
+2026-08-19T11:58:26.1834611Z env:
+2026-08-19T11:58:26.1834951Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:58:26.1835817Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:58:26.1836473Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:58:26.1837186Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:58:26.1837861Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:58:26.1838707Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:58:26.1839357Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:58:26.1840141Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:58:26.1840794Z ##[endgroup]
+2026-08-19T11:58:36.7942596Z ##[group]Run npx prisma db push
+2026-08-19T11:58:36.7942913Z [36;1mnpx prisma db push[0m
+2026-08-19T11:58:36.7979247Z shell: /usr/bin/bash -e {0}
+2026-08-19T11:58:36.7979489Z env:
+2026-08-19T11:58:36.7979692Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:58:36.7980161Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:58:36.7980533Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:58:36.7980940Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:58:36.7981274Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:58:36.7981635Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:58:36.7981997Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:58:36.7982440Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:58:36.7982815Z ##[endgroup]
+2026-08-19T11:58:37.9375733Z Loaded Prisma config from prisma.config.ts.
+2026-08-19T11:58:37.9376340Z 
+2026-08-19T11:58:38.0368944Z Prisma schema loaded from prisma/schema.prisma.
+2026-08-19T11:58:38.0449535Z Datasource "db": MySQL database "footy" at "127.0.0.1:33306"
+2026-08-19T11:58:38.0889656Z 
+2026-08-19T11:58:38.0890515Z ⚠️  There might be data loss when applying the changes:
+2026-08-19T11:58:38.0890968Z 
+2026-08-19T11:58:38.0891652Z   • You are about to drop the column `game` on the `GameDay` table, which still contains 105 non-null values.
+2026-08-19T11:58:38.0892208Z 
+2026-08-19T11:58:38.0892999Z   • You are about to drop the column `points` on the `Outcome` table, which still contains 1352 non-null values.
+2026-08-19T11:58:38.0893805Z 
+2026-08-19T11:58:38.0894661Z   • You are about to drop the column `averages` on the `PlayerRecord` table, which still contains 4115 non-null values.
+2026-08-19T11:58:38.0895899Z 
+2026-08-19T11:58:38.0897207Z   • You are about to drop the column `pub` on the `PlayerRecord` table, which still contains 3853 non-null values.
+2026-08-19T11:58:38.0898015Z 
+2026-08-19T11:58:38.0899345Z   • You are about to drop the column `stalwart` on the `PlayerRecord` table, which still contains 4115 non-null values.
+2026-08-19T11:58:38.0900144Z 
+2026-08-19T11:58:38.0900153Z 
+2026-08-19T11:58:38.0914317Z Error: Use the --accept-data-loss flag to ignore the data loss warnings like prisma db push --accept-data-loss
+2026-08-19T11:58:38.1196474Z ##[error]Process completed with exit code 1.
+2026-08-19T11:58:38.1277874Z ##[group]Run actions/upload-artifact@v7
+2026-08-19T11:58:38.1278439Z with:
+2026-08-19T11:58:38.1278797Z   name: playwright-report-chromium
+2026-08-19T11:58:38.1279073Z   path: playwright-report/
+2026-08-19T11:58:38.1279512Z   retention-days: 30
+2026-08-19T11:58:38.1279727Z   if-no-files-found: warn
+2026-08-19T11:58:38.1279947Z   compression-level: 6
+2026-08-19T11:58:38.1280153Z   overwrite: false
+2026-08-19T11:58:38.1280361Z   include-hidden-files: false
+2026-08-19T11:58:38.1280590Z   archive: true
+2026-08-19T11:58:38.1280771Z env:
+2026-08-19T11:58:38.1280968Z   DATABASE_PASSWORD: ci_test_password
+2026-08-19T11:58:38.1281453Z   DATABASE_URL: ***127.0.0.1:33306/footy
+2026-08-19T11:58:38.1281829Z   BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+2026-08-19T11:58:38.1282238Z   AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+2026-08-19T11:58:38.1282582Z   AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+2026-08-19T11:58:38.1282955Z   AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+2026-08-19T11:58:38.1283325Z   AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+2026-08-19T11:58:38.1283768Z   SEEDED_DB_IMAGE: ghcr.io/toastboy/next-www-toastboy-db-test-seeded:latest
+2026-08-19T11:58:38.1284144Z ##[endgroup]
+2026-08-19T11:58:38.2742368Z ##[warning]No files were found with the provided path: playwright-report/. No artifacts will be uploaded.
+2026-08-19T11:58:38.2870839Z Post job cleanup.
+2026-08-19T11:58:38.5012713Z ##[group]Logout from ghcr.io
+2026-08-19T11:58:38.5060491Z [command]/usr/bin/docker logout ghcr.io
+2026-08-19T11:58:38.5229609Z Removing login credentials for ghcr.io
+2026-08-19T11:58:38.5263054Z ##[endgroup]
+2026-08-19T11:58:38.5263750Z ##[group]Post cache
+2026-08-19T11:58:38.5264333Z State not set
+2026-08-19T11:58:38.5265188Z ##[endgroup]
+2026-08-19T11:58:38.5462320Z Post job cleanup.
+2026-08-19T11:58:38.6301437Z [command]/usr/bin/git version
+2026-08-19T11:58:38.6337401Z git version 2.55.0
+2026-08-19T11:58:38.6378407Z Temporarily overriding HOME='/home/runner/work/_temp/50b53ff4-cca0-43ef-8240-d12c0b7517b4' before making global git config changes
+2026-08-19T11:58:38.6379938Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T11:58:38.6384591Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-19T11:58:38.6414063Z Removing SSH command configuration
+2026-08-19T11:58:38.6420628Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T11:58:38.6454012Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T11:58:38.6675950Z Removing HTTP extra header
+2026-08-19T11:58:38.6681780Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T11:58:38.6714197Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T11:58:38.6930109Z Removing includeIf entries pointing to credentials config files
+2026-08-19T11:58:38.6937296Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T11:58:38.6964425Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-08-19T11:58:38.6965298Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-08-19T11:58:38.6965850Z includeif.gitdir:/github/workspace/.git.path
+2026-08-19T11:58:38.6966278Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T11:58:38.6972788Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-08-19T11:58:38.6993885Z /home/runner/work/_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:58:38.7003802Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-45b2945d\-5c57\-4a47\-80f3\-9930e218a438\.config
+2026-08-19T11:58:38.7037403Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-08-19T11:58:38.7058878Z /home/runner/work/_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:58:38.7075201Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-45b2945d\-5c57\-4a47\-80f3\-9930e218a438\.config
+2026-08-19T11:58:38.7105356Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-08-19T11:58:38.7125938Z /github/runner_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:58:38.7133227Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-45b2945d\-5c57\-4a47\-80f3\-9930e218a438\.config
+2026-08-19T11:58:38.7162406Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T11:58:38.7182816Z /github/runner_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config
+2026-08-19T11:58:38.7191050Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-45b2945d\-5c57\-4a47\-80f3\-9930e218a438\.config
+2026-08-19T11:58:38.7222134Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T11:58:38.7436604Z Removing credentials config '/home/runner/work/_temp/git-credentials-45b2945d-5c57-4a47-80f3-9930e218a438.config'
+2026-08-19T11:58:38.7573067Z Cleaning up orphan processes

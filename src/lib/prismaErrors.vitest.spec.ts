@@ -16,10 +16,29 @@ describe('isPrismaNotFoundError', () => {
         expect(isPrismaNotFoundError(error)).toBe(true);
     });
 
-    it.todo(
-        'returns false for a PrismaClientKnownRequestError with a different code',
-    );
-    it.todo('returns false for a plain Error');
-    it.todo('returns false for null');
-    it.todo('returns false for undefined');
+    it('returns false for a PrismaClientKnownRequestError with a different code', () => {
+        const error = new Prisma.PrismaClientKnownRequestError(
+            'Unique constraint failed',
+            {
+                code: 'P2002',
+                clientVersion: '5.0.0',
+            },
+        );
+
+        expect(isPrismaNotFoundError(error)).toBe(false);
+    });
+
+    it('returns false for a plain Error', () => {
+        expect(isPrismaNotFoundError(new Error('Record not found'))).toBe(
+            false,
+        );
+    });
+
+    it('returns false for null', () => {
+        expect(isPrismaNotFoundError(null)).toBe(false);
+    });
+
+    it('returns false for undefined', () => {
+        expect(isPrismaNotFoundError(undefined)).toBe(false);
+    });
 });

@@ -1,0 +1,1 @@
+If scoreSpeedy is unset, this currently renders 00:00:00 (epoch) which looks like a real time. Also, the truthy check treats a valid value of 0 as unset. Prefer an explicit scoreSpeedy != null check and render '-' (or empty) when unset.

@@ -127,12 +127,20 @@ classes:
     GameDay:
         description: >
             A single calendar fixture. Despite the name, not every GameDay is an
-            actual match — `game: false` marks a non-game entry on the calendar
-            (e.g. a week deliberately skipped) that still needs a row so
-            invitations/history stay contiguous.
+            actual match — `status: NoGame` marks a non-game entry on the
+            calendar (e.g. a week deliberately skipped) that still needs a row
+            so invitations/history stay contiguous.
         identity: "id (integer, autoincrement)"
         keyAttributes:
-            game: "False = this calendar slot is not an actual match (see description)."
+            status: >
+                The game day's lifecycle and result in one field — see
+                enumerations.GameDayStatus. Replaces what used to be a
+                `game: Boolean` flag plus a per-player `Outcome.points` value
+                that was only meaningful once inferred to be unanimous across
+                a team; the winner (`AWin`/`BWin`/`Draw`) is now a stored
+                fact, not derived. See processes.matchResult for how it's
+                set, and rules.cancelled-game for the NoGame + mailSent
+                combination.
             mailSent: "Timestamp invitations went out; the zero-point that Outcome.responseInterval is measured from."
             bibs: "Which team (A or B) wears bibs, purely a pitch-side courtesy, not a result field."
             pickerGamesHistory: "How many of each candidate's most recent games the picker's skill average should look back over (defaults to 10 — see processes.pickerAlgorithm)."
@@ -154,7 +162,7 @@ classes:
         keyAttributes:
             response: "RSVP state — see enumerations.PlayerResponse. Set by the player (or on their behalf) before the game."
             responseInterval: "Seconds between GameDay.mailSent and when this response was recorded. Lower is 'speedier' — feeds the Speedy table (rankSpeedy), lower value wins."
-            points: "This player's match points for the day: 0 = their team lost, 1 = draw, 3 = won. Only meaningful once the game has been played; see processes.matchResult and rules.unanimous-team-points."
+            points: "Not a stored column — this player's match points (0 = lost, 1 = draw, 3 = won) are derived at the service layer from GameDay.status + team via getPlayerPoints (src/lib/gameResult.ts), and attached to read-side DTOs. Null when the game hasn't been decided or the player has no team. See processes.matchResult."
             team: "'A' or 'B' once teams are picked; null before picking or if the player isn't playing."
             goalie: "Whether this player played in goal for THIS game specifically (independent of Player.goalie, which is a general capability flag)."
             pub: "Informal count/flag of pub attendance after this game; summed across a season to rank the Pub table."
@@ -237,11 +245,13 @@ classes:
             lib/tables.ts getYearName).
         identity: "unique (playerId, year, gameDayId)"
         keyAttributes:
-            stalwart: "Percentage of the SEASON's games that this player played in — attendance/commitment metric, not skill."
-            speedy: "This player's average response interval for the season, in the same units as Outcome.responseInterval; lower ranks better. Only shown once responses >= config.minRepliesForSpeedyTable, otherwise the player appears in the 'Unqualified' variant."
-            averages: "Mean match points per game for the season; qualification gated by config.minGamesForAveragesTable."
-            pub: "Sum of Outcome.pub across the season."
-            rank*: "Precomputed rank within that season/table, one column per rankable table — see enumerations.TableName and lib/tables.ts."
+            points: "Points earned in this specific game day only (0/1/3, or null if not played/decided) — derived from GameDay.status + Outcome.team via getPlayerPoints, same as Outcome's own derived points (see Outcome.keyAttributes.points), just cached here too. This is a second cached copy of a value that's otherwise recomputed live everywhere else, which is normally the kind of duplication this schema avoids — it's acceptable here specifically because PlayerRecord has exactly one writer (calculateYearPlayerRecords, via upsertForGameDay/upsertFromGameDay), and setGameResult always awaits that recompute synchronously before returning, so it can never be stale in practice. Distinct from scorePoints below."
+            scorePoints: "Cumulative match points for the SEASON, as of this GameDay — the value the points table ranks by (see rankPoints)."
+            scoreStalwart: "Percentage of the SEASON's games that this player played in — attendance/commitment metric, not skill."
+            scoreSpeedy: "This player's average response interval for the season, in the same units as Outcome.responseInterval; lower ranks better. Only shown once responses >= config.minRepliesForSpeedyTable, otherwise the player appears in the 'Unqualified' variant."
+            scoreAverages: "Mean match points per game for the season; qualification gated by config.minGamesForAveragesTable."
+            scorePub: "Sum of Outcome.pub across the season."
+            rank*: "Precomputed rank within that season/table, one column per rankable table (rankPoints/rankAverages/rankStalwart/rankSpeedy/rankPub, paired with the score* attribute of the same suffix) — see enumerations.TableName and lib/tables.ts."
         relationships:
             - { predicate: recordOf, range: Player, cardinality: "1" }
             - {
@@ -328,6 +338,19 @@ enumerations:
         values: [A, B]
         description: "The two sides a Player is assigned to for a given GameDay. Arbitrary labels — 'A' carries no seniority or home/away meaning."
 
+    GameDayStatus:
+        values:
+            NoGame: "Not an actual match — either not yet scheduled, or cancelled (see rules.cancelled-game for how to tell which)."
+            Scheduled: "An actual match slot with no result recorded yet — upcoming, or played but not yet entered via setGameResult."
+            AWin: "Team A won."
+            Draw: "The match ended level."
+            BWin: "Team B won."
+        notes: >
+            Replaces the old `GameDay.game: Boolean` flag plus per-player
+            `Outcome.points`. The winner is a stored fact; each player's
+            points (0/1/3) are derived from this value + Outcome.team via
+            getPlayerPoints (src/lib/gameResult.ts), never stored.
+
     PlayerResponse:
         values:
             Yes: "Committed to play."
@@ -392,7 +415,7 @@ processes:
             Not skill-rating (Arse) based — it is recent-results based.
         steps:
             - "Candidates = every selected player whose Outcome.response is 'Yes' for the current GameDay."
-            - "Each candidate's skill proxy is a recency-weighted average of their last `GameDay.pickerGamesHistory` match points (Outcome.points; win=3/draw=1/loss=0), via Outcome.getRecentAverage. Missing history games are backfilled with a neutral 1.45."
+            - "Each candidate's skill proxy is a recency-weighted average of their last `GameDay.pickerGamesHistory` match points (derived via getPlayerPoints from GameDay.status + Outcome.team; win=3/draw=1/loss=0), via Outcome.getRecentAverage. Missing history games are backfilled with a neutral 1.45."
             - "Age is approximate, derived from Player.born, only for players born before 1995 (older data is treated as unreliable/unknown and excluded from the age balance)."
             - "If the candidate count is odd, one non-goalie 'middle' player is set aside first (selectMiddleOutfieldPlayer) so the remaining pool is even."
             - "findBestSplit exhaustively evaluates every even split and picks the one minimising, in priority order: |difference in goalie count|, |difference in total skill average|, |difference in count of unknown-age players|, |difference in total age|."
@@ -401,11 +424,13 @@ processes:
         invariant: "Re-running the picker for the same GameDay first clears every existing team assignment for that day, so it is always safe to re-pick (e.g. after a late withdrawal)."
 
     matchResult:
-        description: "How a final score becomes each player's Outcome.points."
+        description: "How a final score becomes GameDay.status and each player's derived points."
         steps:
-            - "setGameResult action records the match outcome, which is written per-player as Outcome.points (see rules.unanimous-team-points for the constraint this must satisfy)."
-            - "getGameWinnersFromTeams (src/lib/gameResult.ts) derives a GameWinner ('A' | 'B' | 'draw' | null) purely by reading each team's unanimous points value — it does not store the winner separately."
-            - "updatePlayerRecords action then recomputes PlayerRecord aggregates and every table's ranks for the affected year(s)."
+            - "setGameResult action records the match outcome directly as GameDay.status (AWin/BWin/Draw/Scheduled) — the winner is a stored fact, not inferred from per-player data."
+            - "getGameWinnerFromStatus (src/lib/gameResult.ts) is the trivial inverse mapping back to a GameWinner ('A' | 'B' | 'draw' | null) for display."
+            - "getPlayerPoints (src/lib/gameResult.ts) derives each player's points (0/1/3/null) from GameDay.status + Outcome.team, on read, wherever a service returns outcome data — never stored."
+            - "setGameResultCore also charges every selected player for that game day's cost; it no longer needs to write per-outcome points."
+            - "upsertFromGameDay (PlayerRecord service) then recomputes PlayerRecord aggregates and every table's ranks for the affected year(s), using the same derivation."
 
     money:
         description: "How a game day's cost becomes debt and how debt is settled."
@@ -428,15 +453,18 @@ processes:
 # enforced by the database schema itself
 # ------------------------------------------------------------------------------
 rules:
-    - id: unanimous-team-points
+    - id: cancelled-game
       statement: >
-          For a GameDay's result to be considered determined, every Outcome on
-          a given team must carry the SAME points value (all 0, or all 1, or
-          all 3), and the two teams' values must be a valid pairing
-          (3&0 = decisive win/loss, 1&1 = draw). Any other combination — mixed
-          values within a team, or an invalid pairing — means the result is
-          treated as unset/undetermined, not as an error.
-      source: src/lib/gameResult.ts (pickTeamPoints, getGameWinnersFromTeams)
+          A GameDay is considered cancelled when `status` is `NoGame` AND
+          `mailSent` is not `null` (invitations went out, then the game was
+          called off). `status: NoGame` with `mailSent: null` instead means
+          the slot was never an actual match to begin with (e.g. a
+          deliberately skipped week) — both share the same `NoGame` status,
+          distinguished only by `mailSent`.
+      source: >
+          src/services/GameDay/GameDay.ts (getGamesCancelled),
+          src/services/Outcome/Outcome.ts (getTurnout),
+          src/components/GameDayIndicator/GameDayIndicator.tsx
 
     - id: played-requires-yes-and-team
       statement: >

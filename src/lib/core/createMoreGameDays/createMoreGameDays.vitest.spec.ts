@@ -36,7 +36,7 @@ describe('createMoreGameDaysCore', () => {
         expect(gameDayService.create).toHaveBeenNthCalledWith(1, {
             year: 2026,
             date: new Date(2026, 2, 1, 18, 0, 0, 0),
-            game: true,
+            status: 'Scheduled',
             cost: 450,
             hallCost: 4500,
             comment: 'Bring bibs',
@@ -44,7 +44,7 @@ describe('createMoreGameDaysCore', () => {
         expect(gameDayService.create).toHaveBeenNthCalledWith(2, {
             year: 2026,
             date: new Date(2026, 2, 8, 18, 0, 0, 0),
-            game: false,
+            status: 'NoGame',
             cost: 450,
             hallCost: 4500,
             comment: null,

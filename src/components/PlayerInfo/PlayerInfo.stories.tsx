@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { createMockPlayer, defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerEmailData } from '@/tests/mocks/data/playerData';
-import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
+import { createMockPlayerLastResult } from '@/tests/mocks/data/playerRecord';
 
 import { PlayerInfo } from './PlayerInfo';
 
@@ -18,8 +18,8 @@ const meta = {
     args: {
         player: defaultPlayer,
         year: 2023,
-        lastPlayed: defaultPlayerFormList[9],
-        lastWon: defaultPlayerFormList[0],
+        lastPlayed: createMockPlayerLastResult({ gameDayId: 9 }),
+        lastWon: createMockPlayerLastResult({ gameDayId: 1 }),
     },
 } satisfies Meta<typeof PlayerInfo>;
 

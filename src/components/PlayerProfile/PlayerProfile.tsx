@@ -19,14 +19,15 @@ import {
     PlayerFormType,
 } from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
+import type { PlayerLastResultType } from '@/types/PlayerLastResultType';
 
 export interface Props {
     player: PlayerDisplayType;
     introducedBy: PlayerDisplayType | null;
     year: number;
     history: PlayerFormType[];
-    lastPlayed: PlayerFormType | null;
-    lastWon: PlayerFormType | null;
+    lastPlayed: PlayerLastResultType | null;
+    lastWon: PlayerLastResultType | null;
     clubs: ClubSupporterDataType[];
     countries: CountrySupporterDataType[];
     activeYears: number[];

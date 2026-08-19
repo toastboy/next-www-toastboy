@@ -9,6 +9,8 @@ import {
 } from 'prisma/zod/schemas';
 import z from 'zod';
 
+import { PointsSchema } from '@/types/Points';
+
 const nonNegativeInt = z.number().int().min(0);
 
 const PlayerRecordStrictIds = {
@@ -23,10 +25,12 @@ const PlayerRecordStrictFields = {
     won: nonNegativeInt.nullish(),
     drawn: nonNegativeInt.nullish(),
     lost: nonNegativeInt.nullish(),
-    points: nonNegativeInt.nullish(),
-    averages: z.number().min(0).nullish(),
-    stalwart: nonNegativeInt.nullish(),
-    pub: nonNegativeInt.nullish(),
+    points: PointsSchema.nullish(),
+    scorePoints: nonNegativeInt.nullish(),
+    scoreAverages: z.number().min(0).nullish(),
+    scoreStalwart: nonNegativeInt.nullish(),
+    scorePub: nonNegativeInt.nullish(),
+    scoreSpeedy: z.number().min(0).nullish(),
     rankPoints: nonNegativeInt.nullish(),
     rankAverages: nonNegativeInt.nullish(),
     rankAveragesUnqualified: nonNegativeInt.nullish(),
@@ -34,7 +38,6 @@ const PlayerRecordStrictFields = {
     rankSpeedy: nonNegativeInt.nullish(),
     rankSpeedyUnqualified: nonNegativeInt.nullish(),
     rankPub: nonNegativeInt.nullish(),
-    speedy: z.number().min(0).nullish(),
 };
 
 const PlayerRecordCreateStrictFields = {

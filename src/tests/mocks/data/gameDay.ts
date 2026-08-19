@@ -4,7 +4,7 @@ export const defaultGameDay = {
     id: 1,
     year: 2021,
     date: new Date('2021-01-03'),
-    game: true,
+    status: 'Scheduled',
     cost: 500,
     hallCost: 5000,
     mailSent: new Date('2021-01-01'),

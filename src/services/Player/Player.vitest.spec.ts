@@ -1,5 +1,6 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
+import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
@@ -10,6 +11,7 @@ import playerService from '@/services/Player';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { defaultOutcome } from '@/tests/mocks/data/outcome';
 import { defaultPlayer, invalidPlayer } from '@/tests/mocks/data/player';
+import { createMockPlayerLastResult } from '@/tests/mocks/data/playerRecord';
 import { PlayerFormType } from '@/types';
 import type { PlayerCreateWriteInput } from '@/types/PlayerStrictSchema';
 
@@ -506,7 +508,7 @@ describe('PlayerService', () => {
     describe('getAll', () => {
         it('should return all players', async () => {
             const fixture: (PlayerType & {
-                outcomes: OutcomeType[];
+                outcomes: (OutcomeType & { gameDay: GameDayType })[];
                 extraEmails: PlayerExtraEmailType[];
             })[] = [
                 {
@@ -517,9 +519,10 @@ describe('PlayerService', () => {
                         {
                             ...defaultOutcome,
                             playerId: 1,
-                            points: 3,
+                            team: 'A',
                             response: 'Yes',
                             gameDayId: 5,
+                            gameDay: createMockGameDay({ status: 'AWin' }),
                         },
                     ],
                 },
@@ -543,7 +546,7 @@ describe('PlayerService', () => {
 
         it('should return null for firstResponded/lastResponded when player has no responses', async () => {
             const playerWithNoResponses: PlayerType & {
-                outcomes: OutcomeType[];
+                outcomes: (OutcomeType & { gameDay: GameDayType })[];
                 extraEmails: PlayerExtraEmailType[];
             } = {
                 ...defaultPlayer,
@@ -553,7 +556,7 @@ describe('PlayerService', () => {
                     {
                         ...defaultOutcome,
                         response: null,
-                        points: null,
+                        gameDay: createMockGameDay(),
                     },
                 ],
             };
@@ -572,7 +575,7 @@ describe('PlayerService', () => {
 
         it('should return null for firstPlayed/lastPlayed when player has responses but no games played', async () => {
             const playerWithResponsesButNoGames: PlayerType & {
-                outcomes: OutcomeType[];
+                outcomes: (OutcomeType & { gameDay: GameDayType })[];
                 extraEmails: PlayerExtraEmailType[];
             } = {
                 ...defaultPlayer,
@@ -583,13 +586,13 @@ describe('PlayerService', () => {
                         ...defaultOutcome,
                         gameDayId: 5,
                         response: 'Yes',
-                        points: null,
+                        gameDay: createMockGameDay(),
                     },
                     {
                         ...defaultOutcome,
                         gameDayId: 10,
                         response: 'No',
-                        points: null,
+                        gameDay: createMockGameDay(),
                     },
                 ],
             };
@@ -779,6 +782,9 @@ describe('PlayerService', () => {
                         orderBy: {
                             gameDayId: 'desc',
                         },
+                        include: {
+                            gameDay: { select: { status: true } },
+                        },
                     },
                 },
                 where: undefined,
@@ -818,18 +824,21 @@ describe('PlayerService', () => {
                     ...defaultOutcome,
                     playerId: 1,
                     gameDayId: 4,
+                    points: null,
                     gameDay: createMockGameDay({ id: 4 }),
                 },
                 {
                     ...defaultOutcome,
                     playerId: 1,
                     gameDayId: 3,
+                    points: null,
                     gameDay: createMockGameDay({ id: 3 }),
                 },
                 {
                     ...defaultOutcome,
                     playerId: 1,
                     gameDayId: 2,
+                    points: null,
                     gameDay: createMockGameDay({ id: 2 }),
                 },
             ];
@@ -868,60 +877,56 @@ describe('PlayerService', () => {
 
     describe('getLastResult', () => {
         it('should retrieve the correct last played GameDay for Player ID 1', async () => {
-            (prisma.outcome.findFirst as Mock).mockResolvedValueOnce({
-                gameDayId: 10,
-                playerId: 1,
-                response: 'Yes',
-                responseInterval: 2000,
-                points: 3,
-                team: 'A',
-                comment: 'Test comment',
-                pub: 1,
-                paid: false,
-                goalie: false,
-                gameDay: {
-                    id: 10,
-                    date: new Date(),
-                    game: 1,
-                },
-            });
+            (prisma.playerRecord.findFirst as Mock).mockResolvedValueOnce(
+                createMockPlayerLastResult({
+                    gameDayId: 10,
+                    playerId: 1,
+                    year: 0,
+                    points: 3,
+                    gameDay: createMockGameDay({ id: 10, status: 'AWin' }),
+                }),
+            );
             const result = await playerService.getLastResult(1);
             expect(result?.gameDayId).toBe(10);
         });
 
-        it('should pass year bounds when a year is provided', async () => {
-            (prisma.outcome.findFirst as Mock).mockResolvedValueOnce(null);
-            await playerService.getLastResult(1, 2022);
-            expect(prisma.outcome.findFirst).toHaveBeenCalledWith(
+        it('should default to the all-time (year=0) bucket when no year is provided', async () => {
+            (prisma.playerRecord.findFirst as Mock).mockResolvedValueOnce(null);
+            await playerService.getLastResult(1);
+            expect(prisma.playerRecord.findFirst).toHaveBeenCalledWith(
                 expect.objectContaining({
                     where: {
                         playerId: 1,
+                        year: 0,
                         points: { not: null },
-                        gameDay: {
-                            date: {
-                                gte: new Date(Date.UTC(2022, 0, 1)),
-                                lt: new Date(Date.UTC(2023, 0, 1)),
-                            },
-                        },
+                    },
+                }),
+            );
+        });
+
+        it('should scope to the given year when provided', async () => {
+            (prisma.playerRecord.findFirst as Mock).mockResolvedValueOnce(null);
+            await playerService.getLastResult(1, 2022);
+            expect(prisma.playerRecord.findFirst).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        year: 2022,
+                        points: { not: null },
                     },
                 }),
             );
         });
 
         it('should use an exact match filter when points is provided', async () => {
-            (prisma.outcome.findFirst as Mock).mockResolvedValueOnce(null);
+            (prisma.playerRecord.findFirst as Mock).mockResolvedValueOnce(null);
             await playerService.getLastResult(1, undefined, 3);
-            expect(prisma.outcome.findFirst).toHaveBeenCalledWith(
+            expect(prisma.playerRecord.findFirst).toHaveBeenCalledWith(
                 expect.objectContaining({
                     where: {
                         playerId: 1,
+                        year: 0,
                         points: 3,
-                        gameDay: {
-                            date: {
-                                gte: undefined,
-                                lt: undefined,
-                            },
-                        },
                     },
                 }),
             );
@@ -929,17 +934,17 @@ describe('PlayerService', () => {
 
         it('should reject playerId 0 before hitting Prisma', async () => {
             await expect(playerService.getLastResult(0)).rejects.toThrow();
-            expect(prisma.outcome.findFirst).not.toHaveBeenCalled();
+            expect(prisma.playerRecord.findFirst).not.toHaveBeenCalled();
         });
 
         it('should reject a negative playerId before hitting Prisma', async () => {
             await expect(playerService.getLastResult(-1)).rejects.toThrow();
-            expect(prisma.outcome.findFirst).not.toHaveBeenCalled();
+            expect(prisma.playerRecord.findFirst).not.toHaveBeenCalled();
         });
 
         it('should reject a non-integer playerId before hitting Prisma', async () => {
             await expect(playerService.getLastResult(1.5)).rejects.toThrow();
-            expect(prisma.outcome.findFirst).not.toHaveBeenCalled();
+            expect(prisma.playerRecord.findFirst).not.toHaveBeenCalled();
         });
     });
 

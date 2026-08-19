@@ -9,6 +9,7 @@ import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import z from 'zod';
 
 import { InternalError } from '@/lib/errors';
+import { getPlayerPoints, isGame } from '@/lib/gameResult';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import gameDayService from '@/services/GameDay';
 import {
@@ -26,6 +27,7 @@ import {
     type OutcomeWriteInput,
     OutcomeWriteInputSchema,
 } from '@/types/OutcomeStrictSchema';
+import type { PointsValue } from '@/types/Points';
 
 /** Linear merge of two PlayerFormType arrays already sorted by date then id. */
 function mergeByDate(
@@ -89,9 +91,8 @@ class OutcomeService {
     async getLastPlayed(): Promise<OutcomeType | null> {
         return prisma.outcome.findFirst({
             where: {
-                points: {
-                    not: null,
-                },
+                team: { not: null },
+                gameDay: { status: { in: ['AWin', 'BWin', 'Draw'] } },
             },
             orderBy: {
                 gameDayId: 'desc',
@@ -204,6 +205,7 @@ class OutcomeService {
             if (gameDay) {
                 return {
                     ...gameDay,
+                    game: isGame(gameDay.status),
                     yes: gameDayResponseCounts.get('yes'),
                     no: gameDayResponseCounts.get('no'),
                     dunno: gameDayResponseCounts.get('dunno'),
@@ -226,7 +228,9 @@ class OutcomeService {
                                         PlayerResponseSchema.enum.Yes,
                             )
                             .map((rc) => rc._count.team)[0] || 0,
-                    cancelled: gameDay.mailSent !== null && !gameDay.game,
+                    cancelled:
+                        gameDay.mailSent !== null &&
+                        gameDay.status === 'NoGame',
                 };
             }
         });
@@ -291,15 +295,21 @@ class OutcomeService {
         gameDayId: number,
         team?: 'A' | 'B',
     ): Promise<OutcomePlayerType[]> {
-        return prisma.outcome.findMany({
+        const outcomes = await prisma.outcome.findMany({
             where: {
                 gameDayId,
                 team,
             },
             include: {
                 player: true,
+                gameDay: { select: { status: true } },
             },
         });
+
+        return outcomes.map(({ gameDay, ...outcome }) => ({
+            ...outcome,
+            points: getPlayerPoints(gameDay.status, outcome.team),
+        }));
     }
 
     /**
@@ -312,26 +322,31 @@ class OutcomeService {
     async getAdminByGameDay(gameDayId: number): Promise<OutcomePlayerType[]> {
         const validatedGameDayId = z.number().int().min(1).parse(gameDayId);
 
-        const activePlayers = await prisma.player.findMany({
-            where: {
-                finished: null,
-            },
-            orderBy: [{ name: 'asc' }, { id: 'asc' }],
-            include: {
-                outcomes: {
-                    where: {
-                        gameDayId: validatedGameDayId,
-                    },
-                    take: 1,
+        const [gameDay, activePlayers] = await Promise.all([
+            gameDayService.get(validatedGameDayId),
+            prisma.player.findMany({
+                where: {
+                    finished: null,
                 },
-            },
-        });
+                orderBy: [{ name: 'asc' }, { id: 'asc' }],
+                include: {
+                    outcomes: {
+                        where: {
+                            gameDayId: validatedGameDayId,
+                        },
+                        take: 1,
+                    },
+                },
+            }),
+        ]);
+        const status = gameDay?.status ?? 'NoGame';
 
         return activePlayers.map(({ outcomes, ...player }) => {
             const outcome = outcomes[0];
             if (outcome) {
                 return OutcomePlayerType.parse({
                     ...outcome,
+                    points: getPlayerPoints(status, outcome.team),
                     player,
                 });
             }
@@ -361,7 +376,7 @@ class OutcomeService {
      * player's form graph (default 5, minimum 0).
      *
      * Form behavior:
-     * - Uses only prior outcomes with non-null points.
+     * - Uses only prior outcomes with a team assigned on a decided game day.
      * - Prior outcomes are returned oldest → newest.
      * - If fewer than formHistory outcomes exist, form is left-padded with
      *   unplayed sentinel entries (gameDayId: 0, points: null) so the result
@@ -388,12 +403,16 @@ class OutcomeService {
                 team: validatedTeam,
             },
             include: {
+                gameDay: true,
                 player: {
                     include: {
                         outcomes: {
                             where: {
                                 gameDayId: { lt: validatedGameDayId },
-                                points: { not: null },
+                                team: { not: null },
+                                gameDay: {
+                                    status: { in: ['AWin', 'BWin', 'Draw'] },
+                                },
                             },
                             orderBy: { gameDayId: 'desc' },
                             take: validatedHistory,
@@ -405,7 +424,7 @@ class OutcomeService {
             orderBy: [{ goalie: 'desc' }, { player: { name: 'asc' } }],
         });
 
-        return outcomes.map(({ player, ...outcome }) => {
+        return outcomes.map(({ player, gameDay, ...outcome }) => {
             if (!player) {
                 throw new InternalError(
                     `Outcome ${outcome.id} is missing its player relation.`,
@@ -422,7 +441,16 @@ class OutcomeService {
             const { outcomes: playerOutcomes = [], ...playerData } = player;
 
             // Outcomes arrive newest-first; reverse so the arc reads oldest→newest.
-            const actualForm = [...playerOutcomes].reverse();
+            const actualForm = [...playerOutcomes]
+                .reverse()
+                .map(({ gameDay: formGameDay, ...formOutcome }) => ({
+                    ...formOutcome,
+                    gameDay: formGameDay,
+                    points: getPlayerPoints(
+                        formGameDay.status,
+                        formOutcome.team,
+                    ),
+                }));
 
             // Left-pad with unplayed sentinels for players newer than formHistory games.
             const paddingCount = Math.max(
@@ -444,7 +472,10 @@ class OutcomeService {
 
             return TeamPlayerSchema.parse({
                 ...playerData,
-                outcome,
+                outcome: {
+                    ...outcome,
+                    points: getPlayerPoints(gameDay.status, outcome.team),
+                },
                 form: [...padding, ...actualForm],
             });
         });
@@ -456,20 +487,30 @@ class OutcomeService {
      * @returns A promise that resolves to an array of outcomes.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<OutcomeType[]> {
-        return prisma.outcome.findMany({
+    async getByPlayer(
+        playerId: number,
+    ): Promise<(OutcomeType & { points: PointsValue | null })[]> {
+        const outcomes = await prisma.outcome.findMany({
             where: {
                 playerId: playerId,
             },
+            include: {
+                gameDay: { select: { status: true } },
+            },
         });
+
+        return outcomes.map(({ gameDay, ...outcome }) => ({
+            ...outcome,
+            points: getPlayerPoints(gameDay.status, outcome.team),
+        }));
     }
 
     /**
      * Retrieves all outcomes for a player across a given year, or all time when
      * year is 0. Also includes game days where the player had no outcome
-     * (not invited) and scheduled days where no game took place (game = false)
-     * as synthetic entries with null points, so the result is suitable for
-     * building a full activity heatmap with no gaps.
+     * (not invited) and scheduled days where no game took place
+     * (status = NoGame) as synthetic entries with null points, so the result
+     * is suitable for building a full activity heatmap with no gaps.
      *
      * @param playerId - The ID of the player.
      * @param year - The year to filter by, or 0 for all time.
@@ -480,7 +521,7 @@ class OutcomeService {
      * @returns A promise that resolves to outcomes with game days, ordered by
      * game day date ascending, with game day ID as a tiebreaker. No-game days
      * and uninvited game days are represented as synthetic entries with
-     * points = null; no-game days have gameDay.game = false.
+     * points = null; no-game days have gameDay.status = NoGame.
      */
     async getHistoryByPlayer(
         playerId: number,
@@ -546,26 +587,27 @@ class OutcomeService {
         if (startDate) dateRange.gte = startDate;
         const dateFilter = { date: dateRange };
 
-        const [outcomes, noGameDays, allGameDays] = await Promise.all([
+        const [rawOutcomes, dateRangeGameDays] = await Promise.all([
             prisma.outcome.findMany({
                 where: {
                     playerId: pid,
-                    gameDay: { game: true, ...dateFilter },
+                    gameDay: { status: { not: 'NoGame' }, ...dateFilter },
                 },
                 orderBy: [{ gameDay: { date: 'asc' } }, { gameDayId: 'asc' }],
                 include: { gameDay: true },
             }),
             gameDayService.getAll({
-                game: false,
-                fromDate: startDate,
-                beforeDate: endDate,
-            }),
-            gameDayService.getAll({
-                game: true,
                 fromDate: startDate,
                 beforeDate: endDate,
             }),
         ]);
+
+        const outcomes: PlayerFormType[] = rawOutcomes.map((o) => ({
+            ...o,
+            points: getPlayerPoints(o.gameDay.status, o.team),
+        }));
+        const noGameDays = dateRangeGameDays.filter((gd) => !isGame(gd.status));
+        const allGameDays = dateRangeGameDays.filter((gd) => isGame(gd.status));
 
         const playedIds = new Set(outcomes.map((o) => o.gameDayId));
         const makeSynthetic = (
@@ -634,11 +676,14 @@ class OutcomeService {
             },
             take: 10,
             select: {
-                points: true,
+                team: true,
+                gameDay: { select: { status: true } },
             },
         });
 
-        return outcomes.map((outcome) => outcome.points);
+        return outcomes.map((outcome) =>
+            getPlayerPoints(outcome.gameDay.status, outcome.team),
+        );
     }
 
     /**
@@ -761,10 +806,11 @@ class OutcomeService {
         return prisma.outcome.count({
             where: {
                 playerId: playerId,
-                points: {
+                team: {
                     not: null,
                 },
                 gameDay: {
+                    status: { in: ['AWin', 'BWin', 'Draw'] },
                     ...(year !== 0
                         ? {
                               date: {
@@ -795,19 +841,20 @@ class OutcomeService {
     async getLatestGamePlayedByYear(year: number): Promise<number | null> {
         const outcomes = await prisma.outcome.findMany({
             where: {
-                points: {
+                team: {
                     not: null,
                 },
-                ...(year != 0
-                    ? {
-                          gameDay: {
+                gameDay: {
+                    status: { in: ['AWin', 'BWin', 'Draw'] },
+                    ...(year != 0
+                        ? {
                               date: {
                                   gte: new Date(Date.UTC(year, 0, 1)),
                                   lt: new Date(Date.UTC(year + 1, 0, 1)),
                               },
-                          },
-                      }
-                    : {}),
+                          }
+                        : {}),
+                },
             },
             orderBy: {
                 gameDayId: 'desc',
@@ -830,34 +877,25 @@ class OutcomeService {
      */
     async getByBibs({ year }: { year?: number }): Promise<WDLType> {
         const gameDays = await gameDayService.getAll();
-        const outcomes = await prisma.outcome.groupBy({
-            where: {
-                team: 'A',
-            },
-            by: ['gameDayId', 'team', 'points'],
-        });
 
-        return outcomes.reduce(
-            (acc, outcome) => {
-                const gameDay = gameDays.find(
-                    (gameDay) => gameDay.id === outcome.gameDayId,
-                );
+        return gameDays.reduce(
+            (acc, gameDay) => {
                 if (
-                    gameDay &&
                     gameDay.bibs !== null &&
-                    outcome.points !== null &&
+                    (gameDay.status === 'AWin' ||
+                        gameDay.status === 'BWin' ||
+                        gameDay.status === 'Draw') &&
                     (!year || gameDay.year === year)
                 ) {
-                    if (outcome.points === 1) {
+                    if (gameDay.status === 'Draw') {
                         acc.drawn++;
                     } else {
-                        if (gameDay.bibs == 'A') {
-                            if (outcome.points === 0) acc.lost++;
-                            else acc.won++;
-                        } else {
-                            if (outcome.points === 3) acc.lost++;
-                            else acc.won++;
-                        }
+                        const bibsTeamWon =
+                            (gameDay.bibs === 'A' &&
+                                gameDay.status === 'AWin') ||
+                            (gameDay.bibs === 'B' && gameDay.status === 'BWin');
+                        if (bibsTeamWon) acc.won++;
+                        else acc.lost++;
                     }
                 }
                 return acc;

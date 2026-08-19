@@ -2,6 +2,8 @@ import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { rankMap } from '@/lib/tables';
+import { createMockGameDay } from '@/tests/mocks/data/gameDay';
+import type { PlayerLastResultType } from '@/types/PlayerLastResultType';
 
 export const minimalPlayerRecord = {
     id: 1,
@@ -18,10 +20,11 @@ export const defaultPlayerRecord = {
     won: 5,
     drawn: 3,
     lost: 2,
-    points: 18,
-    averages: 1.8,
-    stalwart: 5,
-    pub: 1,
+    scorePoints: 18,
+    scoreAverages: 1.8,
+    scoreStalwart: 5,
+    scorePub: 1,
+    scoreSpeedy: 4,
     rankPoints: 1,
     rankAverages: 2,
     rankAveragesUnqualified: 2,
@@ -29,13 +32,20 @@ export const defaultPlayerRecord = {
     rankSpeedy: 4,
     rankSpeedyUnqualified: 4,
     rankPub: 5,
-    speedy: 4,
 } satisfies PlayerRecordType;
 
 export const createMockPlayerRecord = (
     overrides: Partial<PlayerRecordType> = {},
 ): PlayerRecordType => ({
     ...defaultPlayerRecord,
+    ...overrides,
+});
+
+export const createMockPlayerLastResult = (
+    overrides: Partial<PlayerLastResultType> = {},
+): PlayerLastResultType => ({
+    ...createMockPlayerRecord(),
+    gameDay: createMockGameDay(),
     ...overrides,
 });
 
@@ -89,13 +99,13 @@ export const defaultPlayerRecordList: PlayerRecordType[] = [
             lost: baseLost,
 
             // Points table stats
-            points,
-            averages: parseFloat((points / basePlayed).toFixed(2)),
+            scorePoints: points,
+            scoreAverages: parseFloat((points / basePlayed).toFixed(2)),
 
             // Other table stats
-            stalwart: basePlayed - (rankPosition - 1),
-            speedy: Math.max(1, 6 - rankPosition),
-            pub: Math.max(1, 6 - rankPosition),
+            scoreStalwart: basePlayed - (rankPosition - 1),
+            scoreSpeedy: Math.max(1, 6 - rankPosition),
+            scorePub: Math.max(1, 6 - rankPosition),
 
             // Rankings - vary across different tables
             rankPoints: rankPosition,
@@ -115,7 +125,7 @@ export const defaultPlayerRecordList: PlayerRecordType[] = [
  */
 export const defaultTrophiesList = new Map<TableName, PlayerRecordType[]>();
 TableNameSchema.options.forEach((table) => {
-    const rank = rankMap[table][0] as keyof PlayerRecordType;
+    const rank = rankMap[table][0];
     defaultTrophiesList.set(
         table,
         defaultPlayerRecordList.filter((record) => record[rank] === 1),

@@ -15,9 +15,12 @@ vi.mock('@/components/GameResultForm/GameResultForm');
 
 const setGameResult = vi.fn(async () => Promise.resolve({} as GameDayType));
 
-/** One-player team with a specific points outcome. */
-const teamWith = (points: 0 | 1 | 3): TeamPlayerType[] => [
-    { ...defaultTeamPlayer, outcome: createMockOutcome({ points }) },
+/** One-player team assigned to the given side. */
+const teamWith = (team: 'A' | 'B'): TeamPlayerType[] => [
+    {
+        ...defaultTeamPlayer,
+        outcome: { ...createMockOutcome({ team }), points: null },
+    },
 ];
 
 describe('GameDaySummary', () => {
@@ -28,8 +31,8 @@ describe('GameDaySummary', () => {
                     gameDay={defaultGameDay}
                     prevGameDay={null}
                     nextGameDay={null}
-                    teamA={teamWith(3)}
-                    teamB={teamWith(0)}
+                    teamA={teamWith('A')}
+                    teamB={teamWith('B')}
                     isAdmin={false}
                     setGameResult={setGameResult}
                 />
@@ -54,7 +57,7 @@ describe('GameDaySummary', () => {
         render(
             <Wrapper>
                 <GameDaySummary
-                    gameDay={{ ...defaultGameDay, game: false }}
+                    gameDay={{ ...defaultGameDay, status: 'NoGame' }}
                     prevGameDay={null}
                     nextGameDay={null}
                     teamA={[]}
@@ -85,8 +88,8 @@ describe('GameDaySummary', () => {
                         gameDay={defaultGameDay}
                         prevGameDay={prevGameDay}
                         nextGameDay={nextGameDay}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={false}
                         setGameResult={setGameResult}
                     />
@@ -117,8 +120,8 @@ describe('GameDaySummary', () => {
                         gameDay={defaultGameDay}
                         prevGameDay={null}
                         nextGameDay={nextGameDay}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={false}
                         setGameResult={setGameResult}
                     />
@@ -148,8 +151,8 @@ describe('GameDaySummary', () => {
                         gameDay={defaultGameDay}
                         prevGameDay={prevGameDay}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={false}
                         setGameResult={setGameResult}
                     />
@@ -174,8 +177,8 @@ describe('GameDaySummary', () => {
                         gameDay={defaultGameDay}
                         prevGameDay={null}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={false}
                         setGameResult={setGameResult}
                     />
@@ -200,8 +203,8 @@ describe('GameDaySummary', () => {
                         gameDay={defaultGameDay}
                         prevGameDay={null}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={false}
                         setGameResult={setGameResult}
                     />
@@ -219,8 +222,8 @@ describe('GameDaySummary', () => {
                         gameDay={createMockGameDay({ comment: null })}
                         prevGameDay={null}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={false}
                         setGameResult={setGameResult}
                     />
@@ -233,7 +236,7 @@ describe('GameDaySummary', () => {
             render(
                 <Wrapper>
                     <GameDaySummary
-                        gameDay={{ ...defaultGameDay, game: false }}
+                        gameDay={{ ...defaultGameDay, status: 'NoGame' }}
                         prevGameDay={null}
                         nextGameDay={null}
                         teamA={[]}
@@ -253,7 +256,7 @@ describe('GameDaySummary', () => {
                 <Wrapper>
                     <GameDaySummary
                         gameDay={createMockGameDay({
-                            game: false,
+                            status: 'NoGame',
                             comment: null,
                         })}
                         prevGameDay={null}
@@ -277,8 +280,8 @@ describe('GameDaySummary', () => {
                         gameDay={defaultGameDay}
                         prevGameDay={null}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={true}
                         setGameResult={setGameResult}
                     />
@@ -295,8 +298,8 @@ describe('GameDaySummary', () => {
                         gameDay={defaultGameDay}
                         prevGameDay={null}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={false}
                         setGameResult={setGameResult}
                     />
@@ -312,7 +315,7 @@ describe('GameDaySummary', () => {
             render(
                 <Wrapper>
                     <GameDaySummary
-                        gameDay={{ ...defaultGameDay, game: false }}
+                        gameDay={{ ...defaultGameDay, status: 'NoGame' }}
                         prevGameDay={null}
                         nextGameDay={null}
                         teamA={[]}
@@ -336,11 +339,12 @@ describe('GameDaySummary', () => {
                             ...defaultGameDay,
                             id: 1249,
                             bibs: 'A',
+                            status: 'AWin',
                         }}
                         prevGameDay={null}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={true}
                         setGameResult={setGameResult}
                     />
@@ -360,8 +364,8 @@ describe('GameDaySummary', () => {
                         gameDay={createMockGameDay({ bibs: null })}
                         prevGameDay={null}
                         nextGameDay={null}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
+                        teamA={teamWith('A')}
+                        teamB={teamWith('B')}
                         isAdmin={true}
                         setGameResult={setGameResult}
                     />

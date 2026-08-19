@@ -66,7 +66,7 @@ export async function createMoreGameDaysCore(
             return deps.gameDayService.create({
                 year: date.getFullYear(),
                 date,
-                game: row.game,
+                status: row.game ? 'Scheduled' : 'NoGame',
                 cost,
                 hallCost,
                 comment,

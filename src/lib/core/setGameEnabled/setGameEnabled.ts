@@ -2,7 +2,8 @@ import 'server-only';
 
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-import { NotFoundError } from '@/lib/errors';
+import { ConflictError, NotFoundError } from '@/lib/errors';
+import { isDecided } from '@/lib/gameResult';
 import gameDayService from '@/services/GameDay';
 import type { SendEmailToAllActivePlayersProxy } from '@/types/actions/SendEmailToAllActivePlayers';
 import type { SetGameEnabledInput } from '@/types/actions/SetGameEnabled';
@@ -29,6 +30,10 @@ const defaultDeps: SetGameEnabledDeps = {
  * @returns A promise that resolves to the updated GameDayType object
  *
  * @throws {NotFoundError} If the game day with the specified ID is not found.
+ * @throws {ConflictError} If the game day's result has already been decided
+ * (AWin/BWin/Draw) — enabling/disabling only applies to a scheduled or
+ * cancelled game, since flipping it would otherwise overwrite the recorded
+ * result. Use setGameResult to change a decided result instead.
  * @throws {Error} Propagates unexpected persistence or email-delivery errors.
  *
  * @remarks
@@ -52,9 +57,20 @@ export async function setGameEnabledCore(
         throw new NotFoundError(`Game day not found (id: ${data.gameDayId}).`);
     }
 
+    if (isDecided(gameDay.status)) {
+        throw new ConflictError(
+            `Cannot change the enabled status of game day ${gameDay.id}: its result has already been decided (${gameDay.status}).`,
+            {
+                details: { gameDayId: gameDay.id, status: gameDay.status },
+                publicMessage:
+                    'This game already has a recorded result and cannot be cancelled or reinstated here.',
+            },
+        );
+    }
+
     const updatedGameDay = await deps.gameDayService.update({
         id: gameDay.id,
-        game: data.game,
+        status: data.game ? 'Scheduled' : 'NoGame',
         comment: data.reason,
     });
 

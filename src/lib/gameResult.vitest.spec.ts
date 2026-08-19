@@ -1,87 +1,94 @@
 import { describe, expect, it } from 'vitest';
 
-import { getGameWinnersFromTeams, getTeamResultState } from '@/lib/gameResult';
-import { createMockOutcome } from '@/tests/mocks/data/outcome';
-import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
-
-const withPoints = (points: 0 | 1 | 3) =>
-    defaultTeamPlayerList.map((player) => ({
-        ...player,
-        outcome: createMockOutcome({
-            ...player.outcome,
-            team: player.outcome.team ?? 'A',
-            points,
-        }),
-    }));
+import {
+    getGameWinnerFromStatus,
+    getPlayerPoints,
+    getTeamResultState,
+    isDecided,
+    isGame,
+} from '@/lib/gameResult';
 
 describe('gameResult helpers', () => {
-    it('infers team A as winner from points', () => {
-        expect(getGameWinnersFromTeams(withPoints(3), withPoints(0))).toBe('A');
+    describe('getGameWinnerFromStatus', () => {
+        it('returns A for AWin', () => {
+            expect(getGameWinnerFromStatus('AWin')).toBe('A');
+        });
+
+        it('returns B for BWin', () => {
+            expect(getGameWinnerFromStatus('BWin')).toBe('B');
+        });
+
+        it('returns draw for Draw', () => {
+            expect(getGameWinnerFromStatus('Draw')).toBe('draw');
+        });
+
+        it('returns null for Scheduled', () => {
+            expect(getGameWinnerFromStatus('Scheduled')).toBeNull();
+        });
+
+        it('returns null for NoGame', () => {
+            expect(getGameWinnerFromStatus('NoGame')).toBeNull();
+        });
     });
 
-    it('infers team B as winner from points', () => {
-        expect(getGameWinnersFromTeams(withPoints(0), withPoints(3))).toBe('B');
+    describe('getPlayerPoints', () => {
+        it('returns null when the player has no team', () => {
+            expect(getPlayerPoints('AWin', null)).toBeNull();
+        });
+
+        it('awards 3 to the winning team and 0 to the other on AWin', () => {
+            expect(getPlayerPoints('AWin', 'A')).toBe(3);
+            expect(getPlayerPoints('AWin', 'B')).toBe(0);
+        });
+
+        it('awards 3 to the winning team and 0 to the other on BWin', () => {
+            expect(getPlayerPoints('BWin', 'B')).toBe(3);
+            expect(getPlayerPoints('BWin', 'A')).toBe(0);
+        });
+
+        it('awards 1 to both teams on a Draw', () => {
+            expect(getPlayerPoints('Draw', 'A')).toBe(1);
+            expect(getPlayerPoints('Draw', 'B')).toBe(1);
+        });
+
+        it('returns null when the game has not been decided', () => {
+            expect(getPlayerPoints('Scheduled', 'A')).toBeNull();
+            expect(getPlayerPoints('NoGame', 'A')).toBeNull();
+        });
     });
 
-    it('infers draw from points', () => {
-        expect(getGameWinnersFromTeams(withPoints(1), withPoints(1))).toBe(
-            'draw',
-        );
+    describe('isGame', () => {
+        it('is true for anything other than NoGame', () => {
+            expect(isGame('Scheduled')).toBe(true);
+            expect(isGame('AWin')).toBe(true);
+            expect(isGame('BWin')).toBe(true);
+            expect(isGame('Draw')).toBe(true);
+        });
+
+        it('is false for NoGame', () => {
+            expect(isGame('NoGame')).toBe(false);
+        });
     });
 
-    it('returns null when points are not set consistently', () => {
-        const teamA = withPoints(3);
-        const teamB = withPoints(0);
-        teamA[0] = {
-            ...teamA[0],
-            outcome: createMockOutcome({
-                ...teamA[0].outcome,
-                points: null,
-            }),
-        };
+    describe('isDecided', () => {
+        it('is true for AWin, BWin, and Draw', () => {
+            expect(isDecided('AWin')).toBe(true);
+            expect(isDecided('BWin')).toBe(true);
+            expect(isDecided('Draw')).toBe(true);
+        });
 
-        expect(getGameWinnersFromTeams(teamA, teamB)).toBeNull();
+        it('is false for Scheduled and NoGame', () => {
+            expect(isDecided('Scheduled')).toBe(false);
+            expect(isDecided('NoGame')).toBe(false);
+        });
     });
 
-    it('returns null for a valid but unrecognised points combination (e.g. both teams on 0)', () => {
-        expect(
-            getGameWinnersFromTeams(withPoints(0), withPoints(0)),
-        ).toBeNull();
-    });
-
-    it('returns null when a team has no players', () => {
-        expect(getGameWinnersFromTeams([], withPoints(3))).toBeNull();
-    });
-
-    it('returns null when a team has differing valid points values', () => {
-        const teamA = withPoints(3);
-        teamA[0] = {
-            ...teamA[0],
-            outcome: createMockOutcome({
-                ...teamA[0].outcome,
-                points: 1,
-            }),
-        };
-
-        expect(getGameWinnersFromTeams(teamA, withPoints(0))).toBeNull();
-    });
-
-    it('falls back to null if the sole distinct points value is somehow missing (defensive guard)', () => {
-        const arrayFromSpy = vi.spyOn(Array, 'from').mockReturnValueOnce([]);
-
-        try {
-            expect(
-                getGameWinnersFromTeams(withPoints(3), withPoints(0)),
-            ).toBeNull();
-        } finally {
-            arrayFromSpy.mockRestore();
-        }
-    });
-
-    it('returns per-team result state', () => {
-        expect(getTeamResultState('A', 'A')).toBe('win');
-        expect(getTeamResultState('B', 'A')).toBe('loss');
-        expect(getTeamResultState('A', 'draw')).toBe('draw');
-        expect(getTeamResultState('A', null)).toBe('unset');
+    describe('getTeamResultState', () => {
+        it('returns per-team result state', () => {
+            expect(getTeamResultState('A', 'A')).toBe('win');
+            expect(getTeamResultState('B', 'A')).toBe('loss');
+            expect(getTeamResultState('A', 'draw')).toBe('draw');
+            expect(getTeamResultState('A', null)).toBe('unset');
+        });
     });
 });

@@ -3,6 +3,7 @@ import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { InvoiceForm } from '@/components/InvoiceForm/InvoiceForm';
 import { formatDate } from '@/lib/dates';
+import { isGame } from '@/lib/gameResult';
 import gameDayService from '@/services/GameDay';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -28,12 +29,12 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
 
     const gameDaysRaw = await gameDayService.getForMonth(year, month);
 
-    // A game day is considered to have a game scheduled if either the 'game'
-    // flag is true or if the invitations were sent (mailSent is not null).
+    // A game day is considered to have a game scheduled if its status isn't
+    // NoGame, or if the invitations were sent (mailSent is not null).
     const gameDays = gameDaysRaw.map((gd) => ({
         id: gd.id,
         date: formatDate(gd.date),
-        gameScheduled: gd.game || gd.mailSent !== null,
+        gameScheduled: isGame(gd.status) || gd.mailSent !== null,
         hallCost: gd.hallCost,
     }));
 

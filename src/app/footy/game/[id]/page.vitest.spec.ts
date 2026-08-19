@@ -44,7 +44,7 @@ import outcomeService from '@/services/Outcome';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 
-const gameDay = createMockGameDay({ id: 1249, game: true, bibs: 'A' });
+const gameDay = createMockGameDay({ id: 1249, status: 'Scheduled', bibs: 'A' });
 
 describe('Game [id] page', () => {
     beforeEach(() => {

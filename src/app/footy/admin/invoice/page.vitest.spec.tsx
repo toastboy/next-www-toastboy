@@ -40,14 +40,14 @@ const makeGameDay = (
     overrides: Partial<{
         id: number;
         date: Date;
-        game: boolean;
+        status: 'NoGame' | 'Scheduled' | 'AWin' | 'Draw' | 'BWin';
         mailSent: Date | null;
         hallCost: number | null;
     }> = {},
 ) => ({
     id: 1,
     date: new Date('2026-01-07'),
-    game: false,
+    status: 'NoGame' as const,
     mailSent: null,
     hallCost: null,
     ...overrides,
@@ -97,9 +97,9 @@ describe('Admin Invoice page', () => {
         expect(form?.props.month).toBe(6);
     });
 
-    it('marks a game day as scheduled when the game flag is true', async () => {
+    it('marks a game day as scheduled when status is not NoGame', async () => {
         (gameDayService.getForMonth as Mock).mockResolvedValue([
-            makeGameDay({ game: true, mailSent: null }),
+            makeGameDay({ status: 'Scheduled', mailSent: null }),
         ]);
 
         const result = await InvoicePage({
@@ -112,9 +112,9 @@ describe('Admin Invoice page', () => {
         expect(gameDays[0]?.gameScheduled).toBe(true);
     });
 
-    it('marks a game day as scheduled when mailSent is not null, regardless of the game flag', async () => {
+    it('marks a game day as scheduled when mailSent is not null, regardless of status', async () => {
         (gameDayService.getForMonth as Mock).mockResolvedValue([
-            makeGameDay({ game: false, mailSent: new Date('2026-01-01') }),
+            makeGameDay({ status: 'NoGame', mailSent: new Date('2026-01-01') }),
         ]);
 
         const result = await InvoicePage({
@@ -127,9 +127,9 @@ describe('Admin Invoice page', () => {
         expect(gameDays[0]?.gameScheduled).toBe(true);
     });
 
-    it('marks a game day as not scheduled when game is false and mailSent is null', async () => {
+    it('marks a game day as not scheduled when status is NoGame and mailSent is null', async () => {
         (gameDayService.getForMonth as Mock).mockResolvedValue([
-            makeGameDay({ game: false, mailSent: null }),
+            makeGameDay({ status: 'NoGame', mailSent: null }),
         ]);
 
         const result = await InvoicePage({

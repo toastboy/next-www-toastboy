@@ -15,7 +15,7 @@ describe('setGameResultCore', () => {
         year: 2026,
         date: new Date('2026-02-03T00:00:00Z'),
         cost: 450,
-        game: true,
+        status: 'Scheduled' as const,
         mailSent: new Date('2026-02-01T09:00:00Z'),
         comment: null,
         bibs: null,
@@ -29,7 +29,6 @@ describe('setGameResultCore', () => {
 
     const outcomeService = {
         getByGameDay: vi.fn(),
-        upsert: vi.fn(),
     };
     const transactionService = {
         charge: vi.fn(),
@@ -57,12 +56,11 @@ describe('setGameResultCore', () => {
                         : [{ playerId: 3 }, { playerId: 4 }],
                 ),
         );
-        outcomeService.upsert.mockResolvedValue(undefined);
         transactionService.charge.mockResolvedValue(undefined);
         playerRecordService.upsertFromGameDay.mockResolvedValue(undefined);
     });
 
-    it('updates bibs and applies win/loss points', async () => {
+    it('updates bibs and status when team A wins', async () => {
         const data = SetGameResultInputSchema.parse({
             gameDayId: 1249,
             bibs: 'A',
@@ -74,21 +72,11 @@ describe('setGameResultCore', () => {
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
             bibs: 'A',
-        });
-
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
-            gameDayId: 1249,
-            playerId: 1,
-            points: 3,
-        });
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
-            gameDayId: 1249,
-            playerId: 3,
-            points: 0,
+            status: 'AWin',
         });
     });
 
-    it('applies draw points to both teams', async () => {
+    it('sets status to Draw', async () => {
         const data = SetGameResultInputSchema.parse({
             gameDayId: 1249,
             bibs: 'B',
@@ -97,19 +85,14 @@ describe('setGameResultCore', () => {
 
         await setGameResultCore(data, deps());
 
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
-            gameDayId: 1249,
-            playerId: 2,
-            points: 1,
-        });
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
-            gameDayId: 1249,
-            playerId: 4,
-            points: 1,
+        expect(gameDayService.update).toHaveBeenCalledWith({
+            id: 1249,
+            bibs: 'B',
+            status: 'Draw',
         });
     });
 
-    it('applies win/loss points when team B wins', async () => {
+    it('sets status to BWin when team B wins', async () => {
         const data = SetGameResultInputSchema.parse({
             gameDayId: 1249,
             bibs: 'A',
@@ -118,19 +101,14 @@ describe('setGameResultCore', () => {
 
         await setGameResultCore(data, deps());
 
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
-            gameDayId: 1249,
-            playerId: 1,
-            points: 0,
-        });
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
-            gameDayId: 1249,
-            playerId: 3,
-            points: 3,
+        expect(gameDayService.update).toHaveBeenCalledWith({
+            id: 1249,
+            bibs: 'A',
+            status: 'BWin',
         });
     });
 
-    it('clears team points when winner is unset', async () => {
+    it('sets status to Scheduled when winner is unset', async () => {
         const data = SetGameResultInputSchema.parse({
             gameDayId: 1249,
             bibs: null,
@@ -139,16 +117,43 @@ describe('setGameResultCore', () => {
 
         await setGameResultCore(data, deps());
 
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
-            gameDayId: 1249,
-            playerId: 1,
-            points: null,
+        expect(gameDayService.update).toHaveBeenCalledWith({
+            id: 1249,
+            bibs: null,
+            status: 'Scheduled',
         });
-        expect(outcomeService.upsert).toHaveBeenCalledWith({
+    });
+
+    it('charges every player on both teams', async () => {
+        const data = SetGameResultInputSchema.parse({
             gameDayId: 1249,
-            playerId: 3,
-            points: null,
+            bibs: 'A',
+            winner: 'A',
         });
+
+        await setGameResultCore(data, deps());
+
+        expect(transactionService.charge).toHaveBeenCalledTimes(4);
+        expect(transactionService.charge).toHaveBeenCalledWith(
+            1,
+            1249,
+            gameDay.cost,
+        );
+        expect(transactionService.charge).toHaveBeenCalledWith(
+            2,
+            1249,
+            gameDay.cost,
+        );
+        expect(transactionService.charge).toHaveBeenCalledWith(
+            3,
+            1249,
+            gameDay.cost,
+        );
+        expect(transactionService.charge).toHaveBeenCalledWith(
+            4,
+            1249,
+            gameDay.cost,
+        );
     });
 
     it('throws when the game day cannot be found', async () => {
@@ -166,7 +171,7 @@ describe('setGameResultCore', () => {
         ).rejects.toBeInstanceOf(NotFoundError);
 
         expect(gameDayService.update).not.toHaveBeenCalled();
-        expect(outcomeService.upsert).not.toHaveBeenCalled();
+        expect(transactionService.charge).not.toHaveBeenCalled();
     });
 
     it('calls upsertFromGameDay with the gameDayId after updating outcomes', async () => {

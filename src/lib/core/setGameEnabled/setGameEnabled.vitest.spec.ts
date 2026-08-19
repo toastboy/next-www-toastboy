@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setGameEnabledCore } from '@/lib/core/setGameEnabled';
-import { NotFoundError } from '@/lib/errors';
+import { ConflictError, NotFoundError } from '@/lib/errors';
 import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
 
 describe('setGameEnabledCore', () => {
@@ -19,7 +19,7 @@ describe('setGameEnabledCore', () => {
             id: 1249,
             year: 2026,
             date: new Date('2026-02-03T00:00:00Z'),
-            game: true,
+            status: 'Scheduled' as const,
             mailSent: new Date('2026-02-01T09:00:00Z'),
             comment: 'Initial note',
             bibs: null,
@@ -29,7 +29,7 @@ describe('setGameEnabledCore', () => {
             get: vi.fn().mockResolvedValue(gameDay),
             update: vi.fn().mockResolvedValue({
                 ...gameDay,
-                game: false,
+                status: 'NoGame' as const,
                 comment: 'Not enough players',
             }),
         };
@@ -48,7 +48,7 @@ describe('setGameEnabledCore', () => {
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
-            game: false,
+            status: 'NoGame',
             comment: 'Not enough players',
         });
         expect(mockSendEmailToAllActivePlayers).toHaveBeenCalledTimes(1);
@@ -62,7 +62,7 @@ describe('setGameEnabledCore', () => {
         ];
         expect(firstPayload.subject).toContain('Game Cancelled:');
         expect(firstPayload.html).toContain('Reason: Not enough players');
-        expect(result.game).toBe(false);
+        expect(result.status).toBe('NoGame');
         expect(result.comment).toBe('Not enough players');
     });
 
@@ -71,7 +71,7 @@ describe('setGameEnabledCore', () => {
             id: 1249,
             year: 2026,
             date: new Date('2026-02-03T00:00:00Z'),
-            game: true,
+            status: 'Scheduled' as const,
             mailSent: new Date('2026-02-01T09:00:00Z'),
             comment: 'Initial note',
             bibs: null,
@@ -81,7 +81,7 @@ describe('setGameEnabledCore', () => {
             get: vi.fn().mockResolvedValue(gameDay),
             update: vi.fn().mockResolvedValue({
                 ...gameDay,
-                game: false,
+                status: 'NoGame' as const,
                 comment: null,
             }),
         };
@@ -98,7 +98,7 @@ describe('setGameEnabledCore', () => {
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
-            game: false,
+            status: 'NoGame',
             comment: null,
         });
         expect(mockSendEmailToAllActivePlayers).toHaveBeenCalledTimes(1);
@@ -118,7 +118,7 @@ describe('setGameEnabledCore', () => {
             id: 1250,
             year: 2026,
             date: new Date('2026-02-10T00:00:00Z'),
-            game: false,
+            status: 'NoGame' as const,
             mailSent: new Date('2026-02-08T09:00:00Z'),
             comment: 'Bad weather',
             bibs: null,
@@ -128,7 +128,7 @@ describe('setGameEnabledCore', () => {
             get: vi.fn().mockResolvedValue(gameDay),
             update: vi.fn().mockResolvedValue({
                 ...gameDay,
-                game: true,
+                status: 'Scheduled' as const,
                 comment: null,
             }),
         };
@@ -147,7 +147,7 @@ describe('setGameEnabledCore', () => {
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1250,
-            game: true,
+            status: 'Scheduled',
             comment: null,
         });
         const [payload] = mockSendEmailToAllActivePlayers.mock.calls[0] as [
@@ -158,7 +158,39 @@ describe('setGameEnabledCore', () => {
         ];
         expect(payload.subject).toContain('Game Reinstated:');
         expect(payload.html).toContain('has been reinstated');
-        expect(result.game).toBe(true);
+        expect(result.status).toBe('Scheduled');
+    });
+
+    it('rejects with a ConflictError instead of overwriting a decided result', async () => {
+        const gameDay = {
+            id: 1251,
+            year: 2026,
+            date: new Date('2026-02-17T00:00:00Z'),
+            status: 'AWin' as const,
+            mailSent: new Date('2026-02-15T09:00:00Z'),
+            comment: null,
+            bibs: null,
+            pickerGamesHistory: 10 as const,
+        };
+        const gameDayService = {
+            get: vi.fn().mockResolvedValue(gameDay),
+            update: vi.fn(),
+        };
+
+        const data = SetGameEnabledInputSchema.parse({
+            gameDayId: 1251,
+            game: false,
+            reason: 'oops',
+        });
+
+        await expect(
+            setGameEnabledCore(data, mockSendEmailToAllActivePlayers, {
+                gameDayService,
+            }),
+        ).rejects.toBeInstanceOf(ConflictError);
+
+        expect(gameDayService.update).not.toHaveBeenCalled();
+        expect(mockSendEmailToAllActivePlayers).not.toHaveBeenCalled();
     });
 
     it('throws when the game day cannot be found', async () => {

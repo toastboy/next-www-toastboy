@@ -26,7 +26,7 @@ async function main() {
     // since by the time this runs its `date` may have drifted behind even
     // the most recent historical Friday.
     const upcoming = await prisma.gameDay.findFirst({
-        where: { game: true, mailSent: null },
+        where: { status: { not: 'NoGame' }, mailSent: null },
         orderBy: { date: 'desc' },
     });
 

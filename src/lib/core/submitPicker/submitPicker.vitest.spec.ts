@@ -9,7 +9,7 @@ describe('SubmitPickerCore', () => {
         id: 1249,
         year: 2026,
         date: new Date('2026-02-03T00:00:00Z'),
-        game: true,
+        status: 'Scheduled',
         mailSent: new Date('2026-02-01T09:00:00Z'),
         comment: null,
         bibs: null,

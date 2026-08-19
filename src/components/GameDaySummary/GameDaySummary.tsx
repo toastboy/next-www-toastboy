@@ -7,7 +7,11 @@ import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { GameResultForm } from '@/components/GameResultForm/GameResultForm';
 import { Team } from '@/components/Team/Team';
 import { formatDate } from '@/lib/dates';
-import { getGameWinnersFromTeams, getTeamResultState } from '@/lib/gameResult';
+import {
+    getGameWinnerFromStatus,
+    getTeamResultState,
+    isGame,
+} from '@/lib/gameResult';
 import { TeamPlayerType } from '@/types';
 import { SetGameResultProxy } from '@/types/actions/SetGameResult';
 
@@ -30,8 +34,8 @@ export const GameDaySummary = ({
     isAdmin,
     setGameResult,
 }: Props) => {
-    const winner = getGameWinnersFromTeams(teamA, teamB);
-    const noGame = gameDay.game ? `` : `No game`;
+    const winner = getGameWinnerFromStatus(gameDay.status);
+    const noGame = isGame(gameDay.status) ? `` : `No game`;
     const comment = gameDay.comment ? `(${gameDay.comment})` : ``;
     const navSlotWidth = '2rem';
 
@@ -93,7 +97,7 @@ export const GameDaySummary = ({
                 mx="auto"
                 p="xs"
             >
-                {gameDay.game ? (
+                {isGame(gameDay.status) ? (
                     <Flex
                         direction={{ base: 'column', xs: 'row' }}
                         justify="center"
@@ -113,7 +117,7 @@ export const GameDaySummary = ({
                         />
                     </Flex>
                 ) : null}
-                {!!isAdmin && !!gameDay.game && (
+                {!!isAdmin && isGame(gameDay.status) && (
                     <GameResultForm
                         gameDayId={gameDay.id}
                         bibs={gameDay.bibs ?? null}

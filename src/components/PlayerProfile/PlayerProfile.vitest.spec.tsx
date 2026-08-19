@@ -8,6 +8,7 @@ import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySuppo
 import { createMockPlayer, defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 import {
+    createMockPlayerLastResult,
     defaultPlayerRecord,
     defaultTrophiesList,
 } from '@/tests/mocks/data/playerRecord';
@@ -29,8 +30,8 @@ describe('PlayerProfile', () => {
                     introducedBy={null}
                     year={2024}
                     history={defaultPlayerFormList}
-                    lastPlayed={defaultPlayerFormList[0]}
-                    lastWon={defaultPlayerFormList[0]}
+                    lastPlayed={createMockPlayerLastResult()}
+                    lastWon={createMockPlayerLastResult()}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
                     activeYears={[2023, 2024]}
@@ -61,8 +62,8 @@ describe('PlayerProfile', () => {
                     introducedBy={null}
                     year={2024}
                     history={defaultPlayerFormList}
-                    lastPlayed={defaultPlayerFormList[0]}
-                    lastWon={defaultPlayerFormList[0]}
+                    lastPlayed={createMockPlayerLastResult()}
+                    lastWon={createMockPlayerLastResult()}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
                     activeYears={[2023, 2024]}
@@ -89,8 +90,8 @@ describe('PlayerProfile', () => {
                     introducedBy={introducedBy}
                     year={2024}
                     history={defaultPlayerFormList}
-                    lastPlayed={defaultPlayerFormList[0]}
-                    lastWon={defaultPlayerFormList[0]}
+                    lastPlayed={createMockPlayerLastResult()}
+                    lastWon={createMockPlayerLastResult()}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
                     activeYears={[2023, 2024]}
@@ -125,8 +126,8 @@ describe('PlayerProfile', () => {
             year,
             introducedBy: null,
             history: defaultPlayerFormList,
-            lastPlayed: defaultPlayerFormList[0],
-            lastWon: defaultPlayerFormList[0],
+            lastPlayed: createMockPlayerLastResult(),
+            lastWon: createMockPlayerLastResult(),
             clubs: defaultClubSupporterDataList,
             countries: defaultCountrySupporterDataList,
             activeYears: [2023, 2024],

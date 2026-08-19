@@ -1,5 +1,6 @@
 import prisma from 'prisma/prisma';
 import {
+    GameDayStatus,
     GameDayWhereInputObjectSchema,
     GameDayWhereUniqueInputObjectSchema,
     TeamName,
@@ -37,7 +38,7 @@ class GameDayService {
      *
      * @param {Object} filters - The filters to apply when retrieving game days.
      * @param {TeamNameType} [filters.bibs] - The team name or bibs to filter by. If "null", it will be treated as null.
-     * @param {boolean} [filters.game] - Whether to filter by game status.
+     * @param {GameDayStatus} [filters.status] - The status to filter by.
      * @param {boolean} [filters.mailSent] - Whether to filter by mail sent status. If true, it will filter for non-null mailSent values.
      * @param {number} [filters.year] - The year to filter by.
      * @param {Date} [filters.fromDate] - Only return game days on or after this date (inclusive).
@@ -46,14 +47,14 @@ class GameDayService {
      */
     async getAll({
         bibs,
-        game,
+        status,
         mailSent,
         year,
         fromDate,
         beforeDate,
     }: {
         bibs?: TeamName;
-        game?: boolean;
+        status?: GameDayStatus;
         mailSent?: boolean;
         year?: number;
         fromDate?: Date;
@@ -61,7 +62,7 @@ class GameDayService {
     } = {}): Promise<GameDayType[]> {
         const where = GameDayWhereInputObjectSchema.parse({
             bibs,
-            game,
+            status,
             year: year === 0 ? undefined : year,
         });
         if (mailSent !== undefined) {
@@ -147,7 +148,7 @@ class GameDayService {
      */
     async getUpcoming(from: Date = new Date()): Promise<GameDayType | null> {
         const where = GameDayWhereInputObjectSchema.parse({
-            game: true,
+            status: { not: 'NoGame' },
             date: { gte: from },
         });
         return prisma.gameDay.findFirst({ where, orderBy: { date: 'asc' } });
@@ -210,7 +211,7 @@ class GameDayService {
     ): Promise<number> {
         return prisma.gameDay.count({
             where: {
-                game: true,
+                status: { not: 'NoGame' },
                 ...(year !== 0
                     ? {
                           date: {
@@ -233,9 +234,9 @@ class GameDayService {
     /**
      * Counts cancelled game days.
      *
-     * A game day is considered cancelled when `game` is `false` and `mailSent`
-     * is not `null`. Results can be filtered by calendar year and optionally
-     * limited to game days up to a specific ID.
+     * A game day is considered cancelled when `status` is `NoGame` and
+     * `mailSent` is not `null`. Results can be filtered by calendar year and
+     * optionally limited to game days up to a specific ID.
      *
      * @param year - The calendar year to filter by. If `0`, no year-based date
      * filter is applied.
@@ -248,7 +249,7 @@ class GameDayService {
     ): Promise<number> {
         return prisma.gameDay.count({
             where: {
-                game: false,
+                status: 'NoGame',
                 mailSent: { not: null },
                 ...(year !== 0
                     ? {
@@ -277,7 +278,7 @@ class GameDayService {
     async getGamesRemaining(year: number): Promise<number> {
         return prisma.gameDay.count({
             where: {
-                game: true,
+                status: { not: 'NoGame' },
                 AND: [
                     {
                         ...(year !== 0
@@ -321,7 +322,7 @@ class GameDayService {
         const result = await prisma.gameDay.groupBy({
             by: ['year'],
             where: {
-                game: true,
+                status: { not: 'NoGame' },
                 ...(until
                     ? {
                           date: {
@@ -355,7 +356,7 @@ class GameDayService {
     }): Promise<number[]> {
         const gameDays = await prisma.gameDay.findMany({
             where: {
-                game: true,
+                status: { not: 'NoGame' },
             },
             select: {
                 year: true,
@@ -379,7 +380,7 @@ class GameDayService {
     async getYear(year: number): Promise<number | null> {
         const gameDay = await prisma.gameDay.findFirst({
             where: {
-                game: true,
+                status: { not: 'NoGame' },
                 year: year,
             },
             select: {

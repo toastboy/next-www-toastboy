@@ -62,7 +62,7 @@ describe('PickerForm', () => {
             id: 1249,
             year: 2026,
             date: new Date('2026-02-03T00:00:00Z'),
-            game: false,
+            status: 'NoGame',
             mailSent: new Date('2026-02-01T09:00:00Z'),
             comment: 'Not enough players',
             bibs: null,
@@ -174,7 +174,7 @@ describe('PickerForm', () => {
     });
 
     it('hides the picker table and shows "Reinstate game" when game=false', () => {
-        const cancelledGameDay = createMockGameDay({ game: false });
+        const cancelledGameDay = createMockGameDay({ status: 'NoGame' });
 
         render(
             <Wrapper>
@@ -544,7 +544,7 @@ describe('PickerForm', () => {
 
     it('shows "Game reinstated" notification when game is reinstated', async () => {
         const user = userEvent.setup();
-        const cancelledGameDay = createMockGameDay({ game: false });
+        const cancelledGameDay = createMockGameDay({ status: 'NoGame' });
 
         render(
             <Wrapper>

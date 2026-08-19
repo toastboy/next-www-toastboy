@@ -29,6 +29,7 @@ import { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
 import { formatDate } from '@/lib/dates';
+import { isGame } from '@/lib/gameResult';
 import type { SetGameEnabledProxy } from '@/types/actions/SetGameEnabled';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
@@ -271,14 +272,16 @@ export const PickerForm = ({
         try {
             await setGameEnabled({
                 gameDayId: gameDay.id,
-                game: !gameDay.game,
+                game: !isGame(gameDay.status),
                 reason: form.values.reason,
             });
             notifications.update({
                 id: notificationId,
                 color: 'teal',
-                title: gameDay.game ? 'Game cancelled' : 'Game reinstated',
-                message: gameDay.game
+                title: isGame(gameDay.status)
+                    ? 'Game cancelled'
+                    : 'Game reinstated',
+                message: isGame(gameDay.status)
                     ? 'The game has been marked as cancelled.'
                     : 'The game has been reinstated.',
                 icon: <IconCheck size={config.notificationIconSize} />,
@@ -443,7 +446,7 @@ export const PickerForm = ({
                             Game {gameDay.id}: {formatDate(gameDay.date)}
                         </Text>
                     </Stack>
-                    {gameDay.game ? picker : null}
+                    {isGame(gameDay.status) ? picker : null}
                     <Group
                         justify="space-between"
                         align="center"
@@ -451,12 +454,14 @@ export const PickerForm = ({
                     >
                         <TextInput
                             aria-label={
-                                gameDay.game
+                                isGame(gameDay.status)
                                     ? 'Cancellation reason'
                                     : 'Reinstatement reason'
                             }
                             placeholder={
-                                gameDay.game ? 'not enough players' : ''
+                                isGame(gameDay.status)
+                                    ? 'not enough players'
+                                    : ''
                             }
                             {...form.getInputProps('reason')}
                             disabled={isSubmitting || isSettingEnabled}
@@ -464,13 +469,15 @@ export const PickerForm = ({
                         />
                         <Button
                             type="button"
-                            color={gameDay.game ? 'red' : 'green'}
+                            color={isGame(gameDay.status) ? 'red' : 'green'}
                             onClick={handleSetGameEnabled}
                             loading={isSettingEnabled}
                             disabled={isSubmitting || isSettingEnabled}
                             w={{ base: '100%', [actionsBreakpoint]: 150 }}
                         >
-                            {gameDay.game ? 'Cancel game' : 'Reinstate game'}
+                            {isGame(gameDay.status)
+                                ? 'Cancel game'
+                                : 'Reinstate game'}
                         </Button>
                     </Group>
                 </Stack>

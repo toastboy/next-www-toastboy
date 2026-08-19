@@ -25,7 +25,7 @@ export const PastGame: Story = {
 export const PastNoGame: Story = {
     args: {
         gameDay: createMockGameDay({
-            game: false,
+            status: 'NoGame',
             mailSent: null,
         }),
     },
@@ -34,7 +34,7 @@ export const PastNoGame: Story = {
 export const PastCancelled: Story = {
     args: {
         gameDay: createMockGameDay({
-            game: false,
+            status: 'NoGame',
         }),
     },
 };
@@ -50,7 +50,7 @@ export const FutureGame: Story = {
 export const FutureNoGame: Story = {
     args: {
         gameDay: createMockGameDay({
-            game: false,
+            status: 'NoGame',
             date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         }),
     },

@@ -9,14 +9,14 @@ import { formatDate } from '@/lib/dates';
 import { PlayerDisplayType } from '@/services/Player';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 import type { PlayerDataEmailDisplayType } from '@/types/PlayerDataType';
-import type { PlayerFormType } from '@/types/PlayerFormType';
+import type { PlayerLastResultType } from '@/types/PlayerLastResultType';
 
 export interface Props {
     player: PlayerDisplayType;
     year: number;
     introducedBy?: PlayerDisplayType | null;
-    lastPlayed: PlayerFormType | null;
-    lastWon: PlayerFormType | null;
+    lastPlayed: PlayerLastResultType | null;
+    lastWon: PlayerLastResultType | null;
     isAuthenticated?: boolean;
     isAdmin?: boolean;
     playerData?: PlayerDataEmailDisplayType | null;

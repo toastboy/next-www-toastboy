@@ -5,6 +5,7 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
+import { InternalError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import playerRecordService from '@/services/PlayerRecord';
 import {
@@ -40,7 +41,7 @@ describe('PlayerRecordService', () => {
                 gameDayId: 15,
                 playerId: 12,
             });
-            expect(typeof result?.points).toBe('number');
+            expect(typeof result?.scorePoints).toBe('number');
         });
 
         it('should return null for Player 16, Year 2022, GameDay 7', async () => {
@@ -363,7 +364,8 @@ describe('PlayerRecordService', () => {
                 won: 0,
                 drawn: 0,
                 lost: 0,
-                points: 0,
+                points: null,
+                scorePoints: 0,
             });
         });
 
@@ -675,11 +677,11 @@ describe('PlayerRecordService', () => {
 
     describe('create', () => {
         it('should create an PlayerRecord', async () => {
-            const record: PlayerRecordType = {
+            const record = {
                 ...defaultPlayerRecord,
                 playerId: 12,
                 gameDayId: 132,
-                points: 80,
+                scorePoints: 80,
             };
             (prisma.playerRecord.create as Mock).mockResolvedValueOnce(record);
             const result = await playerRecordService.create(record);
@@ -688,7 +690,7 @@ describe('PlayerRecordService', () => {
                     data: expect.objectContaining({
                         playerId: 12,
                         gameDayId: 132,
-                        points: 80,
+                        scorePoints: 80,
                     }) as unknown,
                 }) as unknown,
             );
@@ -735,25 +737,31 @@ describe('PlayerRecordService', () => {
             await expect(
                 playerRecordService.create({
                     ...defaultPlayerRecord,
-                    points: -1,
+                    scorePoints: -1,
                 }),
             ).rejects.toThrow();
             await expect(
                 playerRecordService.create({
                     ...defaultPlayerRecord,
-                    averages: -1.0,
+                    points: -1 as unknown as 0 | 1 | 3,
                 }),
             ).rejects.toThrow();
             await expect(
                 playerRecordService.create({
                     ...defaultPlayerRecord,
-                    stalwart: -1,
+                    scoreAverages: -1.0,
                 }),
             ).rejects.toThrow();
             await expect(
                 playerRecordService.create({
                     ...defaultPlayerRecord,
-                    pub: -1,
+                    scoreStalwart: -1,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                playerRecordService.create({
+                    ...defaultPlayerRecord,
+                    scorePub: -1,
                 }),
             ).rejects.toThrow();
             await expect(
@@ -789,7 +797,7 @@ describe('PlayerRecordService', () => {
             await expect(
                 playerRecordService.create({
                     ...defaultPlayerRecord,
-                    speedy: -1,
+                    scoreSpeedy: -1,
                 }),
             ).rejects.toThrow();
             await expect(
@@ -856,7 +864,7 @@ describe('PlayerRecordService', () => {
                 playerId: 12,
                 year: 2021,
                 gameDayId: 15,
-                points: 23,
+                scorePoints: 23,
             };
             (prisma.playerRecord.upsert as Mock).mockResolvedValueOnce(
                 updatedPlayerRecord,
@@ -875,13 +883,13 @@ describe('PlayerRecordService', () => {
                     playerId: 12,
                     year: 2021,
                     gameDayId: 15,
-                    points: 23,
+                    scorePoints: 23,
                 }) as unknown,
                 update: expect.objectContaining({
                     playerId: 12,
                     year: 2021,
                     gameDayId: 15,
-                    points: 23,
+                    scorePoints: 23,
                 }) as unknown,
             });
             expect(result).toEqual(updatedPlayerRecord);
@@ -897,7 +905,7 @@ describe('PlayerRecordService', () => {
                 {
                     id: 1,
                     date: new Date('2022-01-03'),
-                    game: true,
+                    status: 'AWin',
                     mailSent: new Date('2022-01-01'),
                     comment: null,
                     bibs: 'A',
@@ -913,11 +921,11 @@ describe('PlayerRecordService', () => {
                     playerId: i + 1,
                     response: 'Yes',
                     responseInterval: (i + 1) * 500,
-                    points: 3,
                     team: i % 2 === 0 ? 'A' : 'B',
                     pub: null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'AWin' },
                 })),
             );
 
@@ -930,13 +938,196 @@ describe('PlayerRecordService', () => {
         });
     });
 
+    describe('upsertForGameDay with an outcome referencing an unknown GameDay', () => {
+        it('should throw InternalError rather than silently treating a missing status as decided', async () => {
+            (prisma.playerRecord.upsert as Mock).mockImplementation(
+                (args: { create: unknown }) => Promise.resolve(args.create),
+            );
+            // Only GameDay 1 is known...
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                {
+                    id: 1,
+                    date: new Date('2022-01-03'),
+                    status: 'AWin',
+                    mailSent: new Date('2022-01-01'),
+                    comment: null,
+                    bibs: 'A',
+                    pickerGamesHistory: 10,
+                },
+            ]);
+            (prisma.gameDay.count as Mock).mockResolvedValue(1);
+
+            // ...but the outcome references GameDay 2, which is missing from
+            // the status map built from the list above.
+            (prisma.outcome.findMany as Mock).mockResolvedValue([
+                {
+                    gameDayId: 2,
+                    playerId: 1,
+                    response: 'Yes',
+                    responseInterval: 500,
+                    team: 'A',
+                    pub: null,
+                    paid: false,
+                    goalie: false,
+                    gameDay: { status: 'AWin' },
+                },
+            ]);
+
+            await expect(
+                playerRecordService.upsertForGameDay(1),
+            ).rejects.toBeInstanceOf(InternalError);
+        });
+    });
+
+    describe('upsertForGameDay with an unplayed player mixed in', () => {
+        it("should rank a scored player correctly and leave an unscored player's ranks unset, not null/NaN", async () => {
+            (prisma.playerRecord.upsert as Mock).mockImplementation(
+                (args: { create: unknown }) => Promise.resolve(args.create),
+            );
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                {
+                    id: 1,
+                    date: new Date('2022-01-03'),
+                    status: 'AWin',
+                    mailSent: new Date('2022-01-01'),
+                    comment: null,
+                    bibs: 'A',
+                    pickerGamesHistory: 10,
+                },
+            ]);
+            (prisma.gameDay.count as Mock).mockResolvedValue(1);
+
+            (prisma.outcome.findMany as Mock).mockResolvedValue([
+                // Player 1 played and won — has real scorePoints/scoreAverages/
+                // scoreStalwart/scoreSpeedy values.
+                {
+                    gameDayId: 1,
+                    playerId: 1,
+                    response: 'Yes',
+                    responseInterval: 500,
+                    team: 'A',
+                    pub: null,
+                    paid: false,
+                    goalie: false,
+                    gameDay: { status: 'AWin' },
+                },
+                // Player 2 responded but never played and gave no response
+                // interval — played/scorePoints/scoreAverages/scoreStalwart/
+                // scoreSpeedy are all left unset (undefined, not null) on
+                // their record.
+                {
+                    gameDayId: 1,
+                    playerId: 2,
+                    response: 'No',
+                    responseInterval: null,
+                    team: null,
+                    pub: null,
+                    paid: false,
+                    goalie: false,
+                    gameDay: { status: 'AWin' },
+                },
+            ]);
+
+            const result = await playerRecordService.upsertForGameDay(1);
+            const player1 = result.find(
+                (r) => r.year === 2022 && r.playerId === 1,
+            );
+            const player2 = result.find(
+                (r) => r.year === 2022 && r.playerId === 2,
+            );
+
+            expect(player1?.rankPoints).toBe(1);
+            expect(player1?.rankStalwart).toBe(1);
+            expect(player1?.rankSpeedyUnqualified).toBe(1);
+            expect(Number.isNaN(player1?.rankPoints)).toBe(false);
+            expect(Number.isNaN(player1?.rankStalwart)).toBe(false);
+            expect(Number.isNaN(player1?.rankSpeedyUnqualified)).toBe(false);
+
+            // Player 2 never qualifies for the ranking `if` guards at all
+            // (their score fields are unset, not null), so these stay
+            // unassigned rather than being written as null.
+            expect(player2?.rankPoints).toBeUndefined();
+            expect(player2?.rankStalwart).toBeUndefined();
+            expect(player2?.rankSpeedy).toBeUndefined();
+            expect(player2?.rankSpeedyUnqualified).toBeUndefined();
+        });
+    });
+
+    describe('upsertForGameDay with a qualified-averages player', () => {
+        it('should assign rankAverages once a player reaches minGamesForAveragesTable played games', async () => {
+            (prisma.playerRecord.upsert as Mock).mockImplementation(
+                (args: { create: unknown }) => Promise.resolve(args.create),
+            );
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(
+                Array.from({ length: 10 }, (_, i) => ({
+                    id: i + 1,
+                    date: new Date('2022-01-03'),
+                    status: 'AWin',
+                    mailSent: new Date('2022-01-01'),
+                    comment: null,
+                    bibs: 'A',
+                    pickerGamesHistory: 10,
+                })),
+            );
+            (prisma.gameDay.count as Mock).mockResolvedValue(10);
+
+            // Two players who both reach played = 10 =
+            // config.minGamesForAveragesTable on the last game day, one on
+            // the winning team throughout and one on the losing team — this
+            // keeps the qualified averagesArray at length >= 2 so its sort
+            // comparator actually runs.
+            (prisma.outcome.findMany as Mock).mockResolvedValue(
+                Array.from({ length: 10 }, (_, i) => [
+                    {
+                        gameDayId: i + 1,
+                        playerId: 1,
+                        response: 'Yes',
+                        responseInterval: 500,
+                        team: 'A',
+                        pub: null,
+                        paid: false,
+                        goalie: false,
+                        gameDay: { status: 'AWin' },
+                    },
+                    {
+                        gameDayId: i + 1,
+                        playerId: 2,
+                        response: 'Yes',
+                        responseInterval: 500,
+                        team: 'B',
+                        pub: null,
+                        paid: false,
+                        goalie: false,
+                        gameDay: { status: 'AWin' },
+                    },
+                ]).flat(),
+            );
+
+            const result = await playerRecordService.upsertForGameDay();
+            const winnerRecord = result.find(
+                (r) =>
+                    r.year === 2022 && r.gameDayId === 10 && r.playerId === 1,
+            );
+            const loserRecord = result.find(
+                (r) =>
+                    r.year === 2022 && r.gameDayId === 10 && r.playerId === 2,
+            );
+            expect(winnerRecord?.played).toBe(10);
+            expect(loserRecord?.played).toBe(10);
+            expect(winnerRecord?.rankAverages).toBe(1);
+            expect(loserRecord?.rankAverages).toBe(2);
+            expect(winnerRecord?.rankAveragesUnqualified).toBeNull();
+            expect(loserRecord?.rankAveragesUnqualified).toBeNull();
+        });
+    });
+
     describe('upsertForGameDay with no-points outcomes', () => {
         it('should not set points or averages when a player has only null-points outcomes', async () => {
             (prisma.gameDay.findMany as Mock).mockResolvedValue([
                 {
                     id: 1,
                     date: new Date('2022-01-03'),
-                    game: true,
+                    status: 'Scheduled',
                     mailSent: new Date('2022-01-01'),
                     comment: null,
                     bibs: 'A',
@@ -951,11 +1142,11 @@ describe('PlayerRecordService', () => {
                     playerId: 1,
                     response: 'No',
                     responseInterval: null,
-                    points: null,
                     team: null,
                     pub: null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'Scheduled' },
                 },
             ]);
 
@@ -967,18 +1158,30 @@ describe('PlayerRecordService', () => {
                         .playerId === 1,
             );
             expect(relevantCall).toBeDefined();
-            // When a player has only null-points outcomes, played/points/averages are not set
+            // When a player has only null-points outcomes, played/scorePoints/
+            // scoreAverages are not set, but the single-game points field is
+            // still set explicitly to null (there's no result for this game).
             expect(
                 (relevantCall![0] as { create: { played?: number } }).create
                     .played,
             ).toBeUndefined();
             expect(
-                (relevantCall![0] as { create: { points?: number } }).create
-                    .points,
+                (relevantCall![0] as { create: { points: number | null } })
+                    .create.points,
+            ).toBeNull();
+            expect(
+                (
+                    relevantCall![0] as {
+                        create: { scorePoints?: number };
+                    }
+                ).create.scorePoints,
             ).toBeUndefined();
             expect(
-                (relevantCall![0] as { create: { averages?: number } }).create
-                    .averages,
+                (
+                    relevantCall![0] as {
+                        create: { scoreAverages?: number };
+                    }
+                ).create.scoreAverages,
             ).toBeUndefined();
         });
     });
@@ -988,7 +1191,7 @@ describe('PlayerRecordService', () => {
             (prisma.gameDay.findUnique as Mock).mockResolvedValue({
                 id: 15,
                 date: new Date('2021-01-03'),
-                game: true,
+                status: 'Scheduled',
                 mailSent: new Date('2021-01-01'),
                 comment: 'I heart footy',
                 bibs: 'A',
@@ -1012,7 +1215,7 @@ describe('PlayerRecordService', () => {
             (prisma.gameDay.findUnique as Mock).mockResolvedValue({
                 id: 15,
                 date: new Date('2022-01-03'),
-                game: true,
+                status: 'Scheduled',
                 mailSent: new Date('2022-01-01'),
                 comment: 'I heart footy',
                 bibs: 'A',
@@ -1026,7 +1229,7 @@ describe('PlayerRecordService', () => {
                         index < 11
                             ? new Date('2021-01-03')
                             : new Date('2022-01-03'),
-                    game: true,
+                    status: 'Scheduled',
                     mailSent:
                         index < 11
                             ? new Date('2021-01-01')
@@ -1041,15 +1244,15 @@ describe('PlayerRecordService', () => {
 
             (prisma.outcome.findMany as Mock).mockResolvedValue(
                 Array.from({ length: 150 }, (_, index) => ({
-                    gameDayId: index / 10 + 1,
+                    gameDayId: Math.floor(index / 10) + 1,
                     playerId: (index % 10) + 1,
                     response: index < 141 ? 'Yes' : 'No',
                     responseInterval: index != 100 ? 3000 : null,
-                    points: index < 141 ? (index % 2 ? 3 : 0) : null,
                     team: index < 141 ? (index % 2 ? 'A' : 'B') : null,
                     pub: index % 2 ? 1 : null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'Scheduled' },
                 })),
             );
         });
@@ -1144,7 +1347,7 @@ describe('PlayerRecordService', () => {
                     id: 2,
                     year: 2024,
                     date: fromDate,
-                    game: true,
+                    status: 'Draw',
                     mailSent: new Date('2024-01-08T09:00:00Z'),
                     comment: null,
                     bibs: 'A',
@@ -1159,7 +1362,7 @@ describe('PlayerRecordService', () => {
                         id: 2,
                         year: 2024,
                         date: fromDate,
-                        game: true,
+                        status: 'Draw',
                         mailSent: new Date('2024-01-08T09:00:00Z'),
                         comment: null,
                         bibs: 'A',
@@ -1175,14 +1378,14 @@ describe('PlayerRecordService', () => {
                 year: 0,
                 gameDayId: 1,
                 played: 5,
-                averages: 1.5,
+                scoreAverages: 1.5,
             });
             const player99Year = createMockPlayerRecord({
                 playerId: 99,
                 year: 2024,
                 gameDayId: 1,
                 played: 5,
-                averages: 1.5,
+                scoreAverages: 1.5,
             });
 
             (prisma.playerRecord.groupBy as Mock)
@@ -1209,7 +1412,6 @@ describe('PlayerRecordService', () => {
                     playerId: 99,
                     response: 'Yes',
                     responseInterval: 1000,
-                    points: 3,
                     team: 'A',
                     pub: null,
                     paid: false,
@@ -1220,11 +1422,11 @@ describe('PlayerRecordService', () => {
                     playerId: 1,
                     response: 'Yes',
                     responseInterval: 2000,
-                    points: 1,
                     team: 'B',
                     pub: null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'Draw' },
                 },
             ];
             (prisma.outcome.findMany as Mock)
@@ -1239,7 +1441,7 @@ describe('PlayerRecordService', () => {
             const result = await playerRecordService.upsertFromGameDay(2);
 
             expect(getSpy).toHaveBeenCalledWith(2);
-            expect(getAllSpy).toHaveBeenCalledWith({ fromDate });
+            expect(getAllSpy).toHaveBeenCalledWith();
             // Both the all-time and per-year bootstrap queries must run.
             expect(prisma.playerRecord.groupBy).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -1259,15 +1461,15 @@ describe('PlayerRecordService', () => {
                     expect.objectContaining({ playerId: 1 }),
                 ]),
             );
-            // Player 99 (bootstrapped: points=18, averages=1.5) must rank above
-            // player 1 (computed: points=1, averages=1.0). Without a proper
-            // bootstrap these checks would also fail because player 99 would not
-            // appear in the result at all.
+            // Player 99 (bootstrapped: scorePoints=18, scoreAverages=1.5) must
+            // rank above player 1 (computed: scorePoints=1, scoreAverages=1.0).
+            // Without a proper bootstrap these checks would also fail because
+            // player 99 would not appear in the result at all.
             const year2024 = result.filter((r) => r.year === 2024);
-            expectRankMatchesOrder(year2024, 'points', 'rankPoints');
+            expectRankMatchesOrder(year2024, 'scorePoints', 'rankPoints');
             expectRankMatchesOrder(
                 year2024,
-                'averages',
+                'scoreAverages',
                 'rankAveragesUnqualified',
             );
             expect(prisma.playerRecord.deleteMany).not.toHaveBeenCalled();
@@ -1286,7 +1488,7 @@ describe('PlayerRecordService', () => {
                     id: 2,
                     year: 2024,
                     date: pastDate,
-                    game: true,
+                    status: 'AWin',
                     mailSent: new Date('2024-01-08T09:00:00Z'),
                     comment: null,
                     bibs: 'A',
@@ -1301,7 +1503,7 @@ describe('PlayerRecordService', () => {
                         id: 2,
                         year: 2024,
                         date: pastDate,
-                        game: true,
+                        status: 'AWin',
                         mailSent: new Date('2024-01-08T09:00:00Z'),
                         comment: null,
                         bibs: 'A',
@@ -1313,7 +1515,7 @@ describe('PlayerRecordService', () => {
                         id: 3,
                         year: 2024,
                         date: futureDate,
-                        game: true,
+                        status: 'Scheduled',
                         mailSent: new Date('2099-12-29T09:00:00Z'),
                         comment: null,
                         bibs: 'B',
@@ -1330,11 +1532,11 @@ describe('PlayerRecordService', () => {
                     playerId: 1,
                     response: 'Yes',
                     responseInterval: 1000,
-                    points: 3,
                     team: 'A',
                     pub: null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'AWin' },
                 },
             ]);
             (prisma.gameDay.count as Mock).mockResolvedValue(1);
@@ -1371,7 +1573,7 @@ describe('PlayerRecordService', () => {
                     id: 2,
                     year: 2024,
                     date: date2,
-                    game: true,
+                    status: 'AWin',
                     mailSent: new Date('2024-01-08T09:00:00Z'),
                     comment: null,
                     bibs: 'A',
@@ -1386,7 +1588,7 @@ describe('PlayerRecordService', () => {
                         id: 2,
                         year: 2024,
                         date: date2,
-                        game: true,
+                        status: 'AWin',
                         mailSent: new Date('2024-01-08T09:00:00Z'),
                         comment: null,
                         bibs: 'A',
@@ -1398,7 +1600,7 @@ describe('PlayerRecordService', () => {
                         id: 3,
                         year: 2024,
                         date: date3,
-                        game: true,
+                        status: 'Draw',
                         mailSent: new Date('2024-01-15T09:00:00Z'),
                         comment: null,
                         bibs: 'B',
@@ -1416,22 +1618,22 @@ describe('PlayerRecordService', () => {
                     playerId: 1,
                     response: 'Yes',
                     responseInterval: 1000,
-                    points: 3,
                     team: 'A',
                     pub: null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'AWin' },
                 },
                 {
                     gameDayId: 3,
                     playerId: 2,
                     response: 'Yes',
                     responseInterval: 2000,
-                    points: 1,
                     team: 'B',
                     pub: null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'Draw' },
                 },
             ]);
             (prisma.gameDay.count as Mock).mockResolvedValue(2);
@@ -1465,7 +1667,7 @@ describe('PlayerRecordService', () => {
                     id: 50,
                     year: 2024,
                     date: date2024,
-                    game: true,
+                    status: 'AWin',
                     mailSent: new Date('2024-12-16T09:00:00Z'),
                     comment: null,
                     bibs: 'A',
@@ -1480,7 +1682,7 @@ describe('PlayerRecordService', () => {
                         id: 50,
                         year: 2024,
                         date: date2024,
-                        game: true,
+                        status: 'AWin',
                         mailSent: new Date('2024-12-16T09:00:00Z'),
                         comment: null,
                         bibs: 'A',
@@ -1492,7 +1694,7 @@ describe('PlayerRecordService', () => {
                         id: 51,
                         year: 2025,
                         date: date2025,
-                        game: true,
+                        status: 'Scheduled',
                         mailSent: new Date('2025-01-06T09:00:00Z'),
                         comment: null,
                         bibs: 'B',
@@ -1509,11 +1711,11 @@ describe('PlayerRecordService', () => {
                     playerId: 1,
                     response: 'Yes',
                     responseInterval: 1000,
-                    points: 3,
                     team: 'A',
                     pub: null,
                     paid: false,
                     goalie: false,
+                    gameDay: { status: 'AWin' },
                 },
             ]);
             (prisma.gameDay.count as Mock).mockResolvedValue(1);
@@ -1575,7 +1777,7 @@ describe('PlayerRecordService', () => {
                     id: 2,
                     year: 2024,
                     date: fromDate,
-                    game: true,
+                    status: 'AWin',
                     mailSent: new Date('2024-01-08T09:00:00Z'),
                     comment: null,
                     bibs: 'A',
@@ -1591,7 +1793,7 @@ describe('PlayerRecordService', () => {
 
             expect(result).toEqual([]);
             expect(getSpy).toHaveBeenCalledWith(2);
-            expect(getAllSpy).toHaveBeenCalledWith({ fromDate });
+            expect(getAllSpy).toHaveBeenCalledWith();
             getSpy.mockRestore();
             getAllSpy.mockRestore();
         });

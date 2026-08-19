@@ -29,10 +29,8 @@ class ImmediateResizeObserver {
 /** One game per month in 2024, result cycling through win/draw/loss/null. */
 const buildYearData = (): PlayerFormType[] =>
     Array.from({ length: 12 }, (_, i) => ({
-        ...createMockOutcome({
-            gameDayId: i + 1,
-            points: [3, 1, 0, null][i % 4],
-        }),
+        ...createMockOutcome({ gameDayId: i + 1 }),
+        points: [3, 1, 0, null][i % 4] as 0 | 1 | 3 | null,
         gameDay: createMockGameDay({ id: i + 1, date: new Date(2024, i, 7) }),
     }));
 
@@ -40,10 +38,8 @@ const buildYearData = (): PlayerFormType[] =>
 const buildAllTimeData = (): PlayerFormType[] =>
     [2022, 2023, 2024].flatMap((yr, yi) =>
         [0, 1].map((gi) => ({
-            ...createMockOutcome({
-                gameDayId: yi * 2 + gi + 1,
-                points: gi === 0 ? 3 : 0,
-            }),
+            ...createMockOutcome({ gameDayId: yi * 2 + gi + 1 }),
+            points: gi === 0 ? 3 : 0,
             gameDay: createMockGameDay({
                 id: yi * 2 + gi + 1,
                 date: new Date(yr, gi * 3, 7),
@@ -54,11 +50,11 @@ const buildAllTimeData = (): PlayerFormType[] =>
 /** One game + one no-game day (with no comment) in January 2024. */
 const buildWithNoGameNoCommentData = (): PlayerFormType[] => [
     {
-        ...createMockOutcome({ gameDayId: 1, points: 3 }),
+        ...createMockOutcome({ gameDayId: 1 }),
+        points: 3,
         gameDay: createMockGameDay({
             id: 1,
             date: new Date(2024, 0, 7),
-            game: true,
         }),
     },
     {
@@ -75,7 +71,7 @@ const buildWithNoGameNoCommentData = (): PlayerFormType[] => [
         gameDay: createMockGameDay({
             id: 2,
             date: new Date(2024, 0, 14),
-            game: false,
+            status: 'NoGame',
             comment: null,
         }),
     },
@@ -84,11 +80,11 @@ const buildWithNoGameNoCommentData = (): PlayerFormType[] => [
 /** One game + one no-game day in January 2024. */
 const buildWithNoGameData = (): PlayerFormType[] => [
     {
-        ...createMockOutcome({ gameDayId: 1, points: 3 }),
+        ...createMockOutcome({ gameDayId: 1 }),
+        points: 3,
         gameDay: createMockGameDay({
             id: 1,
             date: new Date(2024, 0, 7),
-            game: true,
         }),
     },
     {
@@ -105,7 +101,7 @@ const buildWithNoGameData = (): PlayerFormType[] => [
         gameDay: createMockGameDay({
             id: 2,
             date: new Date(2024, 0, 14),
-            game: false,
+            status: 'NoGame',
         }),
     },
 ];
@@ -113,7 +109,8 @@ const buildWithNoGameData = (): PlayerFormType[] => [
 /** One game with points=2 (not in colorMap or resultLabel) to exercise ?? fallbacks. */
 const buildUnknownPointsData = (): PlayerFormType[] => [
     {
-        ...createMockOutcome({ gameDayId: 1, points: 2 }),
+        ...createMockOutcome({ gameDayId: 1 }),
+        points: 2 as unknown as 0 | 1 | 3,
         gameDay: createMockGameDay({ id: 1, date: new Date(2024, 0, 7) }),
     },
 ];
@@ -144,7 +141,7 @@ describe('buildGrid', () => {
         expect(maxRow).toBe(0);
     });
 
-    it('marks cells as noGame when gameDay.game is false', () => {
+    it('marks cells as noGame when gameDay.status is NoGame', () => {
         const { cells } = buildGrid(buildWithNoGameData());
         const janCells = cells.filter((c) => c.col === 'Jan');
         expect(janCells).toHaveLength(2);
@@ -154,7 +151,7 @@ describe('buildGrid', () => {
 
     it('skips entries without a gameDay', () => {
         const { cells, maxRow } = buildGrid([
-            { ...createMockOutcome(), gameDay: undefined },
+            { ...createMockOutcome(), points: null, gameDay: undefined },
         ]);
         expect(cells).toHaveLength(0);
         expect(maxRow).toBe(0);
@@ -181,7 +178,9 @@ describe('buildYearGroups', () => {
 
     it('skips entries without a gameDay', () => {
         expect(
-            buildYearGroups([{ ...createMockOutcome(), gameDay: undefined }]),
+            buildYearGroups([
+                { ...createMockOutcome(), points: null, gameDay: undefined },
+            ]),
         ).toHaveLength(0);
     });
 });
@@ -430,7 +429,13 @@ describe('PlayerHeatmap', () => {
         const { container } = render(
             <Wrapper>
                 <PlayerHeatmap
-                    data={[{ ...createMockOutcome(), gameDay: undefined }]}
+                    data={[
+                        {
+                            ...createMockOutcome(),
+                            points: null,
+                            gameDay: undefined,
+                        },
+                    ]}
                     year={2024}
                 />
             </Wrapper>,

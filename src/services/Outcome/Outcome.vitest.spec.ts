@@ -15,7 +15,6 @@ const defaultOutcomeInput: OutcomeWriteInput = {
     playerId: defaultOutcome.playerId,
     response: defaultOutcome.response,
     responseInterval: defaultOutcome.responseInterval,
-    points: 3,
     team: defaultOutcome.team,
     comment: defaultOutcome.comment,
     pub: defaultOutcome.pub,
@@ -77,9 +76,8 @@ describe('OutcomeService', () => {
             expect(result).toEqual(defaultOutcome);
             expect(prisma.outcome.findFirst).toHaveBeenCalledWith({
                 where: {
-                    points: {
-                        not: null,
-                    },
+                    team: { not: null },
+                    gameDay: { status: { in: ['AWin', 'BWin', 'Draw'] } },
                 },
                 orderBy: {
                     gameDayId: 'desc',
@@ -159,7 +157,7 @@ describe('OutcomeService', () => {
             id: index + 1,
             year: 2021,
             date: new Date('2021-01-03'),
-            game: index != 6,
+            status: index != 6 ? 'Scheduled' : 'NoGame',
             mailSent: new Date('2021-01-01'),
             comment: 'I heart footy',
             bibs: 'A',
@@ -181,6 +179,7 @@ describe('OutcomeService', () => {
             expect(result).toEqual([
                 {
                     ...mockGameDays[0],
+                    game: true,
                     dunno: 0,
                     excused: 0,
                     flaked: 0,
@@ -240,7 +239,7 @@ describe('OutcomeService', () => {
                     id: 1,
                     year: 2021,
                     date: new Date('2021-01-03'),
-                    game: false,
+                    status: 'NoGame',
                     mailSent: null,
                     comment: null,
                     bibs: null,
@@ -270,19 +269,31 @@ describe('OutcomeService', () => {
                 {
                     ...createMockOutcome({ gameDayId: 1, playerId: 1 }),
                     player: createMockPlayer({ id: 1 }),
+                    gameDay: createMockGameDay({ id: 1, status: 'AWin' }),
                 },
                 {
                     ...createMockOutcome({ gameDayId: 1, playerId: 2 }),
                     player: createMockPlayer({ id: 2 }),
+                    gameDay: createMockGameDay({ id: 1, status: 'AWin' }),
                 },
             ];
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await outcomeService.getByGameDay(1);
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: { gameDayId: 1, team: undefined },
-                include: { player: true },
+                include: {
+                    player: true,
+                    gameDay: { select: { status: true } },
+                },
             });
-            expect(result).toEqual(fixture);
+            expect(result).toEqual(
+                // Both fixture outcomes are on team 'A' and gameDay.status
+                // 'AWin', so both derive to 3 points.
+                fixture.map(({ gameDay: _gameDay, ...outcome }) => ({
+                    ...outcome,
+                    points: 3,
+                })),
+            );
         });
 
         it('should return an empty list when retrieving outcomes for GameDay id 101', async () => {
@@ -290,7 +301,10 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getByGameDay(101);
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: { gameDayId: 101, team: undefined },
-                include: { player: true },
+                include: {
+                    player: true,
+                    gameDay: { select: { status: true } },
+                },
             });
             expect(result).toEqual([]);
         });
@@ -360,15 +374,66 @@ describe('OutcomeService', () => {
             await expect(outcomeService.getAdminByGameDay(0)).rejects.toThrow();
             expect(prisma.player.findMany).not.toHaveBeenCalled();
         });
+
+        it('should derive points from the game day status when it exists', async () => {
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(
+                createMockGameDay({ id: 25, status: 'AWin' }),
+            );
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                {
+                    ...createMockPlayer({ id: 1, finished: null }),
+                    outcomes: [
+                        createMockOutcome({
+                            id: 101,
+                            gameDayId: 25,
+                            playerId: 1,
+                            team: 'A',
+                        }),
+                    ],
+                },
+            ]);
+
+            const result = await outcomeService.getAdminByGameDay(25);
+
+            expect(result).toEqual([
+                expect.objectContaining({ playerId: 1, points: 3 }),
+            ]);
+        });
+
+        it('should treat a missing game day as NoGame, yielding null points', async () => {
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(null);
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                {
+                    ...createMockPlayer({ id: 1, finished: null }),
+                    outcomes: [
+                        createMockOutcome({
+                            id: 101,
+                            gameDayId: 25,
+                            playerId: 1,
+                            team: 'A',
+                        }),
+                    ],
+                },
+            ]);
+
+            const result = await outcomeService.getAdminByGameDay(25);
+
+            expect(result).toEqual([
+                expect.objectContaining({ playerId: 1, points: null }),
+            ]);
+        });
     });
 
     describe('getByBibs', () => {
-        const mockGameDays = [
+        // Every game day defaults to 'Scheduled' (undecided) so it's excluded
+        // from the WDL count unless a test overrides its status to a decided
+        // one (AWin/BWin/Draw).
+        const baseGameDays = [
             {
                 id: 1,
                 bibs: 'A',
                 year: 2021,
-                game: true,
+                status: 'Scheduled',
                 mailSent: new Date('2021-01-01'),
                 date: new Date('2021-01-03'),
                 comment: null,
@@ -380,7 +445,7 @@ describe('OutcomeService', () => {
                 id: 2,
                 bibs: 'B',
                 year: 2021,
-                game: true,
+                status: 'Scheduled',
                 mailSent: new Date('2021-01-08'),
                 date: new Date('2021-01-10'),
                 comment: null,
@@ -392,7 +457,7 @@ describe('OutcomeService', () => {
                 id: 3,
                 bibs: 'A',
                 year: 2022,
-                game: true,
+                status: 'Scheduled',
                 mailSent: new Date('2022-01-01'),
                 date: new Date('2022-01-02'),
                 comment: null,
@@ -402,13 +467,11 @@ describe('OutcomeService', () => {
             },
         ];
 
-        beforeEach(() => {
-            (prisma.gameDay.findMany as Mock).mockResolvedValue(mockGameDays);
-        });
-
         it('returns correct WDL counts when bibs team A wins', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 1, team: 'A', points: 3 },
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { ...baseGameDays[0], status: 'AWin' },
+                baseGameDays[1],
+                baseGameDays[2],
             ]);
 
             const result = await outcomeService.getByBibs({});
@@ -417,8 +480,10 @@ describe('OutcomeService', () => {
         });
 
         it('returns a loss when bibs team A loses', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 1, team: 'A', points: 0 },
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { ...baseGameDays[0], status: 'BWin' },
+                baseGameDays[1],
+                baseGameDays[2],
             ]);
 
             const result = await outcomeService.getByBibs({});
@@ -426,9 +491,11 @@ describe('OutcomeService', () => {
             expect(result).toEqual({ won: 0, drawn: 0, lost: 1 });
         });
 
-        it('returns a draw when bibs team A has 1 point', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 1, team: 'A', points: 1 },
+        it('returns a draw when the game day is drawn', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { ...baseGameDays[0], status: 'Draw' },
+                baseGameDays[1],
+                baseGameDays[2],
             ]);
 
             const result = await outcomeService.getByBibs({});
@@ -437,8 +504,10 @@ describe('OutcomeService', () => {
         });
 
         it('handles bibs=B correctly: bibs team B wins when team A loses', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 2, team: 'A', points: 0 },
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                baseGameDays[0],
+                { ...baseGameDays[1], status: 'BWin' },
+                baseGameDays[2],
             ]);
 
             const result = await outcomeService.getByBibs({});
@@ -447,8 +516,10 @@ describe('OutcomeService', () => {
         });
 
         it('handles bibs=B correctly: bibs team B loses when team A wins', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 2, team: 'A', points: 3 },
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                baseGameDays[0],
+                { ...baseGameDays[1], status: 'AWin' },
+                baseGameDays[2],
             ]);
 
             const result = await outcomeService.getByBibs({});
@@ -457,9 +528,10 @@ describe('OutcomeService', () => {
         });
 
         it('filters by year when year option is provided', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 1, team: 'A', points: 3 },
-                { gameDayId: 3, team: 'A', points: 3 },
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { ...baseGameDays[0], status: 'AWin' },
+                baseGameDays[1],
+                { ...baseGameDays[2], status: 'AWin' },
             ]);
 
             const result = await outcomeService.getByBibs({ year: 2021 });
@@ -469,10 +541,7 @@ describe('OutcomeService', () => {
 
         it('returns all zeros when bibs is null on game days', async () => {
             (prisma.gameDay.findMany as Mock).mockResolvedValue([
-                { ...mockGameDays[0], bibs: null },
-            ]);
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 1, team: 'A', points: 3 },
+                { ...baseGameDays[0], bibs: null, status: 'AWin' },
             ]);
 
             const result = await outcomeService.getByBibs({});
@@ -480,18 +549,16 @@ describe('OutcomeService', () => {
             expect(result).toEqual({ won: 0, drawn: 0, lost: 0 });
         });
 
-        it('returns all zeros when outcomes have null points', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([
-                { gameDayId: 1, team: 'A', points: null },
-            ]);
+        it('returns all zeros when no game day has a decided result', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(baseGameDays);
 
             const result = await outcomeService.getByBibs({});
 
             expect(result).toEqual({ won: 0, drawn: 0, lost: 0 });
         });
 
-        it('returns all zeros when there are no outcomes', async () => {
-            (prisma.outcome.groupBy as Mock).mockResolvedValue([]);
+        it('returns all zeros when there are no game days', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([]);
 
             const result = await outcomeService.getByBibs({});
 
@@ -502,15 +569,17 @@ describe('OutcomeService', () => {
     describe('getTeamPlayersByGameDay', () => {
         it('should pass ordering to Prisma and return team players with outcomes and form history', async () => {
             const formHistory = 2;
-            const gameDay8 = createMockGameDay({ id: 8 });
-            const gameDay9 = createMockGameDay({ id: 9 });
+            const gameDay8 = createMockGameDay({ id: 8, status: 'BWin' });
+            const gameDay9 = createMockGameDay({ id: 9, status: 'AWin' });
+            const gameDay10 = createMockGameDay({ id: 10, status: 'AWin' });
             // Outcomes arrive newest-first from Prisma; service reverses to oldest-first.
+            // Both are on team 'A' (createMockOutcome default): gameDay9
+            // (AWin) derives to 3 points, gameDay8 (BWin) derives to 0.
             const playerOneOutcomes = [
                 {
                     ...createMockOutcome({
                         playerId: 1,
                         gameDayId: 9,
-                        points: 3,
                     }),
                     gameDay: gameDay9,
                 },
@@ -518,7 +587,6 @@ describe('OutcomeService', () => {
                     ...createMockOutcome({
                         playerId: 1,
                         gameDayId: 8,
-                        points: 0,
                     }),
                     gameDay: gameDay8,
                 },
@@ -533,6 +601,7 @@ describe('OutcomeService', () => {
                         team: 'A',
                         goalie: true,
                     }),
+                    gameDay: gameDay10,
                     player: {
                         ...createMockPlayer({ id: 2, name: 'Player Two' }),
                         outcomes: [],
@@ -545,6 +614,7 @@ describe('OutcomeService', () => {
                         playerId: 1,
                         team: 'A',
                     }),
+                    gameDay: gameDay10,
                     player: {
                         ...createMockPlayer({ id: 1, name: 'Player One' }),
                         outcomes: playerOneOutcomes,
@@ -561,12 +631,18 @@ describe('OutcomeService', () => {
                 where: { gameDayId: 10, team: 'A' },
                 orderBy: [{ goalie: 'desc' }, { player: { name: 'asc' } }],
                 include: {
+                    gameDay: true,
                     player: {
                         include: {
                             outcomes: {
                                 where: {
                                     gameDayId: { lt: 10 },
-                                    points: { not: null },
+                                    team: { not: null },
+                                    gameDay: {
+                                        status: {
+                                            in: ['AWin', 'BWin', 'Draw'],
+                                        },
+                                    },
                                 },
                                 orderBy: { gameDayId: 'desc' },
                                 take: formHistory,
@@ -614,15 +690,19 @@ describe('OutcomeService', () => {
 
         it('left-pads with unplayed sentinels when player has fewer games than formHistory', async () => {
             const formHistory = 4;
-            const gameDay8 = createMockGameDay({ id: 8 });
-            const gameDay9 = createMockGameDay({ id: 9 });
+            const gameDay8 = createMockGameDay({ id: 8, status: 'Draw' });
+            const gameDay9 = createMockGameDay({ id: 9, status: 'AWin' });
+            const gameDay10 = createMockGameDay({
+                id: 10,
+                status: 'Scheduled',
+            });
             // Player has only 2 games; should get 2 padding entries at the start.
+            // Both on team 'A' (default): gameDay9 (AWin) -> 3, gameDay8 (Draw) -> 1.
             const playerOutcomes = [
                 {
                     ...createMockOutcome({
                         playerId: 1,
                         gameDayId: 9,
-                        points: 3,
                     }),
                     gameDay: gameDay9,
                 },
@@ -630,7 +710,6 @@ describe('OutcomeService', () => {
                     ...createMockOutcome({
                         playerId: 1,
                         gameDayId: 8,
-                        points: 1,
                     }),
                     gameDay: gameDay8,
                 },
@@ -644,6 +723,7 @@ describe('OutcomeService', () => {
                         playerId: 1,
                         team: 'A',
                     }),
+                    gameDay: gameDay10,
                     player: {
                         ...createMockPlayer({ id: 1 }),
                         outcomes: playerOutcomes,
@@ -691,20 +771,32 @@ describe('OutcomeService', () => {
             new Date(Date.UTC(y, m, d));
 
         /**
-         * Queue responses for the three parallel queries that getHistoryByPlayer
+         * Queue responses for the two parallel queries that getHistoryByPlayer
          * issues: (1) prisma.outcome.findMany, (2) prisma.gameDay.findMany for
-         * game=false days, (3) prisma.gameDay.findMany for game=true days.
+         * every game day (any status) in the date range.
          */
         const mockQueries = (
             outcomes: unknown[],
-            noGameDays: unknown[],
-            allGameDays: unknown[] = [],
+            gameDaysInRange: unknown[],
         ) => {
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce(outcomes);
-            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(noGameDays);
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(
-                allGameDays,
+                gameDaysInRange,
             );
+        };
+
+        /** Status that yields the given points for team 'A'. */
+        const statusForPoints = (points: number | null) => {
+            switch (points) {
+                case 3:
+                    return 'AWin';
+                case 1:
+                    return 'Draw';
+                case 0:
+                    return 'BWin';
+                default:
+                    return 'Scheduled';
+            }
         };
 
         const makeOutcome = (
@@ -716,13 +808,21 @@ describe('OutcomeService', () => {
                 id: gameDayId * 100,
                 gameDayId,
                 playerId: 1,
-                points,
+                team: 'A',
             }),
-            gameDay: createMockGameDay({ id: gameDayId, date, game: true }),
+            gameDay: createMockGameDay({
+                id: gameDayId,
+                date,
+                status: statusForPoints(points),
+            }),
         });
 
         const makeGameDay = (id: number, date: Date, game: boolean) =>
-            createMockGameDay({ id, date, game });
+            createMockGameDay({
+                id,
+                date,
+                status: game ? 'Scheduled' : 'NoGame',
+            });
 
         describe('input validation', () => {
             it('rejects playerId < 1', async () => {
@@ -776,28 +876,17 @@ describe('OutcomeService', () => {
                         where: {
                             playerId: 1,
                             gameDay: {
-                                game: true,
+                                status: { not: 'NoGame' },
                                 date: { gte: yearStart, lt: yearEnd },
                             },
                         },
                     }),
                 );
-                // First gameDay.findMany call is for game=false days
-                expect(prisma.gameDay.findMany).toHaveBeenNthCalledWith(
-                    1,
+                // The single gameDay.findMany call fetches every game day in
+                // the date range, regardless of status.
+                expect(prisma.gameDay.findMany).toHaveBeenCalledWith(
                     expect.objectContaining({
                         where: {
-                            game: false,
-                            date: { gte: yearStart, lt: yearEnd },
-                        },
-                    }),
-                );
-                // Second is for game=true days (uninvited detection)
-                expect(prisma.gameDay.findMany).toHaveBeenNthCalledWith(
-                    2,
-                    expect.objectContaining({
-                        where: {
-                            game: true,
                             date: { gte: yearStart, lt: yearEnd },
                         },
                     }),
@@ -816,7 +905,10 @@ describe('OutcomeService', () => {
                         expect.objectContaining({
                             where: {
                                 playerId: 1,
-                                gameDay: { game: true, date: { lt: tomorrow } },
+                                gameDay: {
+                                    status: { not: 'NoGame' },
+                                    date: { lt: tomorrow },
+                                },
                             },
                         }),
                     );
@@ -841,7 +933,7 @@ describe('OutcomeService', () => {
                             where: {
                                 playerId: 1,
                                 gameDay: {
-                                    game: true,
+                                    status: { not: 'NoGame' },
                                     date: {
                                         gte: utcDay(2020, 5, 15),
                                         lt: utcDay(2024, 8, 16),
@@ -869,7 +961,7 @@ describe('OutcomeService', () => {
                         where: {
                             playerId: 1,
                             gameDay: {
-                                game: true,
+                                status: { not: 'NoGame' },
                                 date: { gte: yearStart, lt: yearEnd },
                             },
                         },
@@ -887,7 +979,7 @@ describe('OutcomeService', () => {
                         where: {
                             playerId: 1,
                             gameDay: {
-                                game: true,
+                                status: { not: 'NoGame' },
                                 date: { gte: utcDay(2024, 5, 1), lt: yearEnd },
                             },
                         },
@@ -908,7 +1000,7 @@ describe('OutcomeService', () => {
                         where: {
                             playerId: 1,
                             gameDay: {
-                                game: true,
+                                status: { not: 'NoGame' },
                                 date: {
                                     gte: utcDay(2024, 0, 1),
                                     lt: utcDay(2024, 5, 15),
@@ -929,7 +1021,7 @@ describe('OutcomeService', () => {
                         where: {
                             playerId: 1,
                             gameDay: {
-                                game: true,
+                                status: { not: 'NoGame' },
                                 date: {
                                     gte: utcDay(2024, 0, 1),
                                     lt: utcDay(2025, 0, 1),
@@ -950,7 +1042,7 @@ describe('OutcomeService', () => {
                         where: {
                             playerId: 1,
                             gameDay: {
-                                game: true,
+                                status: { not: 'NoGame' },
                                 date: { lt: utcDay(2024, 0, 1) },
                             },
                         },
@@ -980,7 +1072,7 @@ describe('OutcomeService', () => {
                             where: {
                                 playerId: 1,
                                 gameDay: {
-                                    game: true,
+                                    status: { not: 'NoGame' },
                                     date: { lt: utcDay(2024, 8, 11) },
                                 },
                             },
@@ -1029,7 +1121,10 @@ describe('OutcomeService', () => {
                         expect.objectContaining({
                             where: {
                                 playerId: 1,
-                                gameDay: { game: true, date: { lt: tomorrow } },
+                                gameDay: {
+                                    status: { not: 'NoGame' },
+                                    date: { lt: tomorrow },
+                                },
                             },
                         }),
                     );
@@ -1050,7 +1145,7 @@ describe('OutcomeService', () => {
                             where: {
                                 playerId: 1,
                                 gameDay: {
-                                    game: true,
+                                    status: { not: 'NoGame' },
                                     date: {
                                         gte: utcDay(2024, 0, 1),
                                         lt: tomorrow,
@@ -1069,10 +1164,8 @@ describe('OutcomeService', () => {
             it('adds a synthetic null-points entry for a game=true day with no outcome', async () => {
                 const d1 = new Date('2024-03-07T18:00:00Z');
                 // outcomes: empty — player was not invited
-                // noGameDays: empty
-                // allGameDays: one game=true day
+                // the single gameDay.findMany call returns one Scheduled day
                 (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]); // no-game
                 (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(42, d1, true),
                 ]);
@@ -1086,7 +1179,7 @@ describe('OutcomeService', () => {
                     playerId: 1,
                     points: null,
                 });
-                expect(result[0].gameDay?.game).toBe(true);
+                expect(result[0].gameDay?.status).not.toBe('NoGame');
             });
 
             it('does not duplicate a game day that already has an outcome', async () => {
@@ -1095,8 +1188,8 @@ describe('OutcomeService', () => {
                 (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
                     outcome,
                 ]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]); // no-game
-                // allGameDays includes the same game day — must not produce a duplicate
+                // the game-days-in-range list includes the same game day —
+                // must not produce a duplicate
                 (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(42, d1, true),
                 ]);
@@ -1113,7 +1206,6 @@ describe('OutcomeService', () => {
                 (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
                     makeOutcome(1, d1, 3),
                 ]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]); // no-game
                 (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(1, d1, true), // already has outcome — must not duplicate
                     makeGameDay(2, d2, true), // no outcome — should be synthetic
@@ -1132,7 +1224,7 @@ describe('OutcomeService', () => {
         });
 
         describe('no-game day synthetic entries', () => {
-            it('creates a synthetic entry with id = -gameDay.id and game = false', async () => {
+            it('creates a synthetic entry with id = -gameDay.id and status = NoGame', async () => {
                 const noGame = makeGameDay(
                     7,
                     new Date('2024-03-01T00:00:00Z'),
@@ -1146,10 +1238,10 @@ describe('OutcomeService', () => {
                 expect(result[0].playerId).toBe(1);
                 expect(result[0].points).toBeNull();
                 expect(result[0].gameDay?.id).toBe(7);
-                expect(result[0].gameDay?.game).toBe(false);
+                expect(result[0].gameDay?.status).toBe('NoGame');
             });
 
-            it('returns an empty array when all three queries return nothing', async () => {
+            it('returns an empty array when both queries return nothing', async () => {
                 mockQueries([], []);
                 await expect(
                     outcomeService.getHistoryByPlayer(1, 2024),
@@ -1168,8 +1260,6 @@ describe('OutcomeService', () => {
                 ]);
                 (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(2, d2, false),
-                ]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(1, d1, true),
                     makeGameDay(3, d3, true),
                 ]);
@@ -1189,8 +1279,6 @@ describe('OutcomeService', () => {
                 ]);
                 (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(2, date, false),
-                ]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(1, date, true),
                 ]);
 
@@ -1208,8 +1296,6 @@ describe('OutcomeService', () => {
                 ]);
                 (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(1, d1, false),
-                ]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
                     makeGameDay(2, d2, true),
                 ]);
 
@@ -1224,15 +1310,31 @@ describe('OutcomeService', () => {
     describe('getByPlayer', () => {
         it('should retrieve Outcomes for Player ID 1', async () => {
             const fixture = [
-                { ...defaultOutcome, playerId: 1, gameDayId: 1 },
-                { ...defaultOutcome, playerId: 1, gameDayId: 2 },
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 1,
+                    gameDay: createMockGameDay({ id: 1, status: 'AWin' }),
+                },
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 2,
+                    gameDay: createMockGameDay({ id: 2, status: 'BWin' }),
+                },
             ];
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await outcomeService.getByPlayer(1);
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: { playerId: 1 },
+                include: { gameDay: { select: { status: true } } },
             });
-            expect(result).toEqual(fixture);
+            // Both outcomes are on team 'A' (defaultOutcome default):
+            // gameDay 1 (AWin) -> 3 points, gameDay 2 (BWin) -> 0 points.
+            expect(result).toEqual([
+                { ...defaultOutcome, playerId: 1, gameDayId: 1, points: 3 },
+                { ...defaultOutcome, playerId: 1, gameDayId: 2, points: 0 },
+            ]);
         });
 
         it('should return an empty list when retrieving Outcomes for Player id 11', async () => {
@@ -1240,6 +1342,7 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getByPlayer(11);
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: { playerId: 11 },
+                include: { gameDay: { select: { status: true } } },
             });
             expect(result).toEqual([]);
         });
@@ -1248,10 +1351,10 @@ describe('OutcomeService', () => {
     describe('getRecentGamePoints', () => {
         it('should retrieve recent points using the legacy stored procedure filters', async () => {
             const recentPointsRows = [
-                { points: 3 },
-                { points: 1 },
-                { points: 0 },
-                { points: null },
+                { team: 'A', gameDay: { status: 'AWin' } },
+                { team: 'A', gameDay: { status: 'Draw' } },
+                { team: 'A', gameDay: { status: 'BWin' } },
+                { team: 'A', gameDay: { status: 'Scheduled' } },
             ];
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce(
                 recentPointsRows,
@@ -1274,7 +1377,8 @@ describe('OutcomeService', () => {
                 },
                 take: 10,
                 select: {
-                    points: true,
+                    team: true,
+                    gameDay: { select: { status: true } },
                 },
             });
             expect(result).toEqual([3, 1, 0, null]);
@@ -1294,10 +1398,10 @@ describe('OutcomeService', () => {
     describe('getRecentAverage', () => {
         it('should calculate average from the requested history size', async () => {
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
-                { points: 3 },
-                { points: 1 },
-                { points: 0 },
-                { points: 3 },
+                { team: 'A', gameDay: { status: 'AWin' } },
+                { team: 'A', gameDay: { status: 'Draw' } },
+                { team: 'A', gameDay: { status: 'BWin' } },
+                { team: 'A', gameDay: { status: 'AWin' } },
             ]);
 
             const result = await outcomeService.getRecentAverage(25, 7, 3);
@@ -1307,8 +1411,8 @@ describe('OutcomeService', () => {
 
         it('should credit 1.45 points for missing recent games', async () => {
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
-                { points: 3 },
-                { points: 0 },
+                { team: 'A', gameDay: { status: 'AWin' } },
+                { team: 'A', gameDay: { status: 'BWin' } },
             ]);
 
             const result = await outcomeService.getRecentAverage(25, 7, 5);
@@ -1318,8 +1422,8 @@ describe('OutcomeService', () => {
 
         it('should treat null points as zero while still counting the game', async () => {
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
-                { points: null },
-                { points: 3 },
+                { team: 'A', gameDay: { status: 'Scheduled' } },
+                { team: 'A', gameDay: { status: 'AWin' } },
             ]);
 
             const result = await outcomeService.getRecentAverage(25, 7, 3);
@@ -1399,8 +1503,9 @@ describe('OutcomeService', () => {
             expect(prisma.outcome.count).toHaveBeenCalledWith({
                 where: {
                     playerId: 1,
-                    points: { not: null },
+                    team: { not: null },
                     gameDay: {
+                        status: { in: ['AWin', 'BWin', 'Draw'] },
                         date: {
                             gte: new Date(Date.UTC(2021, 0, 1)),
                             lt: new Date(Date.UTC(2022, 0, 1)),
@@ -1417,8 +1522,10 @@ describe('OutcomeService', () => {
             expect(prisma.outcome.count).toHaveBeenCalledWith({
                 where: {
                     playerId: 1,
-                    points: { not: null },
-                    gameDay: {},
+                    team: { not: null },
+                    gameDay: {
+                        status: { in: ['AWin', 'BWin', 'Draw'] },
+                    },
                 },
             });
             expect(result).toBe(25);
@@ -1430,8 +1537,9 @@ describe('OutcomeService', () => {
             expect(prisma.outcome.count).toHaveBeenCalledWith({
                 where: {
                     playerId: 1,
-                    points: { not: null },
+                    team: { not: null },
                     gameDay: {
+                        status: { in: ['AWin', 'BWin', 'Draw'] },
                         id: { lte: 8 },
                     },
                 },
@@ -1452,7 +1560,7 @@ describe('OutcomeService', () => {
     describe('getLatestGamePlayedByYear', () => {
         const defaultGameDay = {
             id: 1,
-            game: true,
+            status: 'AWin',
             mailSent: null,
             comment: null,
             bibs: null,
@@ -1464,7 +1572,6 @@ describe('OutcomeService', () => {
                 {
                     ...defaultOutcome,
                     gameDayId: 1,
-                    points: 0,
                     gameDay: {
                         ...defaultGameDay,
                         id: 1,
@@ -1475,10 +1582,11 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getLatestGamePlayedByYear(2021);
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: {
-                    points: {
+                    team: {
                         not: null,
                     },
                     gameDay: {
+                        status: { in: ['AWin', 'BWin', 'Draw'] },
                         date: {
                             gte: new Date(Date.UTC(2021, 0, 1)),
                             lt: new Date(Date.UTC(2022, 0, 1)),
@@ -1498,7 +1606,6 @@ describe('OutcomeService', () => {
                 {
                     ...defaultOutcome,
                     gameDayId: 3,
-                    points: 0,
                     gameDay: {
                         ...defaultGameDay,
                         id: 3,
@@ -1509,8 +1616,11 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getLatestGamePlayedByYear(0);
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: {
-                    points: {
+                    team: {
                         not: null,
+                    },
+                    gameDay: {
+                        status: { in: ['AWin', 'BWin', 'Draw'] },
                     },
                 },
                 take: 1,
@@ -1556,12 +1666,6 @@ describe('OutcomeService', () => {
                     ...defaultOutcomeInput,
                     responseInterval: -1,
                 }),
-            ).rejects.toThrow();
-            await expect(
-                outcomeService.create({
-                    ...defaultOutcomeInput,
-                    points: 2,
-                } as unknown as OutcomeWriteInput),
             ).rejects.toThrow();
             await expect(
                 outcomeService.create({

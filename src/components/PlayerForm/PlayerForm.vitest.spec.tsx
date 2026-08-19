@@ -54,9 +54,13 @@ describe('PlayerForm', () => {
     });
 
     it('renders a single entry with unknown points using the grey fallback colour', () => {
+        // points can only ever be 0/1/3/null in practice (it's derived from
+        // GameDay.status + Outcome.team), but the component still defends
+        // against an unmapped value defensively — simulate that here.
         const singleEntry = [
             {
-                ...createMockOutcome({ playerId: 1, points: 2, gameDayId: 42 }),
+                ...createMockOutcome({ playerId: 1, gameDayId: 42 }),
+                points: 2 as unknown as 0 | 1 | 3,
                 gameDay: createMockGameDay({ id: 42 }),
             },
         ];

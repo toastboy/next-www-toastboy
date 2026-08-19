@@ -5,6 +5,7 @@ import { PlayerLoginWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/obje
 import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerWhereUniqueInput.schema';
 import z from 'zod';
 
+import { getPlayerPoints } from '@/lib/gameResult';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     FamilyTreeNodeType,
@@ -13,6 +14,10 @@ import {
     PlayerDataType,
     PlayerFormType,
 } from '@/types';
+import {
+    PlayerLastResultSchema,
+    type PlayerLastResultType,
+} from '@/types/PlayerLastResultType';
 import {
     PlayerCreateOneStrictSchema,
     type PlayerCreateWriteInput,
@@ -293,6 +298,9 @@ class PlayerService {
                     orderBy: {
                         gameDayId: 'desc',
                     },
+                    include: {
+                        gameDay: { select: { status: true } },
+                    },
                 },
                 extraEmails: {
                     select: { email: true, verifiedAt: true },
@@ -302,7 +310,16 @@ class PlayerService {
         });
 
         return players.map(
-            ({ outcomes, extraEmails, accountEmail, ...player }) => {
+            ({
+                outcomes: rawOutcomes,
+                extraEmails,
+                accountEmail,
+                ...player
+            }) => {
+                const outcomes = rawOutcomes.map(({ gameDay, ...outcome }) => ({
+                    ...outcome,
+                    points: getPlayerPoints(gameDay.status, outcome.team),
+                }));
                 const gamesResponded = outcomes.filter(
                     (outcome) => outcome.response !== null,
                 );
@@ -398,13 +415,12 @@ class PlayerService {
         gameDayId: number,
         history: number,
     ): Promise<PlayerFormType[]> {
-        return prisma.outcome.findMany({
+        const outcomes = await prisma.outcome.findMany({
             where: {
                 gameDayId: gameDayId !== 0 ? { lt: gameDayId } : {},
                 playerId: playerId,
-                points: {
-                    not: null,
-                },
+                team: { not: null },
+                gameDay: { status: { in: ['AWin', 'BWin', 'Draw'] } },
             },
             orderBy: {
                 gameDayId: 'desc',
@@ -414,6 +430,11 @@ class PlayerService {
                 gameDay: true,
             },
         });
+
+        return outcomes.map((outcome) => ({
+            ...outcome,
+            points: getPlayerPoints(outcome.gameDay.status, outcome.team),
+        }));
     }
 
     /**
@@ -421,12 +442,14 @@ class PlayerService {
      * year and/or points value.
      *
      * @param playerId - The unique identifier of the player.
-     * @param year - An optional year to limit the search range.
-     * @param points - An optional points filter: if provided, only outcomes
-     * with this points value will be returned. If not, the most recent outcome
-     * with any non-null points value will be returned.
-     * @returns A promise that resolves to the player's latest outcome including
-     * its game day, or `null` if none is found.
+     * @param year - An optional year to limit the search range, or omit for
+     * any year (backed by PlayerRecord's `year = 0` all-time bucket).
+     * @param points - An optional points filter: if provided, only game days
+     * this player earned exactly this many points on will be returned. If
+     * not, the most recent game day with a decided result will be returned.
+     * @returns A promise that resolves to the PlayerRecord row for the
+     * player's latest matching game day, including that game day, or `null`
+     * if none is found.
      * @throws Will propagate any errors encountered during the retrieval
      * process.
      */
@@ -434,22 +457,15 @@ class PlayerService {
         playerId: number,
         year?: number,
         points?: PointsValue,
-    ): Promise<PlayerFormType | null> {
+    ): Promise<PlayerLastResultType | null> {
         const id = z.coerce.number().int().min(1).parse(playerId);
         const validatedPoints = PointsSchema.optional().parse(points);
 
-        return prisma.outcome.findFirst({
+        const record = await prisma.playerRecord.findFirst({
             where: {
                 playerId: id,
+                year: year ?? 0,
                 points: validatedPoints ?? { not: null },
-                gameDay: {
-                    date: {
-                        gte: year ? new Date(Date.UTC(year, 0, 1)) : undefined,
-                        lt: year
-                            ? new Date(Date.UTC(year + 1, 0, 1))
-                            : undefined,
-                    },
-                },
             },
             orderBy: {
                 gameDayId: 'desc',
@@ -459,6 +475,8 @@ class PlayerService {
             },
             take: 1,
         });
+
+        return record ? PlayerLastResultSchema.parse(record) : null;
     }
 
     /**

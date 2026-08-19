@@ -1,7 +1,10 @@
 import { OutcomeSchema, PlayerSchema } from 'prisma/zod/schemas';
 import z from 'zod';
 
+import { PointsSchema } from '@/types/Points';
+
 export const OutcomePlayerType = OutcomeSchema.extend({
+    points: PointsSchema.nullable(),
     player: PlayerSchema,
 });
 

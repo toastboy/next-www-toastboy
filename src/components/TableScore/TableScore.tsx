@@ -22,7 +22,7 @@ export const TableScore = ({ table, playerRecord }: Props) => {
                     L${playerRecord.lost ?? 0}
                 `}
                 >
-                    <Text>{playerRecord[table]}</Text>
+                    <Text>{playerRecord.scorePoints ?? '-'}</Text>
                 </Tooltip>
             );
 
@@ -36,7 +36,7 @@ export const TableScore = ({ table, playerRecord }: Props) => {
                     L${playerRecord.lost ?? 0}
                 `}
                 >
-                    <Text>{playerRecord.averages?.toFixed(3) ?? ''}</Text>
+                    <Text>{playerRecord.scoreAverages?.toFixed(3) ?? '-'}</Text>
                 </Tooltip>
             );
 
@@ -47,23 +47,25 @@ export const TableScore = ({ table, playerRecord }: Props) => {
                     Played ${playerRecord.played ?? 0} of ${playerRecord.gamesPlayed}
                 `}
                 >
-                    <Text>{playerRecord[table]}%</Text>
+                    <Text>{playerRecord.scoreStalwart ?? '-'}%</Text>
                 </Tooltip>
             );
 
         case TableNameSchema.enum.speedy: {
-            const date = new Date(0);
-            if (playerRecord.speedy) {
-                date.setSeconds(playerRecord.speedy);
+            let formatted = '-';
+            if (playerRecord.scoreSpeedy != null) {
+                const date = new Date(0);
+                date.setSeconds(Math.round(playerRecord.scoreSpeedy));
+                formatted = date.toISOString().substring(11, 19);
             }
             return (
                 <Tooltip label={`${playerRecord.responses ?? 0} responses`}>
-                    <Text>{date.toISOString().substring(11, 19)}</Text>
+                    <Text>{formatted}</Text>
                 </Tooltip>
             );
         }
 
-        default:
-            return <Text>{playerRecord[table]}</Text>;
+        case TableNameSchema.enum.pub:
+            return <Text>{playerRecord.scorePub ?? '-'}</Text>;
     }
 };

@@ -5,7 +5,7 @@ import { PlayerInfo } from '@/components/PlayerInfo/PlayerInfo';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockPlayer, defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerEmailData } from '@/tests/mocks/data/playerData';
-import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
+import { createMockPlayerLastResult } from '@/tests/mocks/data/playerRecord';
 
 vi.mock('@/components/EmailPlayerButton/EmailPlayerButton');
 vi.mock('@/components/GameDayLink/GameDayLink');
@@ -166,7 +166,7 @@ describe('PlayerInfo', () => {
                 <Wrapper>
                     <PlayerInfo
                         {...baseProps}
-                        lastPlayed={defaultPlayerFormList[0]}
+                        lastPlayed={createMockPlayerLastResult()}
                     />
                 </Wrapper>,
             );
@@ -198,7 +198,7 @@ describe('PlayerInfo', () => {
                 <Wrapper>
                     <PlayerInfo
                         {...baseProps}
-                        lastWon={defaultPlayerFormList[0]}
+                        lastWon={createMockPlayerLastResult()}
                     />
                 </Wrapper>,
             );

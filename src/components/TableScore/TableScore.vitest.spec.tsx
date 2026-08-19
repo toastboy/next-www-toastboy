@@ -21,7 +21,7 @@ describe('TableScore', () => {
         );
 
         expect(
-            screen.getByText(String(defaultPlayerRecord.points)),
+            screen.getByText(String(defaultPlayerRecord.scorePoints)),
         ).toBeInTheDocument();
     });
 
@@ -36,7 +36,9 @@ describe('TableScore', () => {
         );
 
         const user = userEvent.setup();
-        await user.hover(screen.getByText(String(defaultPlayerRecord.points)));
+        await user.hover(
+            screen.getByText(String(defaultPlayerRecord.scorePoints)),
+        );
         const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
             `P${defaultPlayerRecord.played ?? 0}`,
@@ -75,13 +77,15 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        expect(defaultPlayerRecord.averages).toBeDefined();
-        const expectedAverage = defaultPlayerRecord.averages.toFixed(3);
+        expect(defaultPlayerRecord.scoreAverages).toBeDefined();
+        const expectedAverage = defaultPlayerRecord.scoreAverages.toFixed(3);
         expect(screen.getByText(expectedAverage)).toBeInTheDocument();
 
         const user = userEvent.setup();
         await user.hover(
-            screen.getByText(String(defaultPlayerRecord.averages.toFixed(3))),
+            screen.getByText(
+                String(defaultPlayerRecord.scoreAverages.toFixed(3)),
+            ),
         );
         const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
@@ -104,7 +108,7 @@ describe('TableScore', () => {
 
         const user = userEvent.setup();
         await user.hover(
-            screen.getByText(defaultPlayerRecord.averages.toFixed(3)),
+            screen.getByText(defaultPlayerRecord.scoreAverages.toFixed(3)),
         );
         const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
@@ -145,7 +149,7 @@ describe('TableScore', () => {
         );
 
         expect(
-            screen.getByText(`${defaultPlayerRecord.stalwart}%`),
+            screen.getByText(`${defaultPlayerRecord.scoreStalwart}%`),
         ).toBeInTheDocument();
     });
 
@@ -160,7 +164,9 @@ describe('TableScore', () => {
         );
 
         const user = userEvent.setup();
-        await user.hover(screen.getByText(`${defaultPlayerRecord.stalwart}%`));
+        await user.hover(
+            screen.getByText(`${defaultPlayerRecord.scoreStalwart}%`),
+        );
         const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
             `Played ${defaultPlayerRecord.played} of ${defaultPlayerRecord.gamesPlayed}`,
@@ -194,7 +200,7 @@ describe('TableScore', () => {
         );
 
         const date = new Date(0);
-        date.setSeconds(defaultPlayerRecord.speedy);
+        date.setSeconds(defaultPlayerRecord.scoreSpeedy);
         expect(
             screen.getByText(date.toISOString().substring(11, 19)),
         ).toBeInTheDocument();
@@ -211,7 +217,7 @@ describe('TableScore', () => {
         );
 
         const date = new Date(0);
-        date.setSeconds(defaultPlayerRecord.speedy);
+        date.setSeconds(defaultPlayerRecord.scoreSpeedy);
         const user = userEvent.setup();
         await user.hover(
             screen.getByText(date.toISOString().substring(11, 19)),
@@ -238,6 +244,53 @@ describe('TableScore', () => {
         expect(tooltip).toHaveTextContent('0 responses');
     });
 
+    it('renders a dash for speedy score when unset, not 00:00:00', () => {
+        render(
+            <Wrapper>
+                <TableScore
+                    table={TableNameSchema.enum.speedy}
+                    playerRecord={minimalPlayerRecord}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('-')).toBeInTheDocument();
+        expect(screen.queryByText('00:00:00')).not.toBeInTheDocument();
+    });
+
+    it('renders speedy score as 00:00:00 when the value is explicitly zero', () => {
+        render(
+            <Wrapper>
+                <TableScore
+                    table={TableNameSchema.enum.speedy}
+                    playerRecord={{
+                        ...defaultPlayerRecord,
+                        scoreSpeedy: 0,
+                    }}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('00:00:00')).toBeInTheDocument();
+    });
+
+    it('rounds a fractional speedy score to the nearest second rather than truncating', () => {
+        render(
+            <Wrapper>
+                <TableScore
+                    table={TableNameSchema.enum.speedy}
+                    playerRecord={{
+                        ...defaultPlayerRecord,
+                        scoreSpeedy: 89.6,
+                    }}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('00:01:30')).toBeInTheDocument();
+        expect(screen.queryByText('00:01:29')).not.toBeInTheDocument();
+    });
+
     it('renders pub score', () => {
         render(
             <Wrapper>
@@ -249,7 +302,20 @@ describe('TableScore', () => {
         );
 
         expect(
-            screen.getByText(String(defaultPlayerRecord.pub)),
+            screen.getByText(String(defaultPlayerRecord.scorePub)),
         ).toBeInTheDocument();
+    });
+
+    it('renders a dash for pub score when unset', () => {
+        render(
+            <Wrapper>
+                <TableScore
+                    table={TableNameSchema.enum.pub}
+                    playerRecord={minimalPlayerRecord}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('-')).toBeInTheDocument();
     });
 });

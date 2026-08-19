@@ -8,13 +8,14 @@ import {
     GameDayUpdateOneZodSchema,
     GameDayUpsertOneZodSchema,
 } from 'prisma/zod/schemas';
+import { GameDayStatusSchema } from 'prisma/zod/schemas/enums/GameDayStatus.schema';
 import { TeamNameSchema } from 'prisma/zod/schemas/enums/TeamName.schema';
 import z from 'zod';
 
 const GameDayCreateStrictFields = {
     year: z.number().int(),
     date: z.date(),
-    game: z.boolean().optional(),
+    status: GameDayStatusSchema.optional(),
     cost: z.number().int().min(1),
     hallCost: z.number().int().min(0),
     mailSent: z.date().nullish(),
@@ -26,7 +27,7 @@ const GameDayCreateStrictFields = {
 const GameDayUpdateStrictFields = {
     year: z.number().int().optional(),
     date: z.date().optional(),
-    game: z.boolean().optional(),
+    status: GameDayStatusSchema.optional(),
     cost: z.number().int().min(1).optional(),
     hallCost: z.number().int().min(0).optional(),
     mailSent: z.date().nullish(),

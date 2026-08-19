@@ -118,9 +118,9 @@ describe('Download My Data page', () => {
 
     it('computes firstPlayed and lastPlayed correctly from outcomes', async () => {
         (outcomeService.getByPlayer as Mock).mockResolvedValue([
-            createMockOutcome({ gameDayId: 10, points: 3 }),
-            createMockOutcome({ gameDayId: 5, points: 0 }),
-            createMockOutcome({ gameDayId: 20, points: null }),
+            { ...createMockOutcome({ gameDayId: 10 }), points: 3 },
+            { ...createMockOutcome({ gameDayId: 5 }), points: 0 },
+            { ...createMockOutcome({ gameDayId: 20 }), points: null },
         ]);
 
         renderToStaticMarkup(await Page());
@@ -141,11 +141,11 @@ describe('Download My Data page', () => {
 
     it('computes gamesPlayed, gamesWon, gamesDrawn, and gamesLost correctly', async () => {
         (outcomeService.getByPlayer as Mock).mockResolvedValue([
-            createMockOutcome({ gameDayId: 1, points: 3 }),
-            createMockOutcome({ gameDayId: 2, points: 3 }),
-            createMockOutcome({ gameDayId: 3, points: 1 }),
-            createMockOutcome({ gameDayId: 4, points: 0 }),
-            createMockOutcome({ gameDayId: 5, points: null }),
+            { ...createMockOutcome({ gameDayId: 1 }), points: 3 },
+            { ...createMockOutcome({ gameDayId: 2 }), points: 3 },
+            { ...createMockOutcome({ gameDayId: 3 }), points: 1 },
+            { ...createMockOutcome({ gameDayId: 4 }), points: 0 },
+            { ...createMockOutcome({ gameDayId: 5 }), points: null },
         ]);
 
         renderToStaticMarkup(await Page());
@@ -170,7 +170,7 @@ describe('Download My Data page', () => {
 
     it('passes a JSON-serialised payload to DownloadMyData', async () => {
         (outcomeService.getByPlayer as Mock).mockResolvedValue([
-            createMockOutcome({ gameDayId: 1, points: 3 }),
+            { ...createMockOutcome({ gameDayId: 1 }), points: 3 },
         ]);
 
         renderToStaticMarkup(await Page());
@@ -187,7 +187,7 @@ describe('Download My Data page', () => {
             email: null,
         });
         (outcomeService.getByPlayer as Mock).mockResolvedValue([
-            createMockOutcome({ gameDayId: 1, points: 3 }),
+            { ...createMockOutcome({ gameDayId: 1 }), points: 3 },
         ]);
 
         renderToStaticMarkup(await Page());

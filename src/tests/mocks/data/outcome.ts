@@ -6,7 +6,6 @@ export const defaultOutcome = {
     playerId: 12,
     response: 'Yes',
     responseInterval: 1000,
-    points: 3,
     team: 'A',
     comment: 'Test comment',
     pub: 1,

@@ -11,8 +11,6 @@ import {
 } from 'prisma/zod/schemas';
 import z from 'zod';
 
-import { PointsSchema } from '@/types/Points';
-
 const OutcomeStrictIds = {
     gameDayId: z.number().int().min(1),
     playerId: z.number().int().min(1),
@@ -21,7 +19,6 @@ const OutcomeStrictIds = {
 const OutcomeStrictFields = {
     response: PlayerResponseSchema.nullish(),
     responseInterval: z.number().int().min(0).nullish(),
-    points: PointsSchema.nullish(),
     team: TeamNameSchema.nullish(),
     comment: z.string().max(127).nullish(),
     pub: z.number().int().nullish(),

@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { faker } from '@faker-js/faker';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import {
+    GameDayStatus,
     PlayerResponse,
     PrismaClient,
     TeamName,
@@ -89,7 +90,7 @@ async function main() {
         id: number;
         year: number;
         date: Date;
-        game: boolean;
+        status: GameDayStatus;
         cost: number;
         hallCost: number;
         mailSent: Date | null;
@@ -107,11 +108,19 @@ async function main() {
         // recent past game — needed by the drinkers and responses admin pages.
         const mailSent = new Date(current);
         mailSent.setDate(mailSent.getDate() - 3); // Tuesday before the Friday game
+        // 0 = A wins, 1 = draw, 2 = B wins
+        const result = faker.number.int({ min: 0, max: 2 });
+        const status: GameDayStatus =
+            result === 0
+                ? GameDayStatus.AWin
+                : result === 1
+                  ? GameDayStatus.Draw
+                  : GameDayStatus.BWin;
         gameDays.push({
             id: gameDayId++,
             year: current.getFullYear(),
             date: new Date(current),
-            game: true,
+            status,
             cost: COST_PENCE,
             hallCost: HALL_COST_PENCE,
             mailSent,
@@ -123,7 +132,7 @@ async function main() {
         id: gameDayId,
         year: nextFriday(now).getFullYear(),
         date: nextFriday(now),
-        game: true,
+        status: GameDayStatus.Scheduled,
         cost: COST_PENCE,
         hallCost: HALL_COST_PENCE,
         mailSent: null,
@@ -146,7 +155,6 @@ async function main() {
         playerId: number;
         response: PlayerResponse;
         team: TeamName;
-        points: number;
         pub: number;
     }[] = [];
     const transactions: {
@@ -169,18 +177,12 @@ async function main() {
         const teamAPlayers = playing.slice(0, half);
         const teamBPlayers = playing.slice(half);
 
-        // 0 = A wins, 1 = draw, 2 = B wins
-        const result = faker.number.int({ min: 0, max: 2 });
-        const aPoints = result === 0 ? 3 : result === 1 ? 1 : 0;
-        const bPoints = result === 2 ? 3 : result === 1 ? 1 : 0;
-
         for (const player of teamAPlayers) {
             outcomes.push({
                 gameDayId: gameDay.id,
                 playerId: player.id,
                 response: PlayerResponse.Yes,
                 team: TeamName.A,
-                points: aPoints,
                 pub: faker.datatype.boolean({ probability: 0.3 }) ? 1 : 0,
             });
             transactions.push({
@@ -197,7 +199,6 @@ async function main() {
                 playerId: player.id,
                 response: PlayerResponse.Yes,
                 team: TeamName.B,
-                points: bPoints,
                 pub: faker.datatype.boolean({ probability: 0.3 }) ? 1 : 0,
             });
             transactions.push({

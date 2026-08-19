@@ -6,7 +6,7 @@ import { defaultPlayerFormList } from './playerForm';
 
 export const defaultTeamPlayer = {
     ...defaultPlayer,
-    outcome: createMockOutcome(),
+    outcome: { ...createMockOutcome(), points: null },
     form: [defaultPlayerFormList[0]],
 } satisfies TeamPlayerType;
 
@@ -15,6 +15,6 @@ export const defaultTeamPlayerList: TeamPlayerType[] =
         ...defaultPlayer,
         ...playerForm,
         id: index + 1,
-        outcome: createMockOutcome(),
+        outcome: { ...createMockOutcome(), points: null },
         form: [playerForm],
     }));

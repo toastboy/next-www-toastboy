@@ -43,9 +43,7 @@ export const PlayerPositions = ({
                 <Table.Tbody>
                     {TableNameSchema.options.map((table) => {
                         const position = record
-                            ? (record[
-                                  rankMap[table][0] as keyof typeof record
-                              ] ?? null)
+                            ? (record[rankMap[table][0]] ?? null)
                             : null;
                         const href = `/footy/table/${table}?year=${year}`;
 

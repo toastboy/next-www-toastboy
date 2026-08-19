@@ -17,11 +17,11 @@ export interface Props {
      * Outcomes to visualise. Every entry must have a populated `gameDay`
      * (including a native `Date` object for `gameDay.date` — Prisma returns
      * `Date`, but JSON-serialised props will have a string and will not render
-     * correctly). Entries whose `gameDay.game` is `false` represent scheduled
-     * days on which no game took place; they are shown in light grey and
-     * navigate to the game day details page on click. Entries with
-     * `points === null` and `game === true` represent days the player was
-     * invited but did not play.
+     * correctly). Entries whose `gameDay.status` is `NoGame` represent
+     * scheduled days on which no game took place; they are shown in light
+     * grey and navigate to the game day details page on click. Entries with
+     * `points === null` and `status !== 'NoGame'` represent days the player
+     * was invited but did not play.
      */
     data: PlayerFormType[];
     /**
@@ -101,7 +101,7 @@ export function buildGrid(data: PlayerFormType[]): {
                 col,
                 row: i + 1,
                 points: entry.points ?? null,
-                noGame: entry.gameDay!.game === false,
+                noGame: entry.gameDay!.status === 'NoGame',
                 date: new Date(entry.gameDay!.date),
                 gameId: entry.gameDay!.id,
                 comment: entry.gameDay?.comment,
@@ -314,9 +314,9 @@ const YearPanel = ({
  * Each cell represents one game day, coloured by result:
  * - Green  — won (points = 3)
  * - Yellow — draw (points = 1)
- * - Grey   — invited but did not play (points = null, game = true)
+ * - Grey   — invited but did not play (points = null, status != NoGame)
  * - Red    — lost (points = 0)
- * - Light grey — no game took place (gameDay.game = false)
+ * - Light grey — no game took place (gameDay.status = NoGame)
  *
  * Clicking or pressing Enter/Space on any cell navigates to the corresponding
  * game page (`/footy/game/[id]`). No-game cells show the game day comment in

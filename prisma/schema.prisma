@@ -88,16 +88,16 @@ model GameChat {
 }
 
 model GameDay {
-    id                 Int       @id @default(autoincrement())
+    id                 Int           @id @default(autoincrement())
     year               Int
-    date               DateTime  @db.DateTime(0)
-    game               Boolean   @default(true)
-    mailSent           DateTime? @db.DateTime(0)
-    comment            String?   @db.VarChar(255)
+    date               DateTime      @db.DateTime(0)
+    status             GameDayStatus @default(Scheduled)
+    mailSent           DateTime?     @db.DateTime(0)
+    comment            String?       @db.VarChar(255)
     bibs               TeamName?
     pickerGamesHistory Int?
-    cost               Int       @db.UnsignedInt
-    hallCost           Int       @db.UnsignedInt
+    cost               Int           @db.UnsignedInt
+    hallCost           Int           @db.UnsignedInt
 
     gameInvitations GameInvitation[]
     outcomes        Outcome[]
@@ -122,7 +122,6 @@ model Outcome {
     id               Int             @id @default(autoincrement())
     response         PlayerResponse?
     responseInterval Int?
-    points           Int?
     team             TeamName?
     comment          String?         @db.VarChar(127)
     pub              Int?
@@ -233,9 +232,11 @@ model PlayerRecord {
     drawn                   Int?
     lost                    Int?
     points                  Int?
-    averages                Float?
-    stalwart                Int?
-    pub                     Int?
+    scorePoints             Int?
+    scoreAverages           Float?
+    scoreStalwart           Int?
+    scoreSpeedy             Float?
+    scorePub                Int?
     rankPoints              Int?
     rankAverages            Int?
     rankAveragesUnqualified Int?
@@ -243,7 +244,6 @@ model PlayerRecord {
     rankSpeedy              Int?
     rankSpeedyUnqualified   Int?
     rankPub                 Int?
-    speedy                  Int?
 
     playerId  Int
     gameDayId Int
@@ -279,6 +279,14 @@ model Transaction {
 enum TeamName {
     A
     B
+}
+
+enum GameDayStatus {
+    NoGame
+    Scheduled
+    AWin
+    Draw
+    BWin
 }
 
 enum PlayerResponse {

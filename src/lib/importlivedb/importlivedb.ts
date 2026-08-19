@@ -146,7 +146,7 @@ async function reconcilePlayerJoinedFinishedDates(): Promise<void> {
     );
 
     const outcomes = await prisma.outcome.findMany({
-        where: { gameDay: { game: true } },
+        where: { gameDay: { status: { not: 'NoGame' } } },
         select: { playerId: true, gameDay: { select: { date: true } } },
     });
 

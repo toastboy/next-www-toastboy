@@ -5,6 +5,7 @@ import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySuppo
 import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 import {
+    createMockPlayerLastResult,
     defaultPlayerRecord,
     defaultTrophiesList,
 } from '@/tests/mocks/data/playerRecord';
@@ -29,8 +30,8 @@ export const Primary: Story = {
         introducedBy: null,
         year: 2023,
         history: defaultPlayerFormList,
-        lastPlayed: defaultPlayerFormList[9],
-        lastWon: defaultPlayerFormList[0],
+        lastPlayed: createMockPlayerLastResult({ gameDayId: 9 }),
+        lastWon: createMockPlayerLastResult({ gameDayId: 1 }),
         clubs: defaultClubSupporterDataList,
         countries: defaultCountrySupporterDataList,
         activeYears: [2020, 2021, 2022, 2023],

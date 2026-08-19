@@ -56,7 +56,7 @@ describe('setGameEnabled action wrapper', () => {
     });
 
     it('returns the updated gameDay from core', async () => {
-        const gameDay = { id: 1249, game: false };
+        const gameDay = { id: 1249, status: 'NoGame' };
         setGameEnabledCoreMock.mockResolvedValueOnce(gameDay);
 
         const result = await setGameEnabled(validInput);

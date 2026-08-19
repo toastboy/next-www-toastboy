@@ -35,11 +35,11 @@ describe('GameDayIndicator', () => {
             );
         });
 
-        it('applies green background when game=true', () => {
+        it('applies green background when status is Scheduled', () => {
             render(
                 <Wrapper>
                     <GameDayIndicator
-                        gameDay={createMockGameDay({ game: true })}
+                        gameDay={createMockGameDay({ status: 'Scheduled' })}
                     />
                 </Wrapper>,
             );
@@ -48,12 +48,12 @@ describe('GameDayIndicator', () => {
             );
         });
 
-        it('applies dark background when game=false and mailSent is null', () => {
+        it('applies dark background when status is NoGame and mailSent is null', () => {
             render(
                 <Wrapper>
                     <GameDayIndicator
                         gameDay={createMockGameDay({
-                            game: false,
+                            status: 'NoGame',
                             mailSent: null,
                         })}
                     />
@@ -64,12 +64,12 @@ describe('GameDayIndicator', () => {
             );
         });
 
-        it('applies red background when game=false and mailSent is set', () => {
+        it('applies red background when status is NoGame and mailSent is set', () => {
             render(
                 <Wrapper>
                     <GameDayIndicator
                         gameDay={createMockGameDay({
-                            game: false,
+                            status: 'NoGame',
                             mailSent: new Date(),
                         })}
                     />
@@ -95,13 +95,13 @@ describe('GameDayIndicator', () => {
             );
         });
 
-        it('applies green border when game=true', () => {
+        it('applies green border when status is Scheduled', () => {
             render(
                 <Wrapper>
                     <GameDayIndicator
                         gameDay={createMockGameDay({
                             date: futureDate,
-                            game: true,
+                            status: 'Scheduled',
                         })}
                     />
                 </Wrapper>,
@@ -111,13 +111,13 @@ describe('GameDayIndicator', () => {
             );
         });
 
-        it('applies dark border when game=false and mailSent is null', () => {
+        it('applies dark border when status is NoGame and mailSent is null', () => {
             render(
                 <Wrapper>
                     <GameDayIndicator
                         gameDay={createMockGameDay({
                             date: futureDate,
-                            game: false,
+                            status: 'NoGame',
                             mailSent: null,
                         })}
                     />
@@ -128,13 +128,13 @@ describe('GameDayIndicator', () => {
             );
         });
 
-        it('applies red border when game=false and mailSent is set', () => {
+        it('applies red border when status is NoGame and mailSent is set', () => {
             render(
                 <Wrapper>
                     <GameDayIndicator
                         gameDay={createMockGameDay({
                             date: futureDate,
-                            game: false,
+                            status: 'NoGame',
                             mailSent: new Date(),
                         })}
                     />

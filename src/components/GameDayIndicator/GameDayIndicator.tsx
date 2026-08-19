@@ -13,7 +13,7 @@ export const GameDayIndicator = ({ gameDay }: Props) => {
     const isPast = new Date(gameDay.date) < new Date();
     let color = 'var(--mantine-color-green-6)';
 
-    if (gameDay.game === false) {
+    if (gameDay.status === 'NoGame') {
         if (gameDay.mailSent === null) {
             color = 'var(--mantine-color-dark-6)';
         } else {

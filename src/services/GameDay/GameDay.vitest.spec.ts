@@ -51,22 +51,24 @@ describe('GameDayService', () => {
             expect(result).toEqual(fixture);
         });
 
-        it('should filter GameDays by game=true', async () => {
+        it('should filter GameDays by status=Scheduled', async () => {
             const fixture = [defaultGameDay, { ...defaultGameDay, id: 2 }];
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(fixture);
-            const result = await gameDayService.getAll({ game: true });
+            const result = await gameDayService.getAll({
+                status: 'Scheduled',
+            });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
-                where: { game: true },
+                where: { status: 'Scheduled' },
                 ...ORDER,
             });
             expect(result).toEqual(fixture);
         });
 
-        it('should filter GameDays by game=false', async () => {
+        it('should filter GameDays by status=NoGame', async () => {
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]);
-            const result = await gameDayService.getAll({ game: false });
+            const result = await gameDayService.getAll({ status: 'NoGame' });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
-                where: { game: false },
+                where: { status: 'NoGame' },
                 ...ORDER,
             });
             expect(result).toEqual([]);
@@ -93,15 +95,15 @@ describe('GameDayService', () => {
             expect(result).toHaveLength(0);
         });
 
-        it('should combine year and game filters', async () => {
+        it('should combine year and status filters', async () => {
             const fixture = [defaultGameDay];
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await gameDayService.getAll({
                 year: 2021,
-                game: true,
+                status: 'Scheduled',
             });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
-                where: { year: 2021, game: true },
+                where: { year: 2021, status: 'Scheduled' },
                 ...ORDER,
             });
             expect(result).toEqual(fixture);
@@ -153,17 +155,17 @@ describe('GameDayService', () => {
             });
         });
 
-        it('should combine fromDate, beforeDate, and game filters', async () => {
+        it('should combine fromDate, beforeDate, and status filters', async () => {
             const from = new Date(Date.UTC(2024, 0, 1));
             const to = new Date(Date.UTC(2025, 0, 1));
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]);
             await gameDayService.getAll({
-                game: false,
+                status: 'NoGame',
                 fromDate: from,
                 beforeDate: to,
             });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
-                where: { game: false, date: { gte: from, lt: to } },
+                where: { status: 'NoGame', date: { gte: from, lt: to } },
                 ...ORDER,
             });
         });
@@ -311,7 +313,7 @@ describe('GameDayService', () => {
             expect(result).toEqual(defaultGameDayList[0]);
             expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
                 where: {
-                    game: true,
+                    status: { not: 'NoGame' },
                     date: { gte: from },
                 },
                 orderBy: { date: 'asc' },
@@ -428,7 +430,7 @@ describe('GameDayService', () => {
             const result = await gameDayService.getGamesPlayed(2021);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: true,
+                    status: { not: 'NoGame' },
                     date: {
                         gte: new Date(Date.UTC(2021, 0, 1)),
                         lt: new Date(Date.UTC(2022, 0, 1)),
@@ -442,7 +444,7 @@ describe('GameDayService', () => {
             (prisma.gameDay.count as Mock).mockResolvedValueOnce(100);
             const result = await gameDayService.getGamesPlayed(0);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
-                where: { game: true },
+                where: { status: { not: 'NoGame' } },
             });
             expect(result).toBe(100);
         });
@@ -452,7 +454,7 @@ describe('GameDayService', () => {
             const result = await gameDayService.getGamesPlayed(9999);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: true,
+                    status: { not: 'NoGame' },
                     date: {
                         gte: new Date(Date.UTC(9999, 0, 1)),
                         lt: new Date(Date.UTC(10000, 0, 1)),
@@ -467,7 +469,7 @@ describe('GameDayService', () => {
             const result = await gameDayService.getGamesPlayed(0, 50);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: true,
+                    status: { not: 'NoGame' },
                     id: { lte: 50 },
                 },
             });
@@ -481,7 +483,7 @@ describe('GameDayService', () => {
             const result = await gameDayService.getGamesRemaining(2021);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: true,
+                    status: { not: 'NoGame' },
                     AND: [
                         {
                             date: {
@@ -505,7 +507,7 @@ describe('GameDayService', () => {
             const result = await gameDayService.getGamesRemaining(0);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: true,
+                    status: { not: 'NoGame' },
                     AND: [
                         {},
                         {
@@ -524,7 +526,7 @@ describe('GameDayService', () => {
             const result = await gameDayService.getGamesRemaining(9999);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: true,
+                    status: { not: 'NoGame' },
                     AND: [
                         {
                             date: {
@@ -551,7 +553,7 @@ describe('GameDayService', () => {
             expect(result).toBe(3);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: false,
+                    status: 'NoGame',
                     mailSent: { not: null },
                     date: {
                         gte: new Date(Date.UTC(2021, 0, 1)),
@@ -567,7 +569,7 @@ describe('GameDayService', () => {
             expect(result).toBe(5);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: false,
+                    status: 'NoGame',
                     mailSent: { not: null },
                 },
             });
@@ -579,7 +581,7 @@ describe('GameDayService', () => {
             expect(result).toBe(2);
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
-                    game: false,
+                    status: 'NoGame',
                     mailSent: { not: null },
                     date: {
                         gte: new Date(Date.UTC(2021, 0, 1)),
@@ -649,7 +651,7 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.groupBy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     where: {
-                        game: true,
+                        status: { not: 'NoGame' },
                         date: { lte: until },
                     },
                 }),
@@ -794,13 +796,13 @@ describe('GameDayService', () => {
         it('should update mutable fields while keeping id in the where clause', async () => {
             const expected = {
                 ...defaultGameDayList[5],
-                game: false,
+                status: 'NoGame',
                 comment: 'Pitch frozen',
             };
             (prisma.gameDay.update as Mock).mockResolvedValueOnce(expected);
             const result = await gameDayService.update({
                 id: 6,
-                game: false,
+                status: 'NoGame',
                 comment: 'Pitch frozen',
             });
 
@@ -809,7 +811,7 @@ describe('GameDayService', () => {
                     id: 6,
                 },
                 data: {
-                    game: false,
+                    status: 'NoGame',
                     comment: 'Pitch frozen',
                 },
             });

@@ -3,9 +3,10 @@
   "checkpoint_id": "e35107e832f9",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 25,
   "files_touched": [
     "docs/ontology.yaml",
+    "prisma/migrations/20260816204037_gameday_status/migration.sql",
     "prisma/refresh-upcoming-gameday.ts",
     "prisma/schema.prisma",
     "prisma/seed.ci.ts",
@@ -22,7 +23,9 @@
     "src/components/PickerForm/PickerForm.stories.tsx",
     "src/components/PickerForm/PickerForm.tsx",
     "src/components/PickerForm/PickerForm.vitest.spec.tsx",
+    "src/components/PickerForm/__mocks__/PickerForm.tsx",
     "src/components/PlayerForm/PlayerForm.vitest.spec.tsx",
+    "src/components/PlayerHeatmap/PlayerHeatmap.stories.tsx",
     "src/components/PlayerHeatmap/PlayerHeatmap.tsx",
     "src/components/PlayerHeatmap/PlayerHeatmap.vitest.spec.tsx",
     "src/components/PlayerInfo/PlayerInfo.stories.tsx",
@@ -66,6 +69,7 @@
     "src/types/OutcomePlayerType.ts",
     "src/types/OutcomeStrictSchema.ts",
     "src/types/PlayerFormType.ts",
+    "src/types/PlayerLastResultType.ts",
     "src/types/PlayerRecordStrictSchema.ts",
     "src/types/TeamPlayerType.ts"
   ],
@@ -76,13 +80,27 @@
       "compact_transcript": "/e3/5107e832f9/0/transcript.jsonl",
       "content_hash": "/e3/5107e832f9/0/content_hash.txt",
       "prompt": "/e3/5107e832f9/0/prompt.txt"
+    },
+    {
+      "metadata": "/e3/5107e832f9/1/metadata.json",
+      "transcript": "/e3/5107e832f9/1/full.jsonl",
+      "compact_transcript": "/e3/5107e832f9/1/transcript.jsonl",
+      "content_hash": "/e3/5107e832f9/1/content_hash.txt",
+      "prompt": "/e3/5107e832f9/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 29,
-    "cache_creation_tokens": 36038,
-    "cache_read_tokens": 795575,
-    "output_tokens": 3315,
-    "api_call_count": 15
+    "input_tokens": 2299,
+    "cache_creation_tokens": 3324410,
+    "cache_read_tokens": 396698847,
+    "output_tokens": 587353,
+    "api_call_count": 1153,
+    "subagent_tokens": {
+      "input_tokens": 328,
+      "cache_creation_tokens": 436910,
+      "cache_read_tokens": 50687757,
+      "output_tokens": 135447,
+      "api_call_count": 164
+    }
   }
 }

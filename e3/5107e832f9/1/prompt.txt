@@ -1,0 +1,319 @@
+Start work on SYS-581
+
+---
+
+<task-notification>
+<task-id>aba60cf549ee7c611</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/2a21cc87-0670-432f-b435-c48090dfde68/tasks/aba60cf549ee7c611.output</output-file>
+<status>completed</status>
+<summary>Agent "Find all usages of GameDay.game and Outcome.points" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I now have a thorough inventory. Let me compile the complete findings report.
+
+## Comprehensive Inventory: SYS-581 (`GameDay.game` / `Outcome.points` → `GameDay.status`)
+
+### 1. Prisma schema
+
+**`prisma/schema.prisma`**
+- Line 94: `game Boolean @default(true)` on `model GameDay` (lines 90-106)
+- Line 125: `points Int?` on `model Outcome` (lines 121-140)
+
+### 2. Prisma migrations referencing `game` / `points` on GameDay/Outcome
+
+- `prisma/migrations/20240220215720_init/migration.sql` — L81 `game BOOLEAN NULL DEFAULT true`, L118 `points INTEGER NULL` (original table creation, legacy snake_case tables)
+- `prisma/migrations/20240303080021_required_gameday_fields/migration.sql` — L5,L10 makes `game` `NOT NULL DEFAULT true`
+- `prisma/migrations/20240303074516_rename_game_day_fields/migration.sql` — L16,L37 (commented-out) references to `game` during column renames
+- `prisma/migrations/20240302163942_rename_all_others/migration.sql` — commented-out historical `game`/`points` DDL (informational only, in comments)
+- `prisma/migrations/20240401094650_player_record_again/migration.sql` L71, `20240304070936_player_record/migration.sql` L40, `20240304070828_outcome_fields/migration.sql` L37 — these add `points` to **PlayerRecord**, not Outcome (different field, but derived from it)
+- **`prisma/migrations/20260214113000_add_transactions_ledger/migration.sql`** L62 — backfill `WHERE ... Outcome.points IS NOT NULL` (used as "player actually played" proxy for charging)
+- **`prisma/migrations/20260217190000_backfill_paid_outcome_transactions/migration.sql`** L70 — same `Outcome.points IS NOT NULL` proxy
+- **`prisma/migrations/20260318120000_backfill_monthly_hall_hire_transactions/migration.sql`** L8-11, L34-35 — explicit comment + SQL encoding the "cancelled game" semantics: *"A game day is billable for hall hire when it was played (`game` = TRUE) or when an invite mail was sent (`mailSent` IS NOT NULL), which covers cancelled sessions"* → `WHERE (GameDay.game = TRUE OR GameDay.mailSent IS NOT NULL)`
+- `prisma/migrations/20260321000000_backfill_player_game_charge_transactions/migration.sql` — comment references "game day" generically, uses `Outcome.team IS NOT NULL` instead of `points` (not directly affected)
+
+No `seed.ts` references (empty of `game`/`points`); see `prisma/seed.ci.ts` below.
+
+### 3. `src/lib/gameResult.ts` (full contents, requested item 4)
+
+```
+1   import type { TeamName } from 'prisma/zod/schemas';
+2
+3   import type { TeamPlayerType } from '@/types';
+4   import type { PointsValue } from '@/types/Points';
+5
+6   export type GameWinner = TeamName | 'draw' | null;
+7   export type TeamResultState = 'win' | 'loss' | 'draw' | 'unset';
+...
+41  const pickTeamPoints = (team: TeamPlayerType[]): PointsValue | null =&gt; {
+    // reads player.outcome.points (line 47), returns 0/1/3 only if unanimous across team, else null
+    }
+65  export const getGameWinnersFromTeams = (teamA, teamB): GameWinner =&gt; {
+    // pickTeamPoints both sides; 1&amp;1→'draw', 3&amp;0→'A', 0&amp;3→'B', else null
+    }
+91  export const getTeamResultState = (team, winner): TeamResultState =&gt; { ... }
+```
+Key line: **L47** `const points = player.outcome.points;` — direct `Outcome.points` read. `pickTeamPoints`/`getGameWinnersFromTeams` compute the winner purely from `Outcome.points`, never storing it — this is the derivation logic the refactor is meant to replace/relocate.
+
+Consumers: `src/components/Team/Team.tsx:6` (imports `TeamResultState`), `src/components/GameDaySummary/GameDaySummary.tsx:10,33` (`getGameWinnersFromTeams`, `getTeamResultState`), `src/lib/gameResult.vitest.spec.ts` (full spec file, all tests).
+
+### 4. `setGameResult` — action + core (requested item 5)
+
+**`src/actions/setGameResult.ts`** (full file, 39 lines) — thin wrapper: `requireAdmin()` → parses `SetGameResultInputSchema` → calls `setGameResultCore` → revalidates `/footy/game/[id]`, `/footy/table`, `/footy/pub`, `/footy/points` → broadcasts `FootyChannel.Results/Games`.
+
+**`src/lib/core/setGameResult/setGameResult.ts`** (full file, 164 lines):
+- `mapWinnerToPoints` (L49-62): `'A'→{A:3,B:0}`, `'B'→{A:0,B:3}`, `'draw'→{A:1,B:1}`, default `{A:null,B:null}`
+- `updateTeamOutcomes` (L75-102): loads outcomes for a team via `outcomeService.getByGameDay(gameDay.id, team)`, then `outcomeService.upsert({ gameDayId, playerId, points })` for each — **this is the write path for `Outcome.points`**. Also charges each player via `transactionService.charge`.
+- `setGameResultCore` (L123-163): loads `gameDay`, updates `bibs` only (does **not** write `GameDay.game`), computes points via `mapWinnerToPoints`, calls `updateTeamOutcomes` for both teams in parallel, then `playerRecordService.upsertFromGameDay(gameDayId)` to recompute derived records.
+
+Note: `setGameResult` never touches `GameDay.game`; that's `setGameEnabled` (see below) — two separate write paths will both need to map onto the new `GameDayStatus` enum.
+
+**`src/types/actions/SetGameResult.ts`** (full file) — `SetGameResultInputSchema` takes `{ gameDayId, bibs, winner: TeamName|'draw'|null }`; `SetGameWinner` type alias.
+
+Related sibling action: **`src/lib/core/setGameEnabled/setGameEnabled.ts`** (full file, 70 lines) and **`src/actions/setGameEnabled.ts`** (full file) — writes `gameDayService.update({ id, game: data.game, comment: data.reason })`, i.e. this is the actual writer of `GameDay.game` (cancel/reinstate a game day), separate from `setGameResult`. Type: **`src/types/actions/SetGameEnabled.ts`** — `SetGameEnabledInputSchema = { gameDayId, game: z.boolean(), reason }`.
+
+### 5. `PlayerRecord` service — points/averages recompute (requested item 6)
+
+**`src/services/PlayerRecord/PlayerRecord.ts`** (full file, 797 lines). Key `.game`/`.points` touchpoints:
+- L100-108, L111-117 (`getAllYears`) — `prisma.gameDay.groupBy({ where: { game: true } ...})`
+- L741-796 (`calculatePlayerRecord`) — the core derivation:
+  - L753-755: `playerYearPlayedOutcomes = playerYearOutcomes.filter(o =&gt; o.points != null)`
+  - L765-774: `data.played`, `data.won = ...filter(o.points==3)`, `data.drawn = ...points==1`, `data.lost = ...points==0`
+  - L776-783: `totalPoints = playerYearPlayedOutcomes.reduce((acc,o)=&gt;acc+o.points!, 0)`; `data.points = totalPoints`; `data.averages = totalPoints/data.played`
+  - This is **the** place that converts `Outcome.points` (0/1/3 per game) into aggregate `PlayerRecord.points`/`averages`/`won`/`drawn`/`lost` — will need to be rewritten against `GameDay.status`+`Outcome.team`.
+- L613 `gameDayService.getGamesPlayed(year, gameDay.id)` (internally filters `game: true`)
+- `upsertForGameDay`/`upsertFromGameDay` (L363-505) orchestrate the above per game day/year — call chain from `setGameResultCore`.
+
+### 6. `Outcome.getRecentAverage` (requested item 7)
+
+**`src/services/Outcome/Outcome.ts`**, full method chain:
+```
+611  async getRecentGamePoints(gameDayId, playerId): Promise&lt;(number|null)[]&gt;
+     // prisma.outcome.findMany({ where: { gameDayId: {lt}, playerId, team: {not:null} }, select: { points: true } })
+     // returns raw Outcome.points values (L622-641)
+
+657  async getRecentAverage(gameDayId, playerId, history): Promise&lt;number&gt;
+     // calls getRecentGamePoints, sums `point ?? 0` over up to `history` entries,
+     // backfills missing games with 1.45 points each (L683), returns average
+```
+Used by the picker (per `docs/ontology.yaml` L396: "recency-weighted average of last `pickerGamesHistory` match points (Outcome.points ...) via Outcome.getRecentAverage").
+
+### 7. Other `Outcome.points` / `GameDay.game` reads in `src/services/Outcome/Outcome.ts` (full file, 940 lines)
+
+- L89-100 `getLastPlayed()` — `where: { points: { not: null } }`
+- L229 `getTurnout()` — **`cancelled: gameDay.mailSent !== null &amp;&amp; !gameDay.game`** ← this is the exact "cancelled" inference the refactor must preserve as `status===NoGame &amp;&amp; mailSent!=null`
+- L251-256 `getTurnoutByYear()` — `gamesScheduled: ...t.game || t.mailSent`, `gamesPlayed: ...t.game &amp;&amp; t.mailSent`, `gamesCancelled: ...t.cancelled`
+- L385-404 `getTeamPlayersByGameDay()` — nested outcome query `points: { not: null }` (recent form)
+- L432-443 same method — synthetic padding entries with `points: null`
+- L471-483 doc-comment references `game: false` semantics; L549-568 `getHistoryByPlayer()` — `gameDay: { game: true, ...}` filter, plus `gameDayService.getAll({ game: false, ... })` and `getAll({ game: true, ... })` to build "no game" vs "played" synthetic entries
+- L570-594 `makeSynthetic()` builds entries with `points: null`
+- L756-786 (`getGamesPlayedByPlayer`) — `points: { not: null }` filter combined with year/gameDay bounds
+- L795-821 (`getLatestGamePlayedByYear`) — `points: { not: null }` filter
+- L831-867 (`getByBibs`) — `prisma.outcome.groupBy({ by: [...,'points'] })`, then win/draw/loss logic keyed on `outcome.points === 0/1/3` combined with `gameDay.bibs`
+- `src/services/Outcome/Outcome.vitest.spec.ts` — full spec exercising all the above with `game`/`points` fixtures.
+
+### 8. `GameDay` service — all `.game` reads/writes
+
+**`src/services/GameDay/GameDay.ts`** (full file, 515 lines):
+- L47-80 `getAll({ bibs, game, mailSent, ... })` — `game` is a filter param passed straight into `GameDayWhereInputObjectSchema.parse({ bibs, game, year })`
+- L148-154 `getUpcoming()` — `where: { game: true, date: {gte} }`
+- L207-231 `getGamesPlayed(year, untilGameDayId)` — `where: { game: true, ... }`
+- L233-270 **`getGamesCancelled(year, untilGameDayId)`** — doc comment (L236-238) + code: *"cancelled when `game` is `false` and `mailSent` is not `null`"* → `where: { game: false, mailSent: {not: null}, ... }` — **canonical existing cancellation predicate**
+- L277-300 `getGamesRemaining(year)` — `where: { game: true, AND: [...,{date:{gt:now}}] }`
+- L320-339 `getSeasonEnders()` — `groupBy({ where: { game: true } })`
+- L352-372 `getAllYears()` — `findMany({ where: { game: true } })`
+- L379-391 `getYear(year)` — `findFirst({ where: { game: true, year } })`
+- `src/services/GameDay/GameDay.vitest.spec.ts` — full spec exercising the above.
+
+### 9. `src/types/GameDayStrictSchema.ts` (full file) — Zod write-schema extensions
+
+- L17 `game: z.boolean().optional()` in `GameDayCreateStrictFields`
+- L29 `game: z.boolean().optional()` in `GameDayUpdateStrictFields`
+Both feed `GameDayWriteInputSchema`, `GameDayUpsertInputSchema`, `GameDayUpdateInputSchema`, and the Prisma-arg strict schemas — every create/update/upsert call in `GameDayService` funnels through these.
+
+### 10. `src/types/OutcomeStrictSchema.ts` (full file)
+
+- L24 `points: PointsSchema.nullish()` in `OutcomeStrictFields`, feeding `OutcomeWriteInputSchema` and create/update/upsert strict schemas.
+- `src/types/Points.ts` (full file) — `PointsSchema = z.union([z.literal(0), z.literal(1), z.literal(3)])`, `PointsValue` type. Used by `gameResult.ts`, `OutcomeStrictSchema.ts`, `setGameResult.ts`.
+
+### 11. `src/types/PlayerRecordStrictSchema.ts` (full file)
+
+- L26 `points: nonNegativeInt.nullish()` — this is **PlayerRecord.points** (derived running total), a distinct field from `Outcome.points` but downstream of it.
+
+### 12. `src/types/TurnoutType.ts` (full file, 21 lines)
+
+- L10 `game: boolean;` — hand-written `Turnout` interface field, plus L6 `cancelled: boolean;` — populated by `Outcome.getTurnout()` (see §7 above) using the `game &amp;&amp; mailSent` inference.
+
+### 13. Actions / core / types for `createMoreGameDays`, `updateInvoiceGameDays`
+
+- `src/types/actions/CreateMoreGameDays.ts` L13: `game: z.boolean()` in `GameDayRowSchema`
+- `src/lib/core/createMoreGameDays/createMoreGameDays.ts` L69: `game: row.game` passed to `gameDayService.create`
+- `src/types/actions/UpdateInvoiceGameDays.ts` L7: `gameScheduled: z.boolean()` (renamed at the boundary, but semantically `GameDay.game`)
+- `src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.ts` L30: `gameDayService.update({ id, game: gd.gameScheduled })`
+- `src/app/footy/admin/invoice/page.tsx` L33-36: comment + `gameScheduled: gd.game || gd.mailSent !== null` — another "is a game happening" inference variant (not "cancelled", but "scheduled")
+- `src/app/footy/admin/moregames/page.tsx` L91-113 (`buildRows`) — builds default rows with `game: true`
+- `src/components/MoreGamesForm/MoreGamesForm.tsx` L245 — form field path `` `rows.${index}.game` `` bound to a checkbox
+
+### 14. Components reading `GameDay.game` / cancellation directly
+
+- `src/components/GameDayIndicator/GameDayIndicator.tsx` L16-21 — **three-way inference**: `game === false &amp;&amp; mailSent === null` → dark (not yet scheduled/no game); `game === false &amp;&amp; mailSent !== null` → red (cancelled); else → green (scheduled/played). This is the clearest place mapping to all target enum branches.
+- `src/components/GameDaySummary/GameDaySummary.tsx` L33-34, L96, L116 — `noGame = gameDay.game ? '' : 'No game'`; conditionally renders `Team`/`GameResultForm` only `if (gameDay.game)`. Also imports/uses `getGameWinnersFromTeams`, `getTeamResultState` from `gameResult.ts`.
+- `src/components/PickerForm/PickerForm.tsx` L270-284, L446-473 — toggles `game: !gameDay.game` when calling `setGameEnabled`; notification copy branches on `gameDay.game` ("Game cancelled"/"Game reinstated"); UI conditionally shows picker/buttons based on `gameDay.game`.
+- `src/components/PlayerHeatmap/PlayerHeatmap.tsx` L20-24 (doc comment), L103-104 (`points: entry.points ?? null`, `noGame: entry.gameDay!.game === false`), L217/222/228 (color/label maps keyed on `points`, `noGame`), L319 (doc comment) — builds the heatmap cell model directly from `game`+`points`.
+- `src/components/PlayerForm/PlayerForm.tsx` — `badgeColor`/`resultLabel` maps keyed on `data.points` (0/1/3/null) (L13-27, L52, L60, L73); doesn't reference `game` directly (relies on `gameDay` presence for padding).
+- `src/components/GameResultForm/GameResultForm.tsx` (full file) — form UI for `bibs`+`winner` ('A'/'B'/'draw'/'none'), calls `setGameResult({ gameDayId, bibs, winner })`.
+- `src/components/Team/Team.tsx` L6 — imports `TeamResultState` from `gameResult.ts`.
+
+### 15. Pages consuming `Outcome.points` directly
+
+- `src/app/footy/(authenticated)/downloadmydata/page.tsx` L53,76-79 — `gamesPlayed = outcomes.filter(o =&gt; o.points !== null)`; `gamesWon/gamesDrawn/gamesLost` filtered on `points===3/1/0`.
+- `src/app/footy/games/page.tsx` L54-59, L76 — calls `gameDayService.getGamesPlayed/getGamesCancelled/getGamesRemaining` and surfaces "N cancelled" in the page subheading.
+
+### 16. `src/services/Player/Player.ts` L305-350 (`sanitizePlayerName`/player list mapping)
+
+Same `outcome.points !== null / === 3/1/0` pattern duplicated from `downloadmydata/page.tsx` (L310, L342, L345, L348) to compute `gamesPlayed/gamesWon/gamesDrawn/gamesLost` on `PlayerDataType`.
+
+### 17. `src/lib/importlivedb/importlivedb.ts`
+
+- L149: `where: { gameDay: { game: true } }` — live-DB import filter.
+
+### 18. Storybook stories hardcoding `game`/`points`
+
+- `src/components/PickerForm/PickerForm.stories.tsx` L34, L49 — `game: true`
+- `src/components/GameDayIndicator/GameDayIndicator.stories.tsx` L28, L37, L53 — `game: false` (multiple story variants, presumably covering cancelled vs not-yet-scheduled states)
+
+### 19. Mocks/fixtures hardcoding `game`/`points`
+
+- `src/tests/mocks/data/gameDay.ts` L7 — `game: true`
+- `src/tests/mocks/data/outcome.ts` L9 — `points: 3`
+- `src/tests/mocks/data/moreGamesForm.ts` L9,14,19 — `game: true/true/false`
+- `src/tests/mocks/data/playerRecord.ts` L21, `playerRecordData.ts` L22, `picker.ts` L26, `playerForm.ts` L11,25, `drinkers.ts` L26, `responses.ts` L26 — `points: N` (mix of `Outcome.points` and `PlayerRecord.points` fixtures depending on the shape)
+- `prisma/seed.ci.ts` L92-131 (`GameDay` row builder) — `game: true` (L114, L126), plus L149-200 (`Outcome` row builder) — `points: number`, `aPoints`/`bPoints` computed from a random `result` (0/1/2) and written as `points: aPoints`/`points: bPoints` (L174-200). Comment at L105-107 explicitly notes `mailSent` is needed for `getCurrent()` (mailSent IS NOT NULL semantics).
+
+### 20. Real/integration test-data snapshots
+
+- `db-snapshot/GameDay.json` — 1326 rows, every row has a `"game": true/false` boolean field (full production-shape snapshot, e.g. row 1: `{"id":1,...,"game":true,"mailSent":...}`)
+- `db-snapshot/Outcome.json` — every row has `"points": 0|1|3|null`
+- `src/tests/services/data/GameDay.test.json` — 99 rows, each with `"game": true/false`
+- `src/tests/services/data/Outcome.test.json` — 952 rows, each with `"points": 0|1|3|null` (also has a `"paid"` field not in current schema — likely stale/pre-migration fixture)
+- `src/tests/services/data/PlayerRecord.test.json` — 17158 rows with `"points"` (PlayerRecord aggregate, not Outcome). Confirmed consumer: `src/services/PlayerRecord/PlayerRecord.vitest.spec.ts` (loads via `loadJsonFixture('services/data/PlayerRecord.test.json')`, e.g. L406-407, L465-466, L547-548, L606-607). No direct source-code consumer found for `GameDay.test.json`/`Outcome.test.json` by filename grep — they may be loaded generically or are currently unused/stale; worth confirming before migration.
+
+### 21. `docs/ontology.yaml` — hand-written domain documentation referencing these fields
+
+- L38: lists `src/lib/gameResult.ts` as a grounding source
+- L127-143 (`GameDay` class): description explicitly says *"not every GameDay is an actual match — `game: false` marks a non-game entry"*; `keyAttributes.game` documents the semantics
+- L145-160 (`Outcome` class): `keyAttributes.points` documents 0/1/3 meaning and cross-refs `processes.matchResult` / `rules.unanimous-team-points`
+- L396: picker algorithm description references `Outcome.points` via `getRecentAverage`
+- L403-408 (`processes.matchResult`): *"setGameResult action records the match outcome, which is written per-player as Outcome.points"*; *"getGameWinnersFromTeams ... derives a GameWinner ... purely by reading each team's unanimous points value — it does not store the winner separately."*
+- L431-440 (`rules.unanimous-team-points`): full invariant statement, sourced to `src/lib/gameResult.ts (pickTeamPoints, getGameWinnersFromTeams)`
+
+This file has no explicit rule documenting the "cancelled = `game=false AND mailSent IS NOT NULL`" invariant, even though it's implemented in three places (`GameDay.getGamesCancelled`, `Outcome.getTurnout`, `GameDayIndicator.tsx`, and the `20260318120000` migration comment) — worth noting as an existing documentation gap this refactor should close.
+
+### 22. e2e tests
+
+- `e2e/table.spec.ts`, `e2e/tables.spec.ts`, `e2e/homepage.spec.ts`, `e2e/layout.spec.ts` — all matches are for the **`/footy/points` route/table name** (`TableNameSchema.enum.points`), not `Outcome.points` or `GameDay.game`. No e2e test directly exercises these fields' internal representation.
+
+### 23. Zod-schema-adjacent files confirmed NOT touching these fields (checked, ruled out)
+
+`RecordsTable.tsx`, `TableScore.tsx`, `PlayerTrophyTally.tsx`, `WinnersGrid`/`WinnersTable` stories, `TableIndexList.tsx`, `NavBarNested.tsx`, `HomeContent.stories.tsx`, `InfoContent.tsx` — all "points" hits are the `/footy/points` table name (`TableNameSchema.enum.points`) or prose text, not the `Outcome.points`/`GameDay.game` fields. `Turnout.tsx`/`Turnout.stories.tsx` consume the already-derived `TurnoutByYearType.gamesPlayed/gamesCancelled` rather than raw fields. `Money.ts`, `src/lib/exportdb/*`, `src/lib/fetchseeddata/*` have no references. `GameDayList.tsx`/`GameDayLink.tsx` pass `GameDayType` through without reading `.game`/`.points` themselves.</result>
+<usage><subagent_tokens>128296</subagent_tokens><tool_uses>73</tool_uses><duration_ms>442444</duration_ms></usage>
+</task-notification>
+
+---
+
+Resume what you were doing
+
+---
+
+/test-sync
+
+---
+
+Write a new Jira ticket for missing Playwright e2e test coverage
+
+---
+
+The function outcomeWhereForPoints is really an odd choice. It's called from 2 places, one which is always called with undefined and the other which is always called with a defined value. Effectively there are two halves of the function which are only exercised on one call site each, so why not inline that logic?
+
+---
+
+My hope was that doing this large refactor in general would simplify the code. Is that not the case? It looks like in some cases like Player.ts it's actually less straightforward than before.
+
+---
+
+Could points be reasonably stored as a derived value in PlayerRecord along with all the other derived values in that table?
+
+---
+
+Right, but each PlayerRecord is for a specific game day, so I don't see the harm in including single-game quantities as well as cumulative ones to that table.
+
+---
+
+There's already a new schema change and migration: this change would just alter what those are. Plan it out.
+
+---
+
+Actually would the best prefix be 'score' rather than 'table'?
+
+---
+
+/test-sync
+
+---
+
+These filters only exclude null, but Partial<PlayerRecordType> fields (and responseInterval) can also be undefined. That allows undefined into numeric arrays, which can produce NaN in your sort comparators and break ranking calculations. Filter with p != null / typeof p === 'number' (and similarly for responseIntervals) to exclude both null and undefined.
+
+---
+
+Do them too
+
+---
+
+The non-null assertion statusById.get(o.gameDayId)! will throw at runtime if a GameDay is missing from the map (e.g., data inconsistency, filtering changes, or a future call path that doesn't build a full status map). Consider a safe fallback (e.g. treating missing status as 'NoGame' or 'Scheduled'), or throw a controlled error with context so failures are debuggable.
+
+---
+
+Would moving scoreSpeedy in the order it's declared in lists including the schema change anything? It's untidy being separated from the other scores.
+
+---
+
+From review - check the data from the seed data at db-snapshot to confirm once and for all that this kind of data inconsistency doesn't exist in the real data:
+
+The backfill infers results using MAX(team points), which can misclassify dirty historical data. Example: if team A has mixed points (e.g., 3 and 1), MAX makes aPoints = 3 and could incorrectly set AWin instead of treating the result as unset. Consider computing per-team distinctness (e.g., MIN/ MAX + equality, or COUNT(DISTINCT points)) and only setting AWin/BWin/Draw when each team has exactly one non-null points value and the pairing is valid; otherwise set Scheduled.
+
+---
+
+Typing scoreFieldMap values as string weakens compile-time safety for dynamic indexing (e.g., Prisma where clauses and playerRecord[...]). Consider constraining values to a literal/known key type (e.g., keyof PlayerRecordType or a narrower union) so renames/mistypes are caught by TypeScript.
+
+---
+
+Same fix for rankMap please
+
+---
+
+Code review says this, but there's only one call site, so remove the ambiguity by inlining the code and getting rid of the function:
+
+Spreading ...gameDayWhere after status allows callers to accidentally (or intentionally) override the status constraint, which breaks the helper’s contract ('decided game day'). Prefer composing with AND (e.g., gameDay: { AND: [{ status: { in: [...] } }, gameDayWhere] }) or spread ...gameDayWhere first and then set status last so it cannot be overridden.
+
+---
+
+pointsOf(o) is recomputed multiple times per outcome (filter + 3 more filters + reduce). While each call is O(1), the repeated passes add up for large seasons. Consider computing points once (e.g., mapping outcomes to { outcome, points } or accumulating counts/total in a single loop) to reduce repeated lookups and keep the logic easier to reason about.
+
+---
+
+scoreSpeedy is computed as an average and can be fractional, but the Prisma schema/migration defines it as an integer (scoreSpeedy Int? / INTEGER). Prisma will typically reject non-integers for Int fields at runtime. Either store scoreSpeedy as a floating type in Prisma/migration (preferred, since it's an average), or round/ceil/floor the computed value before persisting and ensure the Zod strict schema aligns.
+
+---
+
+This computes ranks using repeated indexOf lookups inside a loop, making it O(n²) for each table (and more if repeated across years/gameDays). Consider precomputing a score→rank map once per array (taking ties into account), then assigning ranks with O(1) lookups.
+
+---
+
+This is a large change: do a comprehensive code review and hightlight any issues with it. I will note that I think there should be a follow-up task to review whether any routines which currently expect to get game points from Outcome should now instead be calling the PlayerRecord service since that's where the cached per-game points quantity lives.
+
+---
+
+First, create the new ticket for the follow-up
+
+---
+
+Yes

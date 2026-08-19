@@ -1,0 +1,425 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "e35107e832f9",
+  "session_id": "a47ae693-9bed-472e-a735-f322dd4f24a7",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-19T11:56:44.530729Z",
+  "branch": "main",
+  "checkpoints_count": 24,
+  "save_step_count": 23,
+  "files_touched": [
+    "docs/ontology.yaml",
+    "prisma/migrations/20260816204037_gameday_status/migration.sql",
+    "prisma/refresh-upcoming-gameday.ts",
+    "prisma/schema.prisma",
+    "prisma/seed.ci.ts",
+    "src/actions/setGameEnabled.vitest.spec.ts",
+    "src/app/footy/(authenticated)/downloadmydata/page.vitest.spec.ts",
+    "src/app/footy/admin/invoice/page.tsx",
+    "src/app/footy/admin/invoice/page.vitest.spec.tsx",
+    "src/app/footy/game/[id]/page.vitest.spec.ts",
+    "src/components/GameDayIndicator/GameDayIndicator.stories.tsx",
+    "src/components/GameDayIndicator/GameDayIndicator.tsx",
+    "src/components/GameDayIndicator/GameDayIndicator.vitest.spec.tsx",
+    "src/components/GameDaySummary/GameDaySummary.tsx",
+    "src/components/GameDaySummary/GameDaySummary.vitest.spec.tsx",
+    "src/components/PickerForm/PickerForm.stories.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/PickerForm/PickerForm.vitest.spec.tsx",
+    "src/components/PickerForm/__mocks__/PickerForm.tsx",
+    "src/components/PlayerForm/PlayerForm.vitest.spec.tsx",
+    "src/components/PlayerHeatmap/PlayerHeatmap.stories.tsx",
+    "src/components/PlayerHeatmap/PlayerHeatmap.tsx",
+    "src/components/PlayerHeatmap/PlayerHeatmap.vitest.spec.tsx",
+    "src/components/PlayerInfo/PlayerInfo.stories.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerInfo/PlayerInfo.vitest.spec.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerProfile/PlayerProfile.stories.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/PlayerProfile/PlayerProfile.vitest.spec.tsx",
+    "src/components/TableScore/TableScore.tsx",
+    "src/components/TableScore/TableScore.vitest.spec.tsx",
+    "src/lib/core/createMoreGameDays/createMoreGameDays.ts",
+    "src/lib/core/createMoreGameDays/createMoreGameDays.vitest.spec.ts",
+    "src/lib/core/setGameEnabled/setGameEnabled.ts",
+    "src/lib/core/setGameEnabled/setGameEnabled.vitest.spec.ts",
+    "src/lib/core/setGameResult/setGameResult.ts",
+    "src/lib/core/setGameResult/setGameResult.vitest.spec.ts",
+    "src/lib/core/submitGameInvitationResponse/submitGameInvitationResponse.vitest.spec.ts",
+    "src/lib/core/submitPicker/submitPicker.vitest.spec.ts",
+    "src/lib/core/submitResponse/submitResponse.vitest.spec.ts",
+    "src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.ts",
+    "src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.vitest.spec.ts",
+    "src/lib/gameResult.ts",
+    "src/lib/gameResult.vitest.spec.ts",
+    "src/lib/importlivedb/importlivedb.ts",
+    "src/lib/tables.ts",
+    "src/services/GameDay/GameDay.ts",
+    "src/services/GameDay/GameDay.vitest.spec.ts",
+    "src/services/Outcome/Outcome.ts",
+    "src/services/Outcome/Outcome.vitest.spec.ts",
+    "src/services/Player/Player.ts",
+    "src/services/Player/Player.vitest.spec.ts",
+    "src/services/PlayerRecord/PlayerRecord.ts",
+    "src/services/PlayerRecord/PlayerRecord.vitest.spec.ts",
+    "src/tests/mocks/data/gameDay.ts",
+    "src/tests/mocks/data/outcome.ts",
+    "src/tests/mocks/data/playerForm.ts",
+    "src/tests/mocks/data/playerRecord.ts",
+    "src/tests/mocks/data/teamPlayer.ts",
+    "src/types/GameDayStrictSchema.ts",
+    "src/types/OutcomePlayerType.ts",
+    "src/types/OutcomeStrictSchema.ts",
+    "src/types/PlayerFormType.ts",
+    "src/types/PlayerLastResultType.ts",
+    "src/types/PlayerRecordStrictSchema.ts",
+    "src/types/TeamPlayerType.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "a2646176900b",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 2270,
+    "cache_creation_tokens": 3288372,
+    "cache_read_tokens": 395903272,
+    "output_tokens": 584038,
+    "api_call_count": 1138,
+    "subagent_tokens": {
+      "input_tokens": 328,
+      "cache_creation_tokens": 436910,
+      "cache_read_tokens": 50687757,
+      "output_tokens": 135447,
+      "api_call_count": 164
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-08-17T07:32:03.768672Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "bb93bb471a54",
+      "timestamp": "2026-08-17T07:32:03.768672Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-08-17T20:27:13.72546Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "27e3ca678afd",
+      "timestamp": "2026-08-17T20:27:13.72546Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 24
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-19T11:56:44.081169Z",
+    "agent_lines": 134,
+    "agent_removed": 190,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 714,
+    "total_committed": 134,
+    "total_lines_changed": 1038,
+    "agent_percentage": 31.213872832369944,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 1002,
+      "user_lines_removed": 714,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "docs/ontology.yaml": 44,
+        "prisma/migrations/20260816204037_gameday_status/migration.sql": 39,
+        "prisma/refresh-upcoming-gameday.ts": 1,
+        "prisma/schema.prisma": 15,
+        "prisma/seed.ci.ts": 12,
+        "src/actions/setGameEnabled.vitest.spec.ts": 1,
+        "src/app/footy/(authenticated)/downloadmydata/page.vitest.spec.ts": 10,
+        "src/app/footy/admin/invoice/page.tsx": 4,
+        "src/app/footy/admin/invoice/page.vitest.spec.tsx": 8,
+        "src/app/footy/game/[id]/page.vitest.spec.ts": 1,
+        "src/components/GameDayIndicator/GameDayIndicator.stories.tsx": 3,
+        "src/components/GameDayIndicator/GameDayIndicator.tsx": 1,
+        "src/components/GameDayIndicator/GameDayIndicator.vitest.spec.tsx": 12,
+        "src/components/GameDaySummary/GameDaySummary.tsx": 9,
+        "src/components/GameDaySummary/GameDaySummary.vitest.spec.tsx": 33,
+        "src/components/PickerForm/PickerForm.stories.tsx": 2,
+        "src/components/PickerForm/PickerForm.tsx": 13,
+        "src/components/PickerForm/PickerForm.vitest.spec.tsx": 3,
+        "src/components/PlayerForm/PlayerForm.vitest.spec.tsx": 5,
+        "src/components/PlayerHeatmap/PlayerHeatmap.tsx": 8,
+        "src/components/PlayerHeatmap/PlayerHeatmap.vitest.spec.tsx": 24,
+        "src/lib/core/createMoreGameDays/createMoreGameDays.ts": 1,
+        "src/lib/core/createMoreGameDays/createMoreGameDays.vitest.spec.ts": 2,
+        "src/lib/core/setGameEnabled/setGameEnabled.ts": 1,
+        "src/lib/core/setGameEnabled/setGameEnabled.vitest.spec.ts": 11,
+        "src/lib/core/setGameResult/setGameResult.ts": 27,
+        "src/lib/core/setGameResult/setGameResult.vitest.spec.ts": 49,
+        "src/lib/core/submitGameInvitationResponse/submitGameInvitationResponse.vitest.spec.ts": 3,
+        "src/lib/core/submitPicker/submitPicker.vitest.spec.ts": 1,
+        "src/lib/core/submitResponse/submitResponse.vitest.spec.ts": 2,
+        "src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.ts": 4,
+        "src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.vitest.spec.ts": 3,
+        "src/lib/gameResult.ts": 42,
+        "src/lib/gameResult.vitest.spec.ts": 60,
+        "src/lib/importlivedb/importlivedb.ts": 1,
+        "src/services/GameDay/GameDay.ts": 15,
+        "src/services/GameDay/GameDay.vitest.spec.ts": 29,
+        "src/services/Outcome/Outcome.ts": 106,
+        "src/services/Outcome/Outcome.vitest.spec.ts": 187,
+        "src/services/Player/Player.ts": 69,
+        "src/services/Player/Player.vitest.spec.ts": 33,
+        "src/services/PlayerRecord/PlayerRecord.ts": 45,
+        "src/services/PlayerRecord/PlayerRecord.vitest.spec.ts": 27,
+        "src/tests/mocks/data/gameDay.ts": 1,
+        "src/tests/mocks/data/playerForm.ts": 21,
+        "src/tests/mocks/data/teamPlayer.ts": 2,
+        "src/types/GameDayStrictSchema.ts": 3,
+        "src/types/OutcomePlayerType.ts": 3,
+        "src/types/PlayerFormType.ts": 3,
+        "src/types/TeamPlayerType.ts": 3
+      },
+      "user_removed_per_file": {
+        "docs/ontology.yaml": 18,
+        "prisma/refresh-upcoming-gameday.ts": 1,
+        "prisma/schema.prisma": 8,
+        "prisma/seed.ci.ts": 11,
+        "src/actions/setGameEnabled.vitest.spec.ts": 1,
+        "src/app/footy/(authenticated)/downloadmydata/page.vitest.spec.ts": 10,
+        "src/app/footy/admin/invoice/page.tsx": 3,
+        "src/app/footy/admin/invoice/page.vitest.spec.tsx": 8,
+        "src/app/footy/game/[id]/page.vitest.spec.ts": 1,
+        "src/components/GameDayIndicator/GameDayIndicator.stories.tsx": 3,
+        "src/components/GameDayIndicator/GameDayIndicator.tsx": 1,
+        "src/components/GameDayIndicator/GameDayIndicator.vitest.spec.tsx": 12,
+        "src/components/GameDaySummary/GameDaySummary.tsx": 5,
+        "src/components/GameDaySummary/GameDaySummary.vitest.spec.tsx": 29,
+        "src/components/PickerForm/PickerForm.stories.tsx": 2,
+        "src/components/PickerForm/PickerForm.tsx": 8,
+        "src/components/PickerForm/PickerForm.vitest.spec.tsx": 3,
+        "src/components/PlayerForm/PlayerForm.vitest.spec.tsx": 1,
+        "src/components/PlayerHeatmap/PlayerHeatmap.tsx": 8,
+        "src/components/PlayerHeatmap/PlayerHeatmap.vitest.spec.tsx": 19,
+        "src/lib/core/createMoreGameDays/createMoreGameDays.ts": 1,
+        "src/lib/core/createMoreGameDays/createMoreGameDays.vitest.spec.ts": 2,
+        "src/lib/core/setGameEnabled/setGameEnabled.ts": 1,
+        "src/lib/core/setGameEnabled/setGameEnabled.vitest.spec.ts": 11,
+        "src/lib/core/setGameResult/setGameResult.ts": 46,
+        "src/lib/core/setGameResult/setGameResult.vitest.spec.ts": 44,
+        "src/lib/core/submitGameInvitationResponse/submitGameInvitationResponse.vitest.spec.ts": 3,
+        "src/lib/core/submitPicker/submitPicker.vitest.spec.ts": 1,
+        "src/lib/core/submitResponse/submitResponse.vitest.spec.ts": 2,
+        "src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.ts": 1,
+        "src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.vitest.spec.ts": 3,
+        "src/lib/gameResult.ts": 62,
+        "src/lib/gameResult.vitest.spec.ts": 67,
+        "src/lib/importlivedb/importlivedb.ts": 1,
+        "src/services/GameDay/GameDay.ts": 14,
+        "src/services/GameDay/GameDay.vitest.spec.ts": 27,
+        "src/services/Outcome/Outcome.ts": 67,
+        "src/services/Outcome/Outcome.vitest.spec.ts": 131,
+        "src/services/Player/Player.ts": 9,
+        "src/services/Player/Player.vitest.spec.ts": 17,
+        "src/services/PlayerRecord/PlayerRecord.ts": 12,
+        "src/services/PlayerRecord/PlayerRecord.vitest.spec.ts": 28,
+        "src/tests/mocks/data/gameDay.ts": 1,
+        "src/tests/mocks/data/outcome.ts": 1,
+        "src/tests/mocks/data/playerForm.ts": 2,
+        "src/tests/mocks/data/teamPlayer.ts": 2,
+        "src/types/GameDayStrictSchema.ts": 2,
+        "src/types/OutcomeStrictSchema.ts": 3,
+        "src/types/TeamPlayerType.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1002,
+      "agent_lines_removed": 714
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1214,
+      "agent_lines_removed": 713
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1214,
+      "agent_lines_removed": 713
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1212,
+      "agent_lines_removed": 719
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1212,
+      "agent_lines_removed": 719
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1212,
+      "agent_lines_removed": 719
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1212,
+      "agent_lines_removed": 719
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1386,
+      "agent_lines_removed": 873
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1386,
+      "agent_lines_removed": 873
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1468,
+      "agent_lines_removed": 881
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1468,
+      "agent_lines_removed": 881
+    },
+    {
+      "checkpoint_number": 13,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1520,
+      "agent_lines_removed": 882
+    },
+    {
+      "checkpoint_number": 14,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1520,
+      "agent_lines_removed": 882
+    },
+    {
+      "checkpoint_number": 15,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1531,
+      "agent_lines_removed": 882
+    },
+    {
+      "checkpoint_number": 16,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1546,
+      "agent_lines_removed": 882
+    },
+    {
+      "checkpoint_number": 17,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1579,
+      "agent_lines_removed": 887
+    },
+    {
+      "checkpoint_number": 18,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1571,
+      "agent_lines_removed": 887
+    },
+    {
+      "checkpoint_number": 19,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1582,
+      "agent_lines_removed": 893
+    },
+    {
+      "checkpoint_number": 20,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1586,
+      "agent_lines_removed": 893
+    },
+    {
+      "checkpoint_number": 21,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1676,
+      "agent_lines_removed": 900
+    },
+    {
+      "checkpoint_number": 22,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1676,
+      "agent_lines_removed": 900
+    },
+    {
+      "checkpoint_number": 23,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1676,
+      "agent_lines_removed": 900
+    }
+  ]
+}

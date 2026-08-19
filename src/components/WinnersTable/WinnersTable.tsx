@@ -21,8 +21,9 @@ import { PlayerRecordDataType } from '@/types';
 export interface Props {
     table: TableName;
     records: PlayerRecordDataType[];
+        const rowKey = `${winner.year}-${winner.player}`;
 }
-
+            <TableTr key={rowKey}>
 export const WinnersTable = ({ table, records }: Props) => {
     const years = useMemo(
         () => groupDisplays(records, (record) => record.year),

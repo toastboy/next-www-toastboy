@@ -97,7 +97,7 @@
         "next": "^16.3.1",
         "nodemailer": "^9.0.5",
         "prisma": "^7.9.1",
-        "prisma-zod-generator": "^3.1.0",
+        "prisma-zod-generator": "^3.1.1",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
         "sanitize-html": "^2.17.7",

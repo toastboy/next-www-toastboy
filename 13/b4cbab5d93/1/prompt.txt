@@ -1,0 +1,48 @@
+Start work on Jira ticket SYS-610
+
+---
+
+It seems what you've done is make existing Outcome service routines now query PlayerRecord as well. Look into whether outcomeService.getByGameDay, for example, could be simplified if it was just moved to PlayerRecordService
+
+---
+
+The only call site for OutcomeService.getByPlayer is the downloadmydata page. Revert the change in OutcomeService and instead add a call to PlayerRecordService.getByPlayer, creating it and the tests etc. if it doesn't already exist.
+
+---
+
+The JSDoc says the promise resolves to an array or null, but the signature is Promise<PlayerRecordType[]> and findMany returns an array (possibly empty), not null. Update the @returns text to match the actual behavior (e.g., 'array (possibly empty)') to avoid misleading callers.
+
+---
+
+Is this code review comment true? This relation filter shape may not match Prisma’s expected relation-filter syntax. For many-to-one/one-to-one relations Prisma commonly requires player: { is: ... } (and isNot) rather than player: { ... }. If PlayerRecord.player is a relation field, TypeScript/Prisma may reject player: where or the query may not behave as intended—consider using player: { is: where } (or the appropriate relation filter for your schema).
+
+---
+
+From code review: The as PointsValue | null cast suppresses type safety and can hide data-quality issues (e.g., DB contains an unexpected numeric value). Prefer validating/coercing r.points into PointsValue | null explicitly (or type the Prisma select/DTO so points is already PointsValue | null) to avoid propagating invalid values.
+
+
+Remember we're using zod where necessary
+
+---
+
+There’s no test covering the new behavior when a player has an Outcome but no matching PlayerRecord entry (map miss). Add a unit test that asserts points becomes null (or whatever the intended fallback is) to lock in the new semantics and catch regressions when the cache is incomplete.
+
+---
+
+The example now calls submitResponseCore, but the public export in src/lib/core/submitResponse/index.ts still exposes SubmitResponseCore (aliased). If consumers are expected to import from the index, the example should match the public API (or export both names) to prevent copy/paste confusion.
+
+---
+
+This YAML string is extremely long and hard to review/maintain in a quoted scalar. Consider converting it to a block scalar (|) with line breaks (and possibly extracting some of the detailed rationale into a separate Markdown doc) to improve readability and reduce merge conflicts.
+
+---
+
+SHoulnd't the other lines in that file also be wrapped in a similar way?
+
+---
+
+Do it anyway
+
+---
+
+Wrap ALL lines in the ontology greater than the default column width

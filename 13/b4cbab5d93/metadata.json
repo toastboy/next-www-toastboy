@@ -3,10 +3,22 @@
   "checkpoint_id": "13b4cbab5d93",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 13,
   "files_touched": [
+    "docs/ontology.yaml",
+    "src/actions/submitResponse.ts",
+    "src/actions/submitResponse.vitest.spec.ts",
+    "src/app/footy/(authenticated)/downloadmydata/page.tsx",
+    "src/app/footy/(authenticated)/downloadmydata/page.vitest.spec.ts",
+    "src/lib/core/submitGameInvitationResponse/submitGameInvitationResponse.ts",
     "src/lib/core/submitResponse/index.ts",
-    "src/lib/core/submitResponse/submitResponse.ts"
+    "src/lib/core/submitResponse/submitResponse.ts",
+    "src/lib/core/submitResponse/submitResponse.vitest.spec.ts",
+    "src/services/Player/Player.ts",
+    "src/services/Player/Player.vitest.spec.ts",
+    "src/services/PlayerRecord/PlayerRecord.ts",
+    "src/services/PlayerRecord/PlayerRecord.vitest.spec.ts",
+    "src/services/PlayerRecord/__mocks__/index.ts"
   ],
   "sessions": [
     {
@@ -15,13 +27,20 @@
       "compact_transcript": "/13/b4cbab5d93/0/transcript.jsonl",
       "content_hash": "/13/b4cbab5d93/0/content_hash.txt",
       "prompt": "/13/b4cbab5d93/0/prompt.txt"
+    },
+    {
+      "metadata": "/13/b4cbab5d93/1/metadata.json",
+      "transcript": "/13/b4cbab5d93/1/full.jsonl",
+      "compact_transcript": "/13/b4cbab5d93/1/transcript.jsonl",
+      "content_hash": "/13/b4cbab5d93/1/content_hash.txt",
+      "prompt": "/13/b4cbab5d93/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 2314,
-    "cache_creation_tokens": 3583347,
-    "cache_read_tokens": 402187853,
-    "output_tokens": 612541,
-    "api_call_count": 1160
+    "input_tokens": 2946,
+    "cache_creation_tokens": 4500829,
+    "cache_read_tokens": 498724751,
+    "output_tokens": 809128,
+    "api_call_count": 1476
   }
 }

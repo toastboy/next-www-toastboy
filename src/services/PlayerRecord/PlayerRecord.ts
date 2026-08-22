@@ -138,7 +138,7 @@ class PlayerRecordService {
      * Retrieves playerRecords by GameDay ID.
      * @param gameDayId - The ID of the GameDay.
      * @param year - The year to filter by (optional) - zero means all-time.
-     * @returns A promise that resolves to an array of PlayerRecords or null.
+     * @returns A promise that resolves to an array of PlayerRecords (possibly empty).
      * @throws An error if there is a failure.
      */
     async getByGameDay(
@@ -156,13 +156,18 @@ class PlayerRecordService {
     /**
      * Retrieves playerRecords by player ID.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of playerRecords or null.
+     * @param year - The year to filter by (optional) - zero means all-time.
+     * @returns A promise that resolves to an array of PlayerRecords (possibly empty).
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<PlayerRecordType[]> {
+    async getByPlayer(
+        playerId: number,
+        year?: number,
+    ): Promise<PlayerRecordType[]> {
         return prisma.playerRecord.findMany({
             where: {
                 playerId: playerId,
+                ...(year !== undefined ? { year } : {}),
             },
         });
     }

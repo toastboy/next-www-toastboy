@@ -2,6 +2,7 @@ import { vi } from 'vitest';
 const playerRecordService = {
     getAll: vi.fn(),
     getAllYears: vi.fn(),
+    getByPlayer: vi.fn(),
     getForYearByPlayer: vi.fn(),
     getProgress: vi.fn(),
     getTable: vi.fn(),

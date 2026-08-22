@@ -1,1 +1,1 @@
-export { SubmitResponseCore } from './submitResponse';
+export { submitResponseCore } from './submitResponse';

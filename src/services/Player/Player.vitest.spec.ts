@@ -1,6 +1,5 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
@@ -508,7 +507,7 @@ describe('PlayerService', () => {
     describe('getAll', () => {
         it('should return all players', async () => {
             const fixture: (PlayerType & {
-                outcomes: (OutcomeType & { gameDay: GameDayType })[];
+                outcomes: OutcomeType[];
                 extraEmails: PlayerExtraEmailType[];
             })[] = [
                 {
@@ -522,7 +521,6 @@ describe('PlayerService', () => {
                             team: 'A',
                             response: 'Yes',
                             gameDayId: 5,
-                            gameDay: createMockGameDay({ status: 'AWin' }),
                         },
                     ],
                 },
@@ -535,18 +533,85 @@ describe('PlayerService', () => {
                 },
             ];
             (prisma.player.findMany as Mock).mockResolvedValueOnce(fixture);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1, gameDayId: 5, points: 3 },
+            ]);
             const result = await playerService.getAll();
             expect(prisma.player.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({ where: undefined }),
             );
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({
+                where: { year: 0 },
+                select: { playerId: true, gameDayId: true, points: true },
+            });
             expect(result).toHaveLength(2);
             expect(result[0].id).toBe(1);
             expect(result[1].id).toBe(2);
         });
 
+        it('should throw rather than silently propagate a PlayerRecord.points value outside 0/1/3/null', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                {
+                    ...defaultPlayer,
+                    id: 1,
+                    extraEmails: [],
+                    outcomes: [
+                        { ...defaultOutcome, playerId: 1, gameDayId: 5 },
+                    ],
+                },
+            ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1, gameDayId: 5, points: 2 },
+            ]);
+
+            await expect(playerService.getAll()).rejects.toThrow();
+        });
+
+        it('should fall back to points: null for an Outcome with no matching PlayerRecord entry (cache miss)', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                {
+                    ...defaultPlayer,
+                    id: 1,
+                    extraEmails: [],
+                    outcomes: [
+                        // gameDayId 5 has a matching PlayerRecord below.
+                        {
+                            ...defaultOutcome,
+                            playerId: 1,
+                            gameDayId: 5,
+                            team: 'A',
+                        },
+                        // gameDayId 10 has a team assigned (i.e. it was
+                        // played) but no matching PlayerRecord row — the
+                        // cache is missing/incomplete for this game day.
+                        {
+                            ...defaultOutcome,
+                            playerId: 1,
+                            gameDayId: 10,
+                            team: 'A',
+                        },
+                    ],
+                },
+            ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1, gameDayId: 5, points: 3 },
+            ]);
+
+            const result = await playerService.getAll();
+
+            expect(result).toHaveLength(1);
+            // Only gameDayId 5 counts: gameDayId 10's missing PlayerRecord
+            // falls back to points: null, so it's treated as not played
+            // rather than defaulting to a win/loss/draw.
+            expect(result[0].gamesPlayed).toBe(1);
+            expect(result[0].gamesWon).toBe(1);
+            expect(result[0].firstPlayed).toBe(5);
+            expect(result[0].lastPlayed).toBe(5);
+        });
+
         it('should return null for firstResponded/lastResponded when player has no responses', async () => {
             const playerWithNoResponses: PlayerType & {
-                outcomes: (OutcomeType & { gameDay: GameDayType })[];
+                outcomes: OutcomeType[];
                 extraEmails: PlayerExtraEmailType[];
             } = {
                 ...defaultPlayer,
@@ -556,7 +621,6 @@ describe('PlayerService', () => {
                     {
                         ...defaultOutcome,
                         response: null,
-                        gameDay: createMockGameDay(),
                     },
                 ],
             };
@@ -564,6 +628,7 @@ describe('PlayerService', () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([
                 playerWithNoResponses,
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
 
             const result = await playerService.getAll();
             expect(result).toHaveLength(1);
@@ -575,7 +640,7 @@ describe('PlayerService', () => {
 
         it('should return null for firstPlayed/lastPlayed when player has responses but no games played', async () => {
             const playerWithResponsesButNoGames: PlayerType & {
-                outcomes: (OutcomeType & { gameDay: GameDayType })[];
+                outcomes: OutcomeType[];
                 extraEmails: PlayerExtraEmailType[];
             } = {
                 ...defaultPlayer,
@@ -586,13 +651,11 @@ describe('PlayerService', () => {
                         ...defaultOutcome,
                         gameDayId: 5,
                         response: 'Yes',
-                        gameDay: createMockGameDay(),
                     },
                     {
                         ...defaultOutcome,
                         gameDayId: 10,
                         response: 'No',
-                        gameDay: createMockGameDay(),
                     },
                 ],
             };
@@ -600,6 +663,7 @@ describe('PlayerService', () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([
                 playerWithResponsesButNoGames,
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
 
             const result = await playerService.getAll();
             expect(result).toHaveLength(1);
@@ -623,6 +687,7 @@ describe('PlayerService', () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([
                 playerWithNoOutcomes,
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
 
             const result = await playerService.getAll();
             expect(result).toHaveLength(1);
@@ -649,6 +714,7 @@ describe('PlayerService', () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([
                 anonymousPlayer,
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
 
             const result = await playerService.getAll();
             expect(result[0].name).toBe('Player 1');
@@ -656,10 +722,15 @@ describe('PlayerService', () => {
 
         it('should pass a finished:null filter when activeOnly is true', async () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             await playerService.getAll({ activeOnly: true });
             expect(prisma.player.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({ where: { finished: null } }),
             );
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({
+                where: { year: 0, player: { finished: null } },
+                select: { playerId: true, gameDayId: true, points: true },
+            });
         });
 
         it('normalises a missing accountEmail to null', async () => {
@@ -672,6 +743,7 @@ describe('PlayerService', () => {
                     outcomes: [],
                 },
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerService.getAll();
             expect(result[0].accountEmail).toBeNull();
         });
@@ -693,6 +765,7 @@ describe('PlayerService', () => {
                     outcomes: [],
                 },
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerService.getAll();
             expect(result[0].extraEmails).toEqual([
                 { email: 'extra@example.com', verified: true },
@@ -716,6 +789,7 @@ describe('PlayerService', () => {
                     outcomes: [],
                 },
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerService.getAll();
             expect(result[0].extraEmails).toEqual([
                 { email: 'pending@example.com', verified: false },
@@ -746,6 +820,7 @@ describe('PlayerService', () => {
                     outcomes: [],
                 },
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerService.getAll();
             expect(result[0].extraEmails).toEqual([
                 { email: 'verified@example.com', verified: true },
@@ -762,12 +837,14 @@ describe('PlayerService', () => {
                     outcomes: [],
                 },
             ]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerService.getAll();
             expect(result[0].extraEmails).toEqual([]);
         });
 
         it('passes the correct include with extraEmails select and orderBy to Prisma', async () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             await playerService.getAll();
             expect(prisma.player.findMany).toHaveBeenCalledWith({
                 include: {
@@ -781,9 +858,6 @@ describe('PlayerService', () => {
                     outcomes: {
                         orderBy: {
                             gameDayId: 'desc',
-                        },
-                        include: {
-                            gameDay: { select: { status: true } },
                         },
                     },
                 },

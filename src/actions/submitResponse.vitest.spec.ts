@@ -16,7 +16,7 @@ vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/submitResponse', () => ({
-    SubmitResponseCore: submitResponseCoreMock,
+    submitResponseCore: submitResponseCoreMock,
 }));
 
 import { SubmitResponse } from '@/actions/submitResponse';
@@ -35,7 +35,7 @@ describe('SubmitResponse action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('calls requireAdmin, validates input, delegates to SubmitResponseCore, revalidates picker/responses/response paths, and broadcasts Responses channel', async () => {
+    it('calls requireAdmin, validates input, delegates to submitResponseCore, revalidates picker/responses/response paths, and broadcasts Responses channel', async () => {
         await SubmitResponse(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
@@ -51,7 +51,7 @@ describe('SubmitResponse action wrapper', () => {
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Responses);
     });
 
-    it('returns the result from SubmitResponseCore', async () => {
+    it('returns the result from submitResponseCore', async () => {
         const outcome = { id: 1, response: 'Yes' };
         submitResponseCoreMock.mockResolvedValueOnce(outcome);
 

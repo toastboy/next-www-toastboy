@@ -291,23 +291,37 @@ class PlayerService {
     async getAll(options?: {
         activeOnly?: boolean;
     }): Promise<PlayerDataDisplayType[]> {
-        const players = await prisma.player.findMany({
-            where: options?.activeOnly ? { finished: null } : undefined,
-            include: {
-                outcomes: {
-                    orderBy: {
-                        gameDayId: 'desc',
+        const where = options?.activeOnly ? { finished: null } : undefined;
+        const [players, playerRecords] = await Promise.all([
+            prisma.player.findMany({
+                where,
+                include: {
+                    outcomes: {
+                        orderBy: {
+                            gameDayId: 'desc',
+                        },
                     },
-                    include: {
-                        gameDay: { select: { status: true } },
+                    extraEmails: {
+                        select: { email: true, verifiedAt: true },
+                        orderBy: [
+                            { verifiedAt: 'desc' },
+                            { createdAt: 'desc' },
+                        ],
                     },
                 },
-                extraEmails: {
-                    select: { email: true, verifiedAt: true },
-                    orderBy: [{ verifiedAt: 'desc' }, { createdAt: 'desc' }],
-                },
-            },
-        });
+            }),
+            prisma.playerRecord.findMany({
+                where: { year: 0, ...(where ? { player: where } : {}) },
+                select: { playerId: true, gameDayId: true, points: true },
+            }),
+        ]);
+        const pointsOrNullSchema = PointsSchema.nullable();
+        const pointsByPlayerGameDay = new Map(
+            playerRecords.map((r) => [
+                `${r.playerId}-${r.gameDayId}`,
+                pointsOrNullSchema.parse(r.points),
+            ]),
+        );
 
         return players.map(
             ({
@@ -316,9 +330,12 @@ class PlayerService {
                 accountEmail,
                 ...player
             }) => {
-                const outcomes = rawOutcomes.map(({ gameDay, ...outcome }) => ({
+                const outcomes = rawOutcomes.map((outcome) => ({
                     ...outcome,
-                    points: getPlayerPoints(gameDay.status, outcome.team),
+                    points:
+                        pointsByPlayerGameDay.get(
+                            `${outcome.playerId}-${outcome.gameDayId}`,
+                        ) ?? null,
                 }));
                 const gamesResponded = outcomes.filter(
                     (outcome) => outcome.response !== null,

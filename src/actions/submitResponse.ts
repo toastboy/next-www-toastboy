@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { SubmitResponseCore } from '@/lib/core/submitResponse';
+import { submitResponseCore } from '@/lib/core/submitResponse';
 import { broadcast } from '@/lib/events';
 import { SubmitResponseInputSchema } from '@/types/actions/SubmitResponse';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -19,7 +19,7 @@ export async function SubmitResponse(rawData: unknown) {
     await requireAdmin();
 
     const data = SubmitResponseInputSchema.parse(rawData);
-    const result = await SubmitResponseCore(data);
+    const result = await submitResponseCore(data);
 
     revalidatePath('/footy/admin/picker');
     revalidatePath('/footy/admin/responses');

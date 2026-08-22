@@ -5,6 +5,7 @@ vi.mock('services/Player');
 vi.mock('services/PlayerExtraEmail');
 vi.mock('services/CountrySupporter');
 vi.mock('services/ClubSupporter');
+vi.mock('services/PlayerRecord');
 // The shared services/Outcome __mocks__ does not include getByPlayer, so this
 // page's dependency is mocked locally instead.
 vi.mock('services/Outcome', () => ({
@@ -32,8 +33,10 @@ import countrySupporterService from '@/services/CountrySupporter';
 import outcomeService from '@/services/Outcome';
 import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
+import playerRecordService from '@/services/PlayerRecord';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
 import { createMockPlayer } from '@/tests/mocks/data/player';
+import { createMockPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 const mockPlayer = createMockPlayer({ id: 7 });
 
@@ -49,6 +52,7 @@ describe('Download My Data page', () => {
         (countrySupporterService.getByPlayer as Mock).mockResolvedValue([]);
         (clubSupporterService.getByPlayer as Mock).mockResolvedValue([]);
         (outcomeService.getByPlayer as Mock).mockResolvedValue([]);
+        (playerRecordService.getByPlayer as Mock).mockResolvedValue([]);
     });
 
     it('renders an error notification when the user has no playerId', async () => {
@@ -75,7 +79,7 @@ describe('Download My Data page', () => {
         );
     });
 
-    it('fetches player, extraEmails, countries, clubs, and outcomes in parallel', async () => {
+    it('fetches player, extraEmails, countries, clubs, outcomes, and playerRecords in parallel', async () => {
         await Page();
 
         expect(playerService.getById).toHaveBeenCalledWith(7);
@@ -83,6 +87,7 @@ describe('Download My Data page', () => {
         expect(countrySupporterService.getByPlayer).toHaveBeenCalledWith(7);
         expect(clubSupporterService.getByPlayer).toHaveBeenCalledWith(7);
         expect(outcomeService.getByPlayer).toHaveBeenCalledWith(7);
+        expect(playerRecordService.getByPlayer).toHaveBeenCalledWith(7, 0);
     });
 
     it('renders an error notification when the player record cannot be found', async () => {
@@ -116,11 +121,11 @@ describe('Download My Data page', () => {
         expect(props.data.totals.lastResponded).toBe(10);
     });
 
-    it('computes firstPlayed and lastPlayed correctly from outcomes', async () => {
-        (outcomeService.getByPlayer as Mock).mockResolvedValue([
-            { ...createMockOutcome({ gameDayId: 10 }), points: 3 },
-            { ...createMockOutcome({ gameDayId: 5 }), points: 0 },
-            { ...createMockOutcome({ gameDayId: 20 }), points: null },
+    it('computes firstPlayed and lastPlayed correctly from playerRecords', async () => {
+        (playerRecordService.getByPlayer as Mock).mockResolvedValue([
+            createMockPlayerRecord({ gameDayId: 10, points: 3 }),
+            createMockPlayerRecord({ gameDayId: 5, points: 0 }),
+            createMockPlayerRecord({ gameDayId: 20, points: null }),
         ]);
 
         renderToStaticMarkup(await Page());
@@ -140,12 +145,12 @@ describe('Download My Data page', () => {
     });
 
     it('computes gamesPlayed, gamesWon, gamesDrawn, and gamesLost correctly', async () => {
-        (outcomeService.getByPlayer as Mock).mockResolvedValue([
-            { ...createMockOutcome({ gameDayId: 1 }), points: 3 },
-            { ...createMockOutcome({ gameDayId: 2 }), points: 3 },
-            { ...createMockOutcome({ gameDayId: 3 }), points: 1 },
-            { ...createMockOutcome({ gameDayId: 4 }), points: 0 },
-            { ...createMockOutcome({ gameDayId: 5 }), points: null },
+        (playerRecordService.getByPlayer as Mock).mockResolvedValue([
+            createMockPlayerRecord({ gameDayId: 1, points: 3 }),
+            createMockPlayerRecord({ gameDayId: 2, points: 3 }),
+            createMockPlayerRecord({ gameDayId: 3, points: 1 }),
+            createMockPlayerRecord({ gameDayId: 4, points: 0 }),
+            createMockPlayerRecord({ gameDayId: 5, points: null }),
         ]);
 
         renderToStaticMarkup(await Page());

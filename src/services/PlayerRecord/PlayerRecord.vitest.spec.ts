@@ -322,6 +322,25 @@ describe('PlayerRecordService', () => {
             expect(result).toEqual(fixture);
         });
 
+        it('should retrieve PlayerRecords for Player ID 12 and year 0 (all-time)', async () => {
+            const fixture = [
+                {
+                    ...defaultPlayerRecord,
+                    playerId: 12,
+                    gameDayId: 15,
+                    year: 0,
+                },
+            ];
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce(
+                fixture,
+            );
+            const result = await playerRecordService.getByPlayer(12, 0);
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({
+                where: { playerId: 12, year: 0 },
+            });
+            expect(result).toEqual(fixture);
+        });
+
         it('should return an empty list when retrieving PlayerRecords for Player id 21', async () => {
             (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerRecordService.getByPlayer(21);

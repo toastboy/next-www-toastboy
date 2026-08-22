@@ -29,7 +29,7 @@ const defaultDeps: SubmitResponseDeps = {
  * @throws Will throw if gameDay or outcome service operations fail
  *
  * @example
- * const result = await SubmitResponseCore({
+ * const result = await submitResponseCore({
  *   gameDayId: 1249,
  *   playerId: 42,
  *   response: 'Yes',
@@ -37,7 +37,7 @@ const defaultDeps: SubmitResponseDeps = {
  *   comment: 'Player confirmed attendance',
  * });
  */
-export async function SubmitResponseCore(
+export async function submitResponseCore(
     data: SubmitResponseInput,
     deps: SubmitResponseDeps = defaultDeps,
 ) {

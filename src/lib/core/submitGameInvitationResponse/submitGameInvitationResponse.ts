@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { SubmitResponseCore } from '@/lib/core/submitResponse';
+import { submitResponseCore } from '@/lib/core/submitResponse';
 import { NotFoundError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
@@ -43,7 +43,7 @@ export async function submitGameInvitationResponseCore(
         throw new NotFoundError('Invitation not found.');
     }
 
-    return await SubmitResponseCore(
+    return await submitResponseCore(
         {
             gameDayId: invitation.gameDayId,
             playerId: invitation.playerId,

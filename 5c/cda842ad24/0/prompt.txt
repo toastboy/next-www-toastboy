@@ -1,0 +1,62 @@
+Start work on SYS-608 (I think it might be no longer necessary and out of date)
+
+---
+
+I still have failing Playwright tests
+
+
+Running 5 tests using 1 worker
+[1/5] [chromium] › e2e/info.spec.ts:42:5 › info page
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to i
+[2/5] [chromium] › e2e/info.spec.ts:53:9 › EnquiryForm › shows validation errors on empty submit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to i
+  1) [chromium] › e2e/info.spec.ts:53:9 › EnquiryForm › shows validation errors on empty submit ────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Invalid email')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Invalid email')
+
+
+      66 |         await submitButton.scrollIntoViewIfNeeded();
+      67 |         await expect(page.getByText('Name is required')).toBeVisible();
+    > 68 |         await expect(page.getByText('Invalid email')).toBeVisible();
+         |                                                       ^
+      69 |         await expect(page.getByText('Message is required')).toBeVisible();
+      70 |     });
+      71 |
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:68:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/error-context.md
+
+[3/5] [chromium] › e2e/info.spec.ts:72:9 › EnquiryForm › shows invalid email error on blur
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to i
+[4/5] [chromium] › e2e/info.spec.ts:97:13 › EnquiryForm › email flow › submits form and shows confirmation notification
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to i
+[5/5] [chromium] › e2e/info.spec.ts:136:13 › EnquiryForm › email flow › completes full verification flow
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:84373) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to i
+  1 failed
+    [chromium] › e2e/info.spec.ts:53:9 › EnquiryForm › shows validation errors on empty submit ─────
+  4 passed (10.2s)

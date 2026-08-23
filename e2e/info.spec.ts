@@ -1,9 +1,29 @@
+import type { Locator } from '@playwright/test';
+
 import { expect, test } from './utils/base';
 import {
     deleteAllMessages,
     getMessageDetail,
     waitForMessage,
 } from './utils/mailpit';
+
+/**
+ * `fill()` can land before Next.js finishes hydrating and attaches Mantine's
+ * controlled onChange handler: the DOM value gets set natively, then wiped
+ * when hydration commits React's still-empty initial state. `networkidle`
+ * doesn't reliably signal that hydration is done (hydration can finish after
+ * the last network request settles, or the reverse), so instead of guessing
+ * at readiness, retry the fill itself - along with the read - until the
+ * value actually sticks. This converges regardless of how long hydration
+ * takes, and once it succeeds once on a page, the whole tree is hydrated, so
+ * later interactions on the same page don't need to go through this.
+ */
+const fillWhenHydrated = async (locator: Locator, value: string) => {
+    await expect(async () => {
+        await locator.fill(value);
+        await expect(locator).toHaveValue(value);
+    }).toPass({ timeout: 10000 });
+};
 
 const extractVerificationLink = (content: string) => {
     const hrefMatch =
@@ -32,6 +52,12 @@ test('info page', async ({ page }) => {
 test.describe('EnquiryForm', () => {
     test('shows validation errors on empty submit', async ({ page }) => {
         await page.goto('/footy/info');
+        const nameInput = page.getByRole('textbox', { name: 'Name' });
+        // Confirm hydration before clicking submit on an otherwise-untouched
+        // form: clicking before the onSubmit handler is attached falls
+        // through to a native form GET submission, navigating the page.
+        await fillWhenHydrated(nameInput, 'hydration probe');
+        await nameInput.fill('');
         const submitButton = page.getByRole('button', { name: 'Send message' });
 
         await submitButton.scrollIntoViewIfNeeded();
@@ -45,7 +71,10 @@ test.describe('EnquiryForm', () => {
 
     test('shows invalid email error on blur', async ({ page }) => {
         await page.goto('/footy/info');
-        await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+        await fillWhenHydrated(
+            page.getByRole('textbox', { name: 'Name' }),
+            'Test User',
+        );
         const emailInput = page.getByRole('textbox', { name: 'Email' });
         await emailInput.fill('not-an-email');
         await page.getByRole('textbox', { name: 'Message' }).click();
@@ -76,20 +105,9 @@ test.describe('EnquiryForm', () => {
                 name: 'Message',
             });
 
-            // Assert each value lands in Mantine's controlled form state
-            // before moving on: WebKit can occasionally process fill()'s
-            // synthetic input event slower than React's onChange commit,
-            // and since submit buttons stay enabled while invalid (by
-            // design), a not-yet-committed field fails validation silently
-            // instead of the click being a no-op.
-            await nameInput.fill('Test User');
-            await expect(nameInput).toHaveValue('Test User');
+            await fillWhenHydrated(nameInput, 'Test User');
             await emailInput.fill('playwright@example.com');
-            await expect(emailInput).toHaveValue('playwright@example.com');
             await messageInput.fill('This is a test enquiry from Playwright.');
-            await expect(messageInput).toHaveValue(
-                'This is a test enquiry from Playwright.',
-            );
             await page.getByRole('button', { name: 'Send message' }).click();
 
             await expect(page.getByText('Confirm your email')).toBeVisible({
@@ -123,14 +141,9 @@ test.describe('EnquiryForm', () => {
                 name: 'Message',
             });
 
-            await nameInput.fill('Verification Tester');
-            await expect(nameInput).toHaveValue('Verification Tester');
+            await fillWhenHydrated(nameInput, 'Verification Tester');
             await emailInput.fill('verify@example.com');
-            await expect(emailInput).toHaveValue('verify@example.com');
             await messageInput.fill('Please verify this enquiry.');
-            await expect(messageInput).toHaveValue(
-                'Please verify this enquiry.',
-            );
             await page.getByRole('button', { name: 'Send message' }).click();
 
             await expect(page.getByText('Confirm your email')).toBeVisible({

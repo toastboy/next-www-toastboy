@@ -12,7 +12,11 @@ import {
     PayDebtResultSchema,
 } from '@/types/actions/PayDebt';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
-import type { MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
+import type {
+    HallHireGap,
+    MoneyChartDatum,
+    PlayerDebtsType,
+} from '@/types/DebtType';
 import { DebtsSummarySchema } from '@/types/DebtType';
 
 class MoneyService {
@@ -387,6 +391,99 @@ class MoneyService {
                     },
                 });
             }
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Returns the subset of the given game day IDs that already have a
+     * HallHire transaction recorded against them.
+     *
+     * Used to determine whether a month's invoice has already been recorded,
+     * so the Invoice Check form can avoid re-submitting (and so
+     * double-writing) the same HallHire transactions.
+     *
+     * @param gameDayIds - Game day IDs to check.
+     * @returns A promise that resolves to the distinct game day IDs among
+     * those given that already have a HallHire transaction — a
+     * DB-level `distinct` query, so a game day with more than one HallHire
+     * transaction still contributes only one ID.
+     * @throws Will rethrow any unexpected persistence errors encountered.
+     */
+    async getHallHireForGameDays(gameDayIds: number[]): Promise<number[]> {
+        try {
+            if (gameDayIds.length === 0) return [];
+
+            const transactions = await prisma.transaction.findMany({
+                where: {
+                    type: 'HallHire',
+                    gameDayId: { in: gameDayIds },
+                },
+                select: { gameDayId: true },
+                distinct: ['gameDayId'],
+            });
+
+            return transactions
+                .map((transaction) => transaction.gameDayId)
+                .filter((gameDayId): gameDayId is number => gameDayId != null);
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Finds past months with a scheduled game day but no recorded HallHire
+     * transaction, so the organiser can spot invoices that were never
+     * entered.
+     *
+     * A game day counts as "scheduled" using the same rule as the Invoice
+     * Check page: `status !== 'NoGame' || mailSent !== null`. Only game days
+     * strictly before the current calendar month are considered — the
+     * current/future month not yet being recorded is normal, not a gap.
+     *
+     * @returns A promise that resolves to the distinct (year, month) pairs
+     * with at least one unrecorded scheduled game day, sorted chronologically.
+     * @throws Will rethrow any unexpected persistence errors encountered.
+     */
+    async getHallHireGaps(): Promise<HallHireGap[]> {
+        try {
+            const now = new Date();
+            const startOfCurrentMonth = new Date(
+                Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
+            );
+
+            const scheduledGameDays = await prisma.gameDay.findMany({
+                where: {
+                    date: { lt: startOfCurrentMonth },
+                    OR: [
+                        { status: { not: 'NoGame' } },
+                        { mailSent: { not: null } },
+                    ],
+                },
+                select: { id: true, date: true },
+            });
+
+            if (scheduledGameDays.length === 0) return [];
+
+            const recordedGameDayIds = new Set(
+                await this.getHallHireForGameDays(
+                    scheduledGameDays.map((gameDay) => gameDay.id),
+                ),
+            );
+
+            const gapsByKey = new Map<string, HallHireGap>();
+            for (const gameDay of scheduledGameDays) {
+                if (recordedGameDayIds.has(gameDay.id)) continue;
+
+                const year = gameDay.date.getUTCFullYear();
+                const month = gameDay.date.getUTCMonth() + 1;
+                gapsByKey.set(`${year}-${month}`, { year, month });
+            }
+
+            return [...gapsByKey.values()].sort(
+                (a, b) => a.year - b.year || a.month - b.month,
+            );
         } catch (error) {
             throw normalizeUnknownError(error);
         }

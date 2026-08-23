@@ -5,6 +5,7 @@ import { InvoiceForm } from '@/components/InvoiceForm/InvoiceForm';
 import { formatDate } from '@/lib/dates';
 import { isGame } from '@/lib/gameResult';
 import gameDayService from '@/services/GameDay';
+import moneyService from '@/services/Money';
 import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Invoice Check' };
@@ -38,13 +39,22 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
         hallCost: gd.hallCost,
     }));
 
+    const [recordedGameDayIds, gaps] = await Promise.all([
+        moneyService.getHallHireForGameDays(gameDaysRaw.map((gd) => gd.id)),
+        moneyService.getHallHireGaps(),
+    ]);
+    const alreadyRecorded = recordedGameDayIds.length > 0;
+
     return (
         <>
             <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Money]} />
             <InvoiceForm
+                key={`${year}-${month}`}
                 year={year}
                 month={month}
                 gameDays={gameDays}
+                alreadyRecorded={alreadyRecorded}
+                gaps={gaps}
                 onUpdateGameDays={updateInvoiceGameDays}
                 onRecordHallHire={recordHallHire}
             />

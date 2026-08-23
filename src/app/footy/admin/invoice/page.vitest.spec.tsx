@@ -2,6 +2,7 @@ import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('services/GameDay');
+vi.mock('services/Money');
 vi.mock('@/actions/recordHallHire', () => ({ recordHallHire: vi.fn() }));
 vi.mock('@/actions/updateInvoiceGameDays', () => ({
     updateInvoiceGameDays: vi.fn(),
@@ -11,6 +12,7 @@ import { recordHallHire } from '@/actions/recordHallHire';
 import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
 import InvoicePage from '@/app/footy/admin/invoice/page';
 import gameDayService from '@/services/GameDay';
+import moneyService from '@/services/Money';
 import { FootyChannel } from '@/types/FootyChannel';
 
 interface AnyElement {
@@ -58,6 +60,8 @@ describe('Admin Invoice page', () => {
         vi.useFakeTimers();
         vi.clearAllMocks();
         (gameDayService.getForMonth as Mock).mockResolvedValue([]);
+        (moneyService.getHallHireForGameDays as Mock).mockResolvedValue([]);
+        (moneyService.getHallHireGaps as Mock).mockResolvedValue([]);
     });
 
     afterEach(() => {
@@ -158,6 +162,47 @@ describe('Admin Invoice page', () => {
 
         const form = findElement(result, 'InvoiceForm');
         expect(form?.props.onRecordHallHire).toBe(recordHallHire);
+    });
+
+    it('passes alreadyRecorded as false when no HallHire transactions exist for the month', async () => {
+        (gameDayService.getForMonth as Mock).mockResolvedValue([
+            makeGameDay({ id: 5, status: 'Scheduled' }),
+        ]);
+        (moneyService.getHallHireForGameDays as Mock).mockResolvedValue([]);
+
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
+
+        expect(moneyService.getHallHireForGameDays).toHaveBeenCalledWith([5]);
+        const form = findElement(result, 'InvoiceForm');
+        expect(form?.props.alreadyRecorded).toBe(false);
+    });
+
+    it('passes alreadyRecorded as true when a HallHire transaction already exists for the month', async () => {
+        (gameDayService.getForMonth as Mock).mockResolvedValue([
+            makeGameDay({ id: 5, status: 'Scheduled' }),
+        ]);
+        (moneyService.getHallHireForGameDays as Mock).mockResolvedValue([5]);
+
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
+
+        const form = findElement(result, 'InvoiceForm');
+        expect(form?.props.alreadyRecorded).toBe(true);
+    });
+
+    it('passes gaps from moneyService.getHallHireGaps through to InvoiceForm', async () => {
+        const gaps = [{ year: 2025, month: 11 }];
+        (moneyService.getHallHireGaps as Mock).mockResolvedValue(gaps);
+
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
+
+        const form = findElement(result, 'InvoiceForm');
+        expect(form?.props.gaps).toEqual(gaps);
     });
 
     it('renders AutoRefresh with the Games and Money channels', async () => {

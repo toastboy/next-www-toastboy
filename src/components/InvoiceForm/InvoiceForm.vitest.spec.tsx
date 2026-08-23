@@ -5,6 +5,8 @@ import { vi } from 'vitest';
 
 import { InvoiceForm } from '@/components/InvoiceForm/InvoiceForm';
 import { mockRouter, Wrapper } from '@/tests/components/lib/common';
+import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
+import type { UpdateInvoiceGameDaysProxy } from '@/types/actions/UpdateInvoiceGameDays';
 
 const { notificationsShowMock, notificationsUpdateMock } = vi.hoisted(() => ({
     notificationsShowMock: vi.fn(),
@@ -30,15 +32,27 @@ const renderForm = ({
     gameDays = defaultGameDays,
     year = 2026,
     month = 1,
+    alreadyRecorded = false,
+    gaps = [],
     onUpdateGameDays = vi.fn().mockResolvedValue(undefined),
     onRecordHallHire = vi.fn().mockResolvedValue(undefined),
+}: {
+    gameDays?: typeof defaultGameDays;
+    year?: number;
+    month?: number;
+    alreadyRecorded?: boolean;
+    gaps?: { year: number; month: number }[];
+    onUpdateGameDays?: UpdateInvoiceGameDaysProxy;
+    onRecordHallHire?: RecordHallHireProxy;
 } = {}) => {
-    render(
+    return render(
         <Wrapper>
             <InvoiceForm
                 year={year}
                 month={month}
                 gameDays={gameDays}
+                alreadyRecorded={alreadyRecorded}
+                gaps={gaps}
                 onUpdateGameDays={onUpdateGameDays}
                 onRecordHallHire={onRecordHallHire}
             />
@@ -348,5 +362,112 @@ describe('InvoiceForm', () => {
         );
 
         expect(screen.getByText('Total: £141.00')).toBeInTheDocument();
+    });
+
+    describe('already-recorded submit gating', () => {
+        it('enables the submit button immediately when the invoice has not been recorded', () => {
+            renderForm({ alreadyRecorded: false });
+
+            expect(
+                screen.getByRole('button', { name: /Record invoice/i }),
+            ).toBeEnabled();
+        });
+
+        it('disables the submit button when the invoice has already been recorded', () => {
+            renderForm({ alreadyRecorded: true });
+
+            expect(
+                screen.getByRole('button', { name: /Record invoice/i }),
+            ).toBeDisabled();
+        });
+
+        it('re-enables the submit button once a checkbox is changed', async () => {
+            const user = userEvent.setup();
+            renderForm({ alreadyRecorded: true });
+
+            const submitButton = screen.getByRole('button', {
+                name: /Record invoice/i,
+            });
+            expect(submitButton).toBeDisabled();
+
+            await user.click(
+                screen.getByLabelText('Game scheduled for 2026-01-13'),
+            );
+
+            expect(submitButton).toBeEnabled();
+        });
+
+        it('disables the submit button again after a successful save', async () => {
+            const user = userEvent.setup();
+            renderForm({ alreadyRecorded: true });
+
+            await user.click(
+                screen.getByLabelText('Game scheduled for 2026-01-13'),
+            );
+
+            const submitButton = screen.getByRole('button', {
+                name: /Record invoice/i,
+            });
+            expect(submitButton).toBeEnabled();
+
+            await user.click(submitButton);
+
+            await waitFor(() => {
+                expect(submitButton).toBeDisabled();
+            });
+        });
+
+        it('updates the disabled state when alreadyRecorded changes on a re-render without a remount', () => {
+            const { rerender } = renderForm({ alreadyRecorded: false });
+
+            const submitButton = screen.getByRole('button', {
+                name: /Record invoice/i,
+            });
+            expect(submitButton).toBeEnabled();
+
+            rerender(
+                <Wrapper>
+                    <InvoiceForm
+                        year={2026}
+                        month={1}
+                        gameDays={defaultGameDays}
+                        alreadyRecorded={true}
+                        gaps={[]}
+                        onUpdateGameDays={vi.fn().mockResolvedValue(undefined)}
+                        onRecordHallHire={vi.fn().mockResolvedValue(undefined)}
+                    />
+                </Wrapper>,
+            );
+
+            expect(submitButton).toBeDisabled();
+        });
+    });
+
+    describe('hall hire gaps warning', () => {
+        it('shows no warning when there are no gaps', () => {
+            renderForm({ gaps: [] });
+
+            expect(
+                screen.queryByText('Missing hall hire invoices'),
+            ).not.toBeInTheDocument();
+        });
+
+        it('shows a warning listing the affected months when there are gaps', () => {
+            renderForm({
+                gaps: [
+                    { year: 2025, month: 11 },
+                    { year: 2025, month: 12 },
+                ],
+            });
+
+            expect(
+                screen.getByText('Missing hall hire invoices'),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByText(
+                    'No hall hire has been recorded for: November 2025, December 2025.',
+                ),
+            ).toBeInTheDocument();
+        });
     });
 });

@@ -9,6 +9,15 @@ export interface MoneyChartDatum {
 }
 
 /**
+ * A calendar month with at least one scheduled game day that has no
+ * corresponding HallHire transaction recorded against it.
+ */
+export interface HallHireGap {
+    year: number;
+    month: number;
+}
+
+/**
  * Represents a single unpaid game charge for a player.
  *
  * Each debt corresponds to a PlayerGameCharge transaction with a specific

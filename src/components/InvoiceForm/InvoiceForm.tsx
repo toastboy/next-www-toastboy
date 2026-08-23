@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Alert,
     Box,
     Button,
     Checkbox,
@@ -32,6 +33,7 @@ import { toPounds } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
 import type { UpdateInvoiceGameDaysProxy } from '@/types/actions/UpdateInvoiceGameDays';
+import type { HallHireGap } from '@/types/DebtType';
 
 const InvoiceFormSchema = z.object({
     gameDays: z.array(
@@ -56,10 +58,12 @@ interface GameDayRow {
     hallCost: number;
 }
 
-interface InvoiceFormProps {
+export interface Props {
     year: number;
     month: number;
     gameDays: GameDayRow[];
+    alreadyRecorded: boolean;
+    gaps: HallHireGap[];
     onUpdateGameDays: UpdateInvoiceGameDaysProxy;
     onRecordHallHire: RecordHallHireProxy;
 }
@@ -68,9 +72,11 @@ export const InvoiceForm = ({
     year,
     month,
     gameDays,
+    alreadyRecorded,
+    gaps,
     onUpdateGameDays,
     onRecordHallHire,
-}: InvoiceFormProps) => {
+}: Props) => {
     const router = useRouter();
     const [submitting, setSubmitting] = useState(false);
 
@@ -85,6 +91,17 @@ export const InvoiceForm = ({
         },
         validate: zod4Resolver(InvoiceFormSchema),
     });
+
+    /**
+     * The form is dirty if the user has changed a field, or if this month's
+     * invoice hasn't been recorded yet (derived straight from the
+     * alreadyRecorded prop, not mirrored into state, so it stays correct if
+     * the prop updates without a remount — e.g. after AutoRefresh re-fetches
+     * the page). In that case, submission is allowed without interaction so
+     * the organiser can quickly confirm and record it. Once an invoice has
+     * been recorded, the button disables again until the form changes.
+     */
+    const isFormDirty = form.isDirty() || !alreadyRecorded;
 
     const navigateMonth = (delta: number) => {
         let newMonth = month + delta;
@@ -137,6 +154,8 @@ export const InvoiceForm = ({
                 .filter((gd) => gd.gameScheduled)
                 .reduce((sum, gd) => sum + gd.hallCostPounds, 0);
 
+            form.resetDirty();
+
             notifications.update({
                 id: notificationId,
                 color: 'teal',
@@ -183,6 +202,27 @@ export const InvoiceForm = ({
         >
             <Stack gap="md">
                 <Title order={2}>Invoice Check</Title>
+
+                {gaps.length > 0 && (
+                    <Alert
+                        color="yellow"
+                        icon={
+                            <IconAlertTriangle
+                                size={config.notificationIconSize}
+                            />
+                        }
+                        title="Missing hall hire invoices"
+                    >
+                        No hall hire has been recorded for:{' '}
+                        {gaps
+                            .map(
+                                (gap) =>
+                                    `${getFullMonthName(gap.year, gap.month)} ${gap.year}`,
+                            )
+                            .join(', ')}
+                        .
+                    </Alert>
+                )}
 
                 <Group
                     justify="space-between"
@@ -276,6 +316,7 @@ export const InvoiceForm = ({
                                         [actionsBreakpoint]: 'fit-content',
                                     }}
                                     loading={submitting}
+                                    disabled={!isFormDirty}
                                 >
                                     Record invoice
                                 </Button>

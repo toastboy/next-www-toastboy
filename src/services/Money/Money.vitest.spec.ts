@@ -505,6 +505,155 @@ describe('MoneyService', () => {
         });
     });
 
+    describe('getHallHireForGameDays', () => {
+        it('returns an empty array when given no game day IDs', async () => {
+            const result = await moneyService.getHallHireForGameDays([]);
+
+            expect(result).toEqual([]);
+            expect(prisma.transaction.findMany).not.toHaveBeenCalled();
+        });
+
+        it('returns the game day IDs that have a HallHire transaction', async () => {
+            (prisma.transaction.findMany as Mock).mockResolvedValue([
+                { gameDayId: 10 },
+                { gameDayId: 12 },
+            ]);
+
+            const result = await moneyService.getHallHireForGameDays([
+                10, 11, 12,
+            ]);
+
+            expect(prisma.transaction.findMany).toHaveBeenCalledWith({
+                where: {
+                    type: 'HallHire',
+                    gameDayId: { in: [10, 11, 12] },
+                },
+                select: { gameDayId: true },
+                distinct: ['gameDayId'],
+            });
+            expect(result).toEqual([10, 12]);
+        });
+
+        it('filters out null gameDayId values', async () => {
+            (prisma.transaction.findMany as Mock).mockResolvedValue([
+                { gameDayId: null },
+                { gameDayId: 12 },
+            ]);
+
+            const result = await moneyService.getHallHireForGameDays([12]);
+
+            expect(result).toEqual([12]);
+        });
+
+        it('rethrows database errors', async () => {
+            (prisma.transaction.findMany as Mock).mockRejectedValue(
+                new Error('DB error'),
+            );
+
+            await expect(
+                moneyService.getHallHireForGameDays([1]),
+            ).rejects.toThrow('DB error');
+        });
+    });
+
+    describe('getHallHireGaps', () => {
+        beforeEach(() => {
+            vi.useFakeTimers();
+            vi.setSystemTime(new Date('2026-03-15T00:00:00Z'));
+        });
+
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
+        it('returns an empty array when there are no scheduled game days before this month', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([]);
+
+            const result = await moneyService.getHallHireGaps();
+
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: {
+                    date: { lt: new Date('2026-03-01T00:00:00Z') },
+                    OR: [
+                        { status: { not: 'NoGame' } },
+                        { mailSent: { not: null } },
+                    ],
+                },
+                select: { id: true, date: true },
+            });
+            expect(result).toEqual([]);
+            expect(prisma.transaction.findMany).not.toHaveBeenCalled();
+        });
+
+        it('returns months with a scheduled game day that has no HallHire transaction', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 1, date: new Date('2026-01-06') },
+                { id: 2, date: new Date('2026-01-13') },
+                { id: 3, date: new Date('2026-02-10') },
+            ]);
+            (prisma.transaction.findMany as Mock).mockResolvedValue([
+                { gameDayId: 1 },
+                { gameDayId: 2 },
+            ]);
+
+            const result = await moneyService.getHallHireGaps();
+
+            expect(result).toEqual([{ year: 2026, month: 2 }]);
+        });
+
+        it('deduplicates multiple gaps within the same month', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 1, date: new Date('2026-01-06') },
+                { id: 2, date: new Date('2026-01-13') },
+            ]);
+            (prisma.transaction.findMany as Mock).mockResolvedValue([]);
+
+            const result = await moneyService.getHallHireGaps();
+
+            expect(result).toEqual([{ year: 2026, month: 1 }]);
+        });
+
+        it('sorts gaps chronologically', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 1, date: new Date('2026-02-10') },
+                { id: 2, date: new Date('2025-12-05') },
+                { id: 3, date: new Date('2026-01-06') },
+            ]);
+            (prisma.transaction.findMany as Mock).mockResolvedValue([]);
+
+            const result = await moneyService.getHallHireGaps();
+
+            expect(result).toEqual([
+                { year: 2025, month: 12 },
+                { year: 2026, month: 1 },
+                { year: 2026, month: 2 },
+            ]);
+        });
+
+        it('returns an empty array when every scheduled game day has been recorded', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 1, date: new Date('2026-01-06') },
+            ]);
+            (prisma.transaction.findMany as Mock).mockResolvedValue([
+                { gameDayId: 1 },
+            ]);
+
+            const result = await moneyService.getHallHireGaps();
+
+            expect(result).toEqual([]);
+        });
+
+        it('rethrows database errors', async () => {
+            (prisma.gameDay.findMany as Mock).mockRejectedValue(
+                new Error('DB error'),
+            );
+
+            await expect(moneyService.getHallHireGaps()).rejects.toThrow(
+                'DB error',
+            );
+        });
+    });
+
     describe('payMultiple', () => {
         it('records payments as negative transactions for each gameDayId and distributes amount evenly', async () => {
             const create = vi

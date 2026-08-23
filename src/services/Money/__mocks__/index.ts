@@ -5,6 +5,8 @@ const moneyService = {
     getChartData: vi.fn(),
     charge: vi.fn(),
     recordHallHire: vi.fn(),
+    getHallHireForGameDays: vi.fn(),
+    getHallHireGaps: vi.fn(),
     pay: vi.fn(),
     payMultiple: vi.fn(),
 };

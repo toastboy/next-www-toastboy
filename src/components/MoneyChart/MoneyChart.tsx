@@ -3,13 +3,10 @@
 import { Text } from '@mantine/core';
 import { max, min } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
-import {
-    type ScaleBand,
-    scaleBand,
-    type ScaleLinear,
-    scaleLinear,
-} from 'd3-scale';
-import { select, type Selection } from 'd3-selection';
+import type { ScaleBand, ScaleLinear } from 'd3-scale';
+import { scaleBand, scaleLinear } from 'd3-scale';
+import type { Selection } from 'd3-selection';
+import { select } from 'd3-selection';
 import { line } from 'd3-shape';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';

@@ -1,6 +1,7 @@
 'use client';
 
-import { TextInput, type TextInputProps } from '@mantine/core';
+import type { TextInputProps } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 
 export type Props = Omit<TextInputProps, 'type'>;
 

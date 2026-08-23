@@ -1,6 +1,7 @@
 import { ZodError } from 'zod';
 
-import { APP_ERROR_CODE, type AppErrorCode } from '@/lib/errors/ErrorCode';
+import type { AppErrorCode } from '@/lib/errors/ErrorCode';
+import { APP_ERROR_CODE } from '@/lib/errors/ErrorCode';
 
 /**
  * Default message that is safe to show to end users when an error does not

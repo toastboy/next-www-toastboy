@@ -3,11 +3,13 @@ import { ClubWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import type { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import type {
+    ClubCreateWriteInput,
+    ClubUpsertInput,
+} from '@/types/ClubStrictSchema';
 import {
     ClubCreateOneStrictSchema,
-    type ClubCreateWriteInput,
     ClubCreateWriteInputSchema,
-    type ClubUpsertInput,
     ClubUpsertInputSchema,
     ClubUpsertOneStrictSchema,
 } from '@/types/ClubStrictSchema';

@@ -13,10 +13,10 @@ import { rankMap, scoreFieldMap } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 import type { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordWriteInput } from '@/types/PlayerRecordStrictSchema';
 import {
     PlayerRecordCreateOneStrictSchema,
     PlayerRecordUpsertOneStrictSchema,
-    type PlayerRecordWriteInput,
     PlayerRecordWriteInputSchema,
 } from '@/types/PlayerRecordStrictSchema';
 

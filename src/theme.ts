@@ -1,4 +1,5 @@
-import { createTheme, type MantineThemeOther } from '@mantine/core';
+import type { MantineThemeOther } from '@mantine/core';
+import { createTheme } from '@mantine/core';
 
 export const theme = createTheme({
     // `satisfies` (rather than a type annotation) forces every key declared on

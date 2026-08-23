@@ -3,11 +3,11 @@ import type { EmailVerificationType } from 'prisma/zod/schemas/models/EmailVerif
 import { EmailVerificationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/EmailVerificationWhereUniqueInput.schema';
 
 import { hashVerificationToken } from '@/lib/verificationToken';
+import type { EmailVerificationWriteInput } from '@/types/EmailVerificationStrictSchema';
 import {
     EmailVerificationCreateOneStrictSchema,
     EmailVerificationMarkUsedInputSchema,
     EmailVerificationUpdateOneStrictSchema,
-    type EmailVerificationWriteInput,
     EmailVerificationWriteInputSchema,
 } from '@/types/EmailVerificationStrictSchema';
 

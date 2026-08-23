@@ -3,13 +3,15 @@ import { GameInvitationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import type { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import type {
+    GameInvitationCreateManyWriteInput,
+    GameInvitationWriteInput,
+} from '@/types/GameInvitationStrictSchema';
 import {
     GameInvitationCreateManyStrictSchema,
-    type GameInvitationCreateManyWriteInput,
     GameInvitationCreateManyWriteInputSchema,
     GameInvitationCreateOneStrictSchema,
     GameInvitationUpsertOneStrictSchema,
-    type GameInvitationWriteInput,
     GameInvitationWriteInputSchema,
 } from '@/types/GameInvitationStrictSchema';
 

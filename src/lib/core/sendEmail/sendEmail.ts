@@ -1,6 +1,7 @@
 import 'server-only';
 
-import nodemailer, { type SendMailOptions } from 'nodemailer';
+import type { SendMailOptions } from 'nodemailer';
+import nodemailer from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
 
 import { sendViaGraphApi } from '@/lib/email/sendViaGraphApi';

@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, type MockInstance, vi } from 'vitest';
+import type { MockInstance } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
 
 import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder/ImageWithPlaceholder';
 import { Wrapper } from '@/tests/components/lib/common';

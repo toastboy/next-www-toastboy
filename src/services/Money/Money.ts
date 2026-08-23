@@ -8,10 +8,8 @@ import { toPounds } from '@/lib/money';
 import gameDayService from '@/services/GameDay';
 import type { PlayerDisplayType } from '@/services/Player';
 import playerService from '@/services/Player';
-import {
-    type PayDebtResult,
-    PayDebtResultSchema,
-} from '@/types/actions/PayDebt';
+import type { PayDebtResult } from '@/types/actions/PayDebt';
+import { PayDebtResultSchema } from '@/types/actions/PayDebt';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import type {
     HallHireGap,

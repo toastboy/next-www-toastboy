@@ -10,7 +10,7 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { type TableName } from 'prisma/zod/schemas';
+import type { TableName } from 'prisma/zod/schemas';
 
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { RecordsTable } from '@/components/RecordsTable/RecordsTable';

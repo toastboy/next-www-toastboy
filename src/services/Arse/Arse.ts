@@ -6,10 +6,10 @@ import {
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import type { ArseWriteInput } from '@/types/ArseStrictSchema';
 import {
     ArseCreateOneStrictSchema,
     ArseUpsertOneStrictSchema,
-    type ArseWriteInput,
     ArseWriteInputSchema,
 } from '@/types/ArseStrictSchema';
 

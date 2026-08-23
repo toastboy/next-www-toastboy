@@ -3,11 +3,11 @@ import type { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquir
 import { ContactEnquiryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/ContactEnquiryWhereUniqueInput.schema';
 
 import { hashVerificationToken } from '@/lib/verificationToken';
+import type { ContactEnquiryWriteInput } from '@/types/ContactEnquiryStrictSchema';
 import {
     ContactEnquiryCreateOneStrictSchema,
     ContactEnquiryMarkDeliveredInputSchema,
     ContactEnquiryUpdateOneStrictSchema,
-    type ContactEnquiryWriteInput,
     ContactEnquiryWriteInputSchema,
 } from '@/types/ContactEnquiryStrictSchema';
 

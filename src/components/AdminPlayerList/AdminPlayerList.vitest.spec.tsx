@@ -9,13 +9,13 @@ import {
 import { vi } from 'vitest';
 
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
+import type { SortKey } from '@/lib/adminPlayer';
 import {
     compareNullableNumber,
     compareNullableString,
     comparePlayers,
     getImpersonationLabel,
     getPreferredEmail,
-    type SortKey,
 } from '@/lib/adminPlayer';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { Wrapper } from '@/tests/components/lib/common';

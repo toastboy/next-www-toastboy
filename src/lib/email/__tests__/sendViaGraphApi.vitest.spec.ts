@@ -1,10 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ZodError } from 'zod';
 
-import {
-    type GraphMailConfig,
-    sendViaGraphApi,
-} from '@/lib/email/sendViaGraphApi';
+import type { GraphMailConfig } from '@/lib/email/sendViaGraphApi';
+import { sendViaGraphApi } from '@/lib/email/sendViaGraphApi';
 import { ExternalServiceError } from '@/lib/errors';
 
 const { clientSecretCredentialMock, getTokenMock } = vi.hoisted(() => ({

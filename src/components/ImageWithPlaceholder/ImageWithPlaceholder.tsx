@@ -1,6 +1,7 @@
 'use client';
 
-import { AspectRatio, Image, type ImageProps, Skeleton } from '@mantine/core';
+import type { ImageProps } from '@mantine/core';
+import { AspectRatio, Image, Skeleton } from '@mantine/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface Props extends Omit<ImageProps, 'onLoad' | 'onError' | 'src'> {

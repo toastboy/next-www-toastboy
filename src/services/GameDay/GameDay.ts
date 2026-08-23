@@ -7,15 +7,17 @@ import {
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import type {
+    GameDayUpdateInput,
+    GameDayUpsertInput,
+    GameDayWriteInput,
+} from '@/types/GameDayStrictSchema';
 import {
     GameDayCreateOneStrictSchema,
-    type GameDayUpdateInput,
     GameDayUpdateInputSchema,
     GameDayUpdateOneStrictSchema,
-    type GameDayUpsertInput,
     GameDayUpsertInputSchema,
     GameDayUpsertOneStrictSchema,
-    type GameDayWriteInput,
     GameDayWriteInputSchema,
 } from '@/types/GameDayStrictSchema';
 

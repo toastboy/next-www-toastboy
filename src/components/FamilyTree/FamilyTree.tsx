@@ -2,15 +2,12 @@
 
 import { Box, Paper, Tooltip } from '@mantine/core';
 import { ascending, groups } from 'd3-array';
-import {
-    hierarchy,
-    type HierarchyPointLink,
-    type HierarchyPointNode,
-    tree,
-} from 'd3-hierarchy';
+import type { HierarchyPointLink, HierarchyPointNode } from 'd3-hierarchy';
+import { hierarchy, tree } from 'd3-hierarchy';
 import { select } from 'd3-selection';
 import { linkRadial } from 'd3-shape';
-import { type D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
+import type { D3ZoomEvent } from 'd3-zoom';
+import { zoom, zoomIdentity } from 'd3-zoom';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 

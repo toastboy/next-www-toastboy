@@ -1,6 +1,7 @@
 'use client';
 
-import { Divider, Paper, Table, Title, type TitleOrder } from '@mantine/core';
+import type { TitleOrder } from '@mantine/core';
+import { Divider, Paper, Table, Title } from '@mantine/core';
 
 import { EmailPlayerButton } from '@/components/EmailPlayerButton/EmailPlayerButton';
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';

@@ -3,10 +3,10 @@ import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtra
 import { PlayerExtraEmailWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailWhereUniqueInput.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import type { PlayerExtraEmailWriteInput } from '@/types/PlayerExtraEmailStrictSchema';
 import {
     PlayerExtraEmailCreateOneStrictSchema,
     PlayerExtraEmailUpsertOneStrictSchema,
-    type PlayerExtraEmailWriteInput,
     PlayerExtraEmailWriteInputSchema,
 } from '@/types/PlayerExtraEmailStrictSchema';
 

@@ -1,7 +1,8 @@
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { type Editor, useEditor } from '@tiptap/react';
+import type { Editor } from '@tiptap/react';
+import { useEditor } from '@tiptap/react';
 import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 

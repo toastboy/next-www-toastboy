@@ -1,5 +1,5 @@
+import type { AppError } from '@/lib/errors/AppError';
 import {
-    type AppError,
     AuthError,
     ConflictError,
     ExternalServiceError,

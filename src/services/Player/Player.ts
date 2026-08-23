@@ -14,19 +14,20 @@ import type {
     PlayerDataType,
     PlayerFormType,
 } from '@/types';
-import {
-    PlayerLastResultSchema,
-    type PlayerLastResultType,
-} from '@/types/PlayerLastResultType';
+import type { PlayerLastResultType } from '@/types/PlayerLastResultType';
+import { PlayerLastResultSchema } from '@/types/PlayerLastResultType';
+import type {
+    PlayerCreateWriteInput,
+    PlayerUpdateWriteInput,
+} from '@/types/PlayerStrictSchema';
 import {
     PlayerCreateOneStrictSchema,
-    type PlayerCreateWriteInput,
     PlayerCreateWriteInputSchema,
     PlayerUpdateOneStrictSchema,
-    type PlayerUpdateWriteInput,
     PlayerUpdateWriteInputSchema,
 } from '@/types/PlayerStrictSchema';
-import { PointsSchema, type PointsValue } from '@/types/Points';
+import type { PointsValue } from '@/types/Points';
+import { PointsSchema } from '@/types/Points';
 
 export type PlayerDisplayType = Omit<PlayerType, 'name'> & { name: string };
 

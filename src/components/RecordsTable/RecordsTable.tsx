@@ -1,17 +1,18 @@
 'use client';
 
+import type { TitleOrder } from '@mantine/core';
 import {
     Button,
     Divider,
     Paper,
     Table,
     Title,
-    type TitleOrder,
     VisuallyHidden,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
-import { type TableName, TableNameSchema } from 'prisma/zod/schemas';
+import type { TableName } from 'prisma/zod/schemas';
+import { TableNameSchema } from 'prisma/zod/schemas';
 import { useId, useMemo } from 'react';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';

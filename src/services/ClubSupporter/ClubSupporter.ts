@@ -7,10 +7,10 @@ import type { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import type { ClubSupporterDataType } from '@/types';
+import type { ClubSupporterWriteInput } from '@/types/ClubSupporterStrictSchema';
 import {
     ClubSupporterCreateOneStrictSchema,
     ClubSupporterUpsertOneStrictSchema,
-    type ClubSupporterWriteInput,
     ClubSupporterWriteInputSchema,
 } from '@/types/ClubSupporterStrictSchema';
 

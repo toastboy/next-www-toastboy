@@ -21,14 +21,13 @@ import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
+import type { SortDirection, SortKey } from '@/lib/adminPlayer';
 import {
     buildInviteEmail,
     comparePlayers,
     getImpersonationLabel,
     getPreferredEmail,
     isOnboarded,
-    type SortDirection,
-    type SortKey,
 } from '@/lib/adminPlayer';
 import { config } from '@/lib/config';
 import { formatDate } from '@/lib/dates';

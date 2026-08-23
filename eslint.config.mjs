@@ -63,6 +63,15 @@ const localRules = {
     },
 };
 
+// no-restricted-syntax config objects are replaced wholesale (not merged) by
+// the last matching block, so this selector is repeated in every block below
+// that also sets no-restricted-syntax for overlapping files.
+const noInlineTypeImportRule = {
+    selector: 'ImportSpecifier[importKind="type"]',
+    message:
+        "Use a separate `import type { X } from '...'` statement instead of an inline `type` modifier, to match consistent-type-imports' fixStyle: 'separate-type-imports'.",
+};
+
 const importResolver = {
     typescript: {
         project: tsconfigPath,
@@ -255,6 +264,7 @@ const config = [
                 'error',
                 { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
             ],
+            'no-restricted-syntax': ['error', noInlineTypeImportRule],
         },
     },
     // Testing Library / jest-dom overrides (Component tests only)
@@ -359,6 +369,7 @@ const config = [
                     message:
                         'Use a typed AppError (or normalizeUnknownError) instead of `throw new Error(...)` in runtime code.',
                 },
+                noInlineTypeImportRule,
             ],
         },
     },
@@ -378,6 +389,7 @@ const config = [
                     message:
                         'App Router pages must be server pages. Move client logic into child components.',
                 },
+                noInlineTypeImportRule,
             ],
             'no-restricted-imports': [
                 'error',

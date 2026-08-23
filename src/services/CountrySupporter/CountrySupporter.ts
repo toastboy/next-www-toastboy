@@ -7,10 +7,10 @@ import type { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupp
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import type { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
+import type { CountrySupporterWriteInput } from '@/types/CountrySupporterStrictSchema';
 import {
     CountrySupporterCreateOneStrictSchema,
     CountrySupporterUpsertOneStrictSchema,
-    type CountrySupporterWriteInput,
     CountrySupporterWriteInputSchema,
 } from '@/types/CountrySupporterStrictSchema';
 import type { CountrySupporterWithPlayerDataType } from '@/types/CountrySupporterWithPlayerDataType';

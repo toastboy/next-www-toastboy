@@ -2,13 +2,15 @@
 
 import { Text } from '@mantine/core';
 import { axisBottom } from 'd3-axis';
-import { type ScaleBand, scaleBand } from 'd3-scale';
-import { select, type Selection } from 'd3-selection';
+import type { ScaleBand } from 'd3-scale';
+import { scaleBand } from 'd3-scale';
+import type { Selection } from 'd3-selection';
+import { select } from 'd3-selection';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { formatDate, getNarrowMonthName, getShortMonthName } from '@/lib/dates';
-import { type PlayerFormType } from '@/types';
+import type { PlayerFormType } from '@/types';
 
 import styles from './PlayerHeatmap.module.css';
 

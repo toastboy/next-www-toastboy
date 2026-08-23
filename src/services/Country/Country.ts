@@ -3,10 +3,10 @@ import { CountryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import type { CountryWriteInput } from '@/types/CountryStrictSchema';
 import {
     CountryCreateOneStrictSchema,
     CountryUpsertOneStrictSchema,
-    type CountryWriteInput,
     CountryWriteInputSchema,
 } from '@/types/CountryStrictSchema';
 

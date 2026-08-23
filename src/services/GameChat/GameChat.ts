@@ -3,12 +3,14 @@ import { GameChatWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import type { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import type {
+    GameChatUpsertInput,
+    GameChatWriteInput,
+} from '@/types/GameChatStrictSchema';
 import {
     GameChatCreateOneStrictSchema,
-    type GameChatUpsertInput,
     GameChatUpsertInputSchema,
     GameChatUpsertOneStrictSchema,
-    type GameChatWriteInput,
     GameChatWriteInputSchema,
 } from '@/types/GameChatStrictSchema';
 

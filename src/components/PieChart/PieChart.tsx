@@ -3,7 +3,8 @@
 import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
-import { arc, pie, type PieArcDatum } from 'd3-shape';
+import type { PieArcDatum } from 'd3-shape';
+import { arc, pie } from 'd3-shape';
 import { useEffect, useRef } from 'react';
 
 import styles from './PieChart.module.css';

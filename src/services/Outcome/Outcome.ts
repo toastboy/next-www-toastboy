@@ -21,10 +21,10 @@ import type {
 } from '@/types';
 import { TeamPlayerSchema } from '@/types';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
+import type { OutcomeWriteInput } from '@/types/OutcomeStrictSchema';
 import {
     OutcomeCreateOneStrictSchema,
     OutcomeUpsertOneStrictSchema,
-    type OutcomeWriteInput,
     OutcomeWriteInputSchema,
 } from '@/types/OutcomeStrictSchema';
 import type { PointsValue } from '@/types/Points';

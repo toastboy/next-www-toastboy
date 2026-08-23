@@ -1,0 +1,80 @@
+/code-review max
+
+---
+
+<task-notification>
+<task-id>a29e844470c915e17</task-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/f47f3428-2ca5-4a08-98aa-07533d879cf3/tasks/a29e844470c915e17.output</output-file>
+<status>completed</status>
+<summary>Agent "/code-review max" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>All ten finder angles are complete (five correctness angles covered directly by my own line-by-line read of the full 3047-line diff plus ground-truth tool verification, five cleanup/altitude/conventions angles + a gap sweep covered by four parallel forks). Nothing survived to the verification phase.
+
+**What this diff is:** commit `df3f0d3f` ("SYS-605 Widespread refactor: import types only where appropriate") adds `@typescript-eslint/consistent-type-imports` (`eslint.config.mjs:254-257`, scoped to `files: ['**/*.ts', '**/*.tsx']`, not overridden anywhere) and applies it across ~240 files, converting value imports that are only used in type position into `import type`. A handful of files also got manual touch-ups beyond what the lint rule auto-fixes: `mdx.d.ts` (inline `import('react').JSX.Element` → top-level `import type { JSX } from 'react'`), and ~8 vitest spec files rewriting `vi.importActual&lt;typeof import('react')&gt;('react')` to `vi.importActual&lt;typeof React&gt;('react')` via a new `import type * as React from 'react'`.
+
+**Verification performed directly against the repo** (not just reading the diff):
+- `npm run typecheck` — 0 errors
+- `npm run lint` — 0 errors/warnings
+- `npm run format:check` — clean
+- `npx knip` — clean (only pre-existing, unrelated config hints)
+
+These four checks jointly rule out the two failure modes this kind of refactor could realistically introduce (a value imported as type-only that's actually used at runtime, or vice versa; leftover/unused imports from a bad split). I additionally spot-checked by hand the cases most likely to hide a real bug: Prisma's `Prisma` namespace (confirmed only used in type positions like `Prisma.XxxCreateArgs`, never runtime values like `Prisma.DbNull`), Azure `ContainerClient`/`BlobServiceClient` (confirmed `ContainerClient` is never `new`'d, only obtained via `blobServiceClient.getContainerClient()`), and the one dual-purpose Zod const+type export (`OutcomePlayerType`), which correctly stayed a value import since it's `.parse()`'d at runtime.
+
+The four forked angles (cross-file/wrapper correctness, reuse/simplification/efficiency, altitude/conventions, fresh-eyes gap sweep) each independently reviewed the diff and all returned empty — no dropped symbols, no CLAUDE.md violations, no bandaid fixes (the ESLint-rule-plus-fix approach is the correct altitude: a generalized, enforced-going-forward mechanism rather than a one-off patch).
+
+No candidates survived to verification.
+
+```json
+[]
+```</result>
+<usage><subagent_tokens>195672</subagent_tokens><tool_uses>38</tool_uses><duration_ms>606007</duration_ms></usage>
+</task-notification>
+
+---
+
+/code-review help
+
+---
+
+<task-notification>
+<task-id>a2952b4b9f21d0d2e</task-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/f47f3428-2ca5-4a08-98aa-07533d879cf3/tasks/a2952b4b9f21d0d2e.output</output-file>
+<status>killed</status>
+<summary>Agent "/code-review help" was stopped by user</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+</task-notification>
+
+---
+
+/code-review .
+
+---
+
+<task-notification>
+<task-id>a567d8f1db24badc2</task-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/f47f3428-2ca5-4a08-98aa-07533d879cf3/tasks/a567d8f1db24badc2.output</output-file>
+<status>completed</status>
+<summary>Agent "/code-review ." finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Reusing **max** effort (the level you used last time) — type a level like `/code-review high` to change it.
+
+All 10 finder angles, a dedicated verifier, and a Phase 3 gap sweep are complete. Summary: this diff (commit `df3f0d3f`, "SYS-605 Widespread refactor: import types only where appropriate") is a mechanical, tool-driven rewrite across 240 files, converting `import { X }` to `import type { X }` wherever ESLint's newly-added `@typescript-eslint/consistent-type-imports` rule required it. I verified `npm run typecheck`, `npm run lint`, and `npm run format:check` all pass clean on HEAD, and confirmed `tsconfig.json` has `isolatedModules: true` — which rules out both "type used as value" bugs (tsc hard-errors) and "side-effect elision from a whole-module type-only conversion" (elision is already usage-based per-file regardless of the explicit `type` keyword). Nine of the ten finder angles, the sweep, and the side-effect-specific investigation all returned zero candidates. Only one low-severity, non-functional finding survived verification, corroborated independently by two angles (Reuse and Altitude) and CONFIRMED by a dedicated verifier:
+
+```json
+[
+  {
+    "file": "src/services/Money/Money.ts",
+    "line": 9,
+    "summary": "The refactor's ESLint autofix only converts imports that were rule violations before, leaving pre-existing inline `import { type X, Y }` imports untouched, so several files now mix both valid-but-different type-import styles.",
+    "failure_scenario": "Not a runtime bug (typecheck/lint/format:check all pass clean). In Money.ts, lines 9-10 use this diff's new separate-statement style (`import type { PlayerDisplayType } from '@/services/Player'; import playerService from '@/services/Player';`) while lines 11-14, three lines below, use the pre-existing inline-modifier style (`import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';`) — untouched because it already satisfied `prefer: 'type-imports'` before `fixStyle: 'separate-type-imports'` was added, so ESLint's autofix never touched it. The same two-style coexistence recurs in src/services/Outcome/Outcome.ts, src/services/CountrySupporter/CountrySupporter.ts, src/components/RecordsTable/RecordsTable.tsx, src/components/HomeContent/HomeContent.tsx, and src/components/FamilyTree/FamilyTree.tsx. A future contributor grepping the codebase for 'how do we spell a mixed type+value import here' finds two contradictory, permanently-coexisting examples with no signal which is current."
+  }
+]
+```
+
+No correctness bugs were found. Given the diff's uniform, mechanical nature and how many independent angles converged on "clean," I'm confident in that conclusion rather than treating it as a gap in coverage.</result>
+<usage><subagent_tokens>240862</subagent_tokens><tool_uses>149</tool_uses><duration_ms>906498</duration_ms></usage>
+</task-notification>
+
+---
+
+Add the enforcement

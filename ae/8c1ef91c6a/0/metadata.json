@@ -1,0 +1,156 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "ae8c1ef91c6a",
+  "session_id": "d5806af3-8d42-48f0-b6c3-c2508920c254",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-23T19:45:29.09799Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 1,
+  "files_touched": [
+    "eslint.config.mjs",
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminPlayerList/AdminPlayerList.vitest.spec.tsx",
+    "src/components/ClubBadge/ClubBadge.tsx",
+    "src/components/CountryFlag/CountryFlag.tsx",
+    "src/components/EmailInput/EmailInput.tsx",
+    "src/components/FamilyTree/FamilyTree.tsx",
+    "src/components/HomeContent/HomeContent.tsx",
+    "src/components/ImageWithPlaceholder/ImageWithPlaceholder.tsx",
+    "src/components/ImageWithPlaceholder/ImageWithPlaceholder.vitest.spec.tsx",
+    "src/components/MoneyChart/MoneyChart.tsx",
+    "src/components/PasswordFields/PasswordFields.tsx",
+    "src/components/PieChart/PieChart.tsx",
+    "src/components/PlayerHeatmap/PlayerHeatmap.tsx",
+    "src/components/PlayerHeatmap/__mocks__/PlayerHeatmap.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/RichTextMailBody/RichTextMailBody.vitest.spec.tsx",
+    "src/components/SendEmailForm/SendEmailForm.vitest.spec.tsx",
+    "src/lib/core/authExport/authExport.ts",
+    "src/lib/core/sendEmail/sendEmail.ts",
+    "src/lib/email/__tests__/sendViaGraphApi.vitest.spec.ts",
+    "src/lib/errors/AppError.ts",
+    "src/lib/errors/request.ts",
+    "src/services/Arse/Arse.ts",
+    "src/services/Club/Club.ts",
+    "src/services/ClubSupporter/ClubSupporter.ts",
+    "src/services/ContactEnquiry/ContactEnquiry.ts",
+    "src/services/Country/Country.ts",
+    "src/services/CountrySupporter/CountrySupporter.ts",
+    "src/services/EmailVerification/EmailVerification.ts",
+    "src/services/GameChat/GameChat.ts",
+    "src/services/GameDay/GameDay.ts",
+    "src/services/GameInvitation/GameInvitation.ts",
+    "src/services/Money/Money.ts",
+    "src/services/Outcome/Outcome.ts",
+    "src/services/Player/Player.ts",
+    "src/services/PlayerExtraEmail/PlayerExtraEmail.ts",
+    "src/services/PlayerRecord/PlayerRecord.ts",
+    "src/theme.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "a466c43daabf",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 86,
+    "cache_creation_tokens": 70712,
+    "cache_read_tokens": 2993033,
+    "output_tokens": 19932,
+    "api_call_count": 43
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-code-review-2026-08-23T18:34:15.962898Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "code-review"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "056bf7de7c14",
+      "timestamp": "2026-08-23T18:34:15.962898Z",
+      "native": {
+        "command": "/code-review"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/code-review",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "prompt-skill-claude-code-code-review-2026-08-23T18:47:23.113951Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "code-review"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "a97657cc1b6b",
+      "timestamp": "2026-08-23T18:47:23.113951Z",
+      "native": {
+        "command": "/code-review"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/code-review",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "prompt-skill-claude-code-code-review-2026-08-23T18:49:54.875244Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "code-review"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "ee1d1dbaa1f1",
+      "timestamp": "2026-08-23T18:49:54.875244Z",
+      "native": {
+        "command": "/code-review"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/code-review",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-23T19:45:29.072243Z",
+    "agent_lines": 99,
+    "agent_removed": 72,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 99,
+    "total_lines_changed": 171,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+STart work on SYS-605
+
+---
+
+State is initialized from alreadyRecorded but won’t update if the prop changes without a remount (e.g., refresh/re-render with updated server data). This can leave the submit button enabled/disabled incorrectly. Consider syncing via an effect on alreadyRecorded (and potentially resetting dirty state) or deriving the value directly from props instead of storing it.
+
+I much prefer the latter
+
+---
+
+The method doc says it returns a 'subset' of IDs, but this implementation can return duplicates if multiple HallHire transactions exist for the same gameDayId. Consider de-duplicating (e.g., via a Set) or using a DB-level distinct/grouping strategy so callers reliably receive unique IDs.
+
+Again, I much prefer the second option

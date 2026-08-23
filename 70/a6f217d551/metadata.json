@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "70a6f217d551",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "src/app/footy/admin/invoice/page.tsx",
+    "src/app/footy/admin/invoice/page.vitest.spec.tsx",
+    "src/components/InvoiceForm/InvoiceForm.stories.tsx",
+    "src/components/InvoiceForm/InvoiceForm.tsx",
+    "src/components/InvoiceForm/InvoiceForm.vitest.spec.tsx",
+    "src/components/InvoiceForm/__mocks__/InvoiceForm.tsx",
+    "src/services/Money/Money.ts",
+    "src/services/Money/Money.vitest.spec.ts",
+    "src/services/Money/__mocks__/index.ts",
+    "src/types/DebtType.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/70/a6f217d551/0/metadata.json",
+      "transcript": "/70/a6f217d551/0/full.jsonl",
+      "compact_transcript": "/70/a6f217d551/0/transcript.jsonl",
+      "content_hash": "/70/a6f217d551/0/content_hash.txt",
+      "prompt": "/70/a6f217d551/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 226,
+    "cache_creation_tokens": 359417,
+    "cache_read_tokens": 17343049,
+    "output_tokens": 57780,
+    "api_call_count": 113
+  }
+}

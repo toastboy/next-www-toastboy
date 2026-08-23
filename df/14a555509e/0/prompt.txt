@@ -1,0 +1,6 @@
+I had this comment from code review:
+
+This imports a TypeScript interface as a value import. With TS configs like verbatimModuleSyntax / preserveValueImports, this can error (interfaces are type-only and erased at runtime). Use a type-only import instead (e.g., import type { Props } ...).
+
+
+Scan the whole codebase and change all imports which should be 'import type' to 'import type'

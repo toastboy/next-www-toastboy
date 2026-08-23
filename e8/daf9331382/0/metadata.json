@@ -1,0 +1,84 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "e8daf9331382",
+  "session_id": "99ccd516-5fab-4563-a42f-83d00fc249d7",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-23T07:40:26.811115Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "e2e/responses.spec.ts",
+    "src/components/ResponsesForm/ResponsesForm.tsx",
+    "src/components/ResponsesForm/ResponsesForm.vitest.spec.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "7a06b10ec66c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 54,
+    "cache_creation_tokens": 60284,
+    "cache_read_tokens": 1761917,
+    "output_tokens": 8710,
+    "api_call_count": 27
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01UaEaVYWPCeozbBijNbtziv",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "7a06b10ec66c",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 103,
+        "end": 104,
+        "entry_ids": [
+          "f2b455ca-ad16-4fa3-8543-743eb9c16972"
+        ],
+        "tool_use_id": "toolu_01UaEaVYWPCeozbBijNbtziv"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01UaEaVYWPCeozbBijNbtziv"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-23T07:40:26.788793Z",
+    "agent_lines": 36,
+    "agent_removed": 5,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 36,
+    "total_lines_changed": 41,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

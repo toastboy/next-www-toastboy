@@ -2,7 +2,7 @@ import type { GameDayStatus } from 'prisma/zod/schemas';
 
 import { createMockGameDay, defaultGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
-import { PlayerFormType } from '@/types';
+import type { PlayerFormType } from '@/types';
 
 export const createMockPaddingFormEntry = (playerId = 1): PlayerFormType => ({
     id: 0,

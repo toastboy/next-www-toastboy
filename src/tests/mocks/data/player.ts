@@ -1,4 +1,4 @@
-import { PlayerLoginType } from 'prisma/zod/schemas/models/PlayerLogin.schema';
+import type { PlayerLoginType } from 'prisma/zod/schemas/models/PlayerLogin.schema';
 
 import type { PlayerDisplayType } from '@/services/Player';
 

@@ -1,6 +1,6 @@
 import prisma from 'prisma/prisma';
 import { GameChatWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
-import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
+import type { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {

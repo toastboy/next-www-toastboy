@@ -3,7 +3,7 @@
 import type { MantineColor } from '@mantine/core';
 import { Anchor, Notification, Stack, Text } from '@mantine/core';
 import Link from 'next/link';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export interface Props {
     variant?: 'notification' | 'plain';

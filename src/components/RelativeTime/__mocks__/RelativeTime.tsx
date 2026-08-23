@@ -1,4 +1,4 @@
-import { Props } from '../RelativeTime';
+import type { Props } from '../RelativeTime';
 
 export const RelativeTime = (props: Props) => (
     <div>RelativeTime: {JSON.stringify(props)}</div>

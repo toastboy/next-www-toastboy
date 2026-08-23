@@ -3,17 +3,17 @@ import {
     CountrySupporterWhereInputObjectSchema,
     CountrySupporterWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
-import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
+import type { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
+import type { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 import {
     CountrySupporterCreateOneStrictSchema,
     CountrySupporterUpsertOneStrictSchema,
     type CountrySupporterWriteInput,
     CountrySupporterWriteInputSchema,
 } from '@/types/CountrySupporterStrictSchema';
-import { CountrySupporterWithPlayerDataType } from '@/types/CountrySupporterWithPlayerDataType';
+import type { CountrySupporterWithPlayerDataType } from '@/types/CountrySupporterWithPlayerDataType';
 
 class CountrySupporterService {
     /**

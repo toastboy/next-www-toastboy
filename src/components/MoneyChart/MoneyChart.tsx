@@ -14,7 +14,7 @@ import { line } from 'd3-shape';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-import { MoneyChartDatum } from '@/types/DebtType';
+import type { MoneyChartDatum } from '@/types/DebtType';
 
 import styles from './MoneyChart.module.css';
 

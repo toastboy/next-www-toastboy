@@ -1,12 +1,9 @@
 import prisma from 'prisma/prisma';
-import {
-    GameDayStatus,
-    PlayerRecordWhereUniqueInputObjectSchema,
-    TableName,
-} from 'prisma/zod/schemas';
-import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
-import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import type { GameDayStatus, TableName } from 'prisma/zod/schemas';
+import { PlayerRecordWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
+import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { config } from '@/lib/config';
 import { InternalError } from '@/lib/errors';
@@ -15,7 +12,7 @@ import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { rankMap, scoreFieldMap } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
-import { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordDataType } from '@/types';
 import {
     PlayerRecordCreateOneStrictSchema,
     PlayerRecordUpsertOneStrictSchema,

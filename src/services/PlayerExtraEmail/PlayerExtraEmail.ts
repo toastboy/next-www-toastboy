@@ -1,5 +1,5 @@
 import prisma from 'prisma/prisma';
-import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
+import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { PlayerExtraEmailWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailWhereUniqueInput.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';

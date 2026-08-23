@@ -2,7 +2,7 @@ import 'server-only';
 
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, type ContainerClient } from '@azure/storage-blob';
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 
 import { CONTAINER_DB_SEED, STORAGE_ACCOUNT_NAME } from '@/lib/azureConfig';

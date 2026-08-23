@@ -1,4 +1,4 @@
-import { Props } from '../FamilyTree';
+import type { Props } from '../FamilyTree';
 
 /** Test mock for the FamilyTree component. */
 export const FamilyTree = (props: Props) => (

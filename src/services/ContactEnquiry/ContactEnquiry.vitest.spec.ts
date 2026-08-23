@@ -1,5 +1,5 @@
 import prisma from 'prisma/prisma';
-import { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
+import type { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 

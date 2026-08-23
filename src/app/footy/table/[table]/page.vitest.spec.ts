@@ -1,9 +1,10 @@
+import type * as React from 'react';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('services/PlayerRecord');
 vi.mock('react', async () => {
-    const actual = await vi.importActual<typeof import('react')>('react');
+    const actual = await vi.importActual<typeof React>('react');
     return { ...actual, cache: (fn: unknown) => fn };
 });
 vi.mock('next/navigation', () => ({

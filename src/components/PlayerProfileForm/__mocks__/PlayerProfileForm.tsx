@@ -1,4 +1,4 @@
-import { Props } from '../PlayerProfileForm';
+import type { Props } from '../PlayerProfileForm';
 
 export const PlayerProfileForm = (props: Props) => (
     <div>PlayerProfileForm: {JSON.stringify(props)}</div>

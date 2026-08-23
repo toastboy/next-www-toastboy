@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { Wrapper } from '@/tests/components/lib/common';
-import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
+import type { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 
 vi.mock('@/lib/observability/sentry', () => ({
     captureUnexpectedError: vi.fn(),

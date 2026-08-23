@@ -1,12 +1,13 @@
 import 'dotenv/config';
 
 import { ClientSecretCredential } from '@azure/identity';
-import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
+import type { ContainerClient } from '@azure/storage-blob';
+import { BlobServiceClient } from '@azure/storage-blob';
 import * as fs from 'fs';
 import { mkdtemp, readdir } from 'fs/promises';
 import * as os from 'os';
 import * as path from 'path';
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { AUTH_TABLES, GAME_DATA_TABLES } from 'prisma/table-manifest';
 import { fileURLToPath } from 'url';

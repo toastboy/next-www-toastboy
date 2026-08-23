@@ -1,5 +1,5 @@
 import { PlayerResponseSchema } from 'prisma/zod/schemas';
-import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
+import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import z from 'zod';
 
 export const InvitationResponseInputSchema = z.object({

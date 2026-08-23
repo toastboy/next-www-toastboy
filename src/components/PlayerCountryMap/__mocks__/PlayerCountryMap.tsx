@@ -1,4 +1,4 @@
-import { Props } from '../PlayerCountryMap';
+import type { Props } from '../PlayerCountryMap';
 
 export const PlayerCountryMap = (props: Props) => (
     <div data-testid="player-country-map">

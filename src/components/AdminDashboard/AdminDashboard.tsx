@@ -4,8 +4,8 @@ import { Center, Container, Flex, Title } from '@mantine/core';
 
 import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
-import { GetProgressProxy } from '@/types/actions/GetProgress';
-import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
+import type { GetProgressProxy } from '@/types/actions/GetProgress';
+import type { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 export interface Props {
     onUpdatePlayerRecords: UpdatePlayerRecordsProxy;

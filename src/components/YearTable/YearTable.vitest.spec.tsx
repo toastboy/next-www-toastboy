@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
-import { Props as RecordsTableProps } from '@/components/RecordsTable/RecordsTable';
+import type { Props as RecordsTableProps } from '@/components/RecordsTable/RecordsTable';
 import { YearTable } from '@/components/YearTable/YearTable';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';

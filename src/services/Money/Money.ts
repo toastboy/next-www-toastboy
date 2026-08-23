@@ -6,7 +6,8 @@ import { getShortMonthName } from '@/lib/dates';
 import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
 import gameDayService from '@/services/GameDay';
-import playerService, { PlayerDisplayType } from '@/services/Player';
+import type { PlayerDisplayType } from '@/services/Player';
+import playerService from '@/services/Player';
 import {
     type PayDebtResult,
     PayDebtResultSchema,

@@ -1,6 +1,6 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
+import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 

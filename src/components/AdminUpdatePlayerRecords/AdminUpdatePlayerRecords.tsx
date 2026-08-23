@@ -15,8 +15,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { GetProgressProxy } from '@/types/actions/GetProgress';
-import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
+import type { GetProgressProxy } from '@/types/actions/GetProgress';
+import type { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 export interface Props {
     onUpdatePlayerRecords: UpdatePlayerRecordsProxy;

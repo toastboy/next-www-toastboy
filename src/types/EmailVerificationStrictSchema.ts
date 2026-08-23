@@ -1,4 +1,4 @@
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import { EmailVerificationCreateOneZodSchema } from 'prisma/zod/schemas/createOneEmailVerification.schema';
 import { EmailVerificationCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationCreateInput.schema';
 import { EmailVerificationUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationUncheckedCreateInput.schema';

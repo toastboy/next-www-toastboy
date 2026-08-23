@@ -24,7 +24,7 @@ import { config } from '@/lib/config';
 import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { PlayerDataEmailDisplayType } from '@/types';
+import type { PlayerDataEmailDisplayType } from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 import classes from './SendEmailForm.module.css';

@@ -3,7 +3,7 @@
 import { Anchor, Container, Flex, Text, Title } from '@mantine/core';
 
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
-import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
+import type { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 
 export interface Props {
     onSendEnquiry: SendEnquiryProxy;

@@ -1,4 +1,4 @@
-import { Props } from '../AdminPlayerList';
+import type { Props } from '../AdminPlayerList';
 
 export const AdminPlayerList = (props: Props) => (
     <div>AdminPlayerList: {JSON.stringify(props)}</div>

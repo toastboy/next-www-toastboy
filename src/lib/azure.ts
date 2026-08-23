@@ -1,7 +1,8 @@
 import 'server-only';
 
 import { ClientSecretCredential } from '@azure/identity';
-import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
+import type { ContainerClient } from '@azure/storage-blob';
+import { BlobServiceClient } from '@azure/storage-blob';
 
 import { STORAGE_ACCOUNT_NAME } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';

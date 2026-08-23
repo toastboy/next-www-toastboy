@@ -1,4 +1,5 @@
-import { expect, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 type MockAuthState = 'none' | 'user' | 'admin';
 const MOCK_AUTH_COOKIE = 'mock-auth-state';

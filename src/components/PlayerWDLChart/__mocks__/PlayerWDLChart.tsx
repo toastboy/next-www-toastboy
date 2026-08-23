@@ -1,4 +1,4 @@
-import { Props } from '../PlayerWDLChart';
+import type { Props } from '../PlayerWDLChart';
 
 export const PlayerWDLChart = (props: Props) => (
     <div>PlayerWDLChart: {JSON.stringify(props)}</div>

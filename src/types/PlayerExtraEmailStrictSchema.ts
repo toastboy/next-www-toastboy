@@ -1,4 +1,4 @@
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import { PlayerExtraEmailCreateOneZodSchema } from 'prisma/zod/schemas/createOnePlayerExtraEmail.schema';
 import { PlayerExtraEmailCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailCreateInput.schema';
 import { PlayerExtraEmailUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailUncheckedCreateInput.schema';

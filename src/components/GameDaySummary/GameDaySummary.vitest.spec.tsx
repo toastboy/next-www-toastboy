@@ -8,7 +8,7 @@ import { Wrapper } from '@/tests/components/lib/common';
 import { createMockGameDay, defaultGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
 import { defaultTeamPlayer } from '@/tests/mocks/data/teamPlayer';
-import { TeamPlayerType } from '@/types';
+import type { TeamPlayerType } from '@/types';
 
 vi.mock('@/components/Team/Team');
 vi.mock('@/components/GameResultForm/GameResultForm');

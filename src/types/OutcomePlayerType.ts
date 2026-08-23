@@ -1,5 +1,5 @@
 import { OutcomeSchema, PlayerSchema } from 'prisma/zod/schemas';
-import z from 'zod';
+import type z from 'zod';
 
 import { PointsSchema } from '@/types/Points';
 

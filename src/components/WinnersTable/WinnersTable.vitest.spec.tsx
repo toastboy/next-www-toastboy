@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
-import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
+import type { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
 import { config } from '@/lib/config';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';

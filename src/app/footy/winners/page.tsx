@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';

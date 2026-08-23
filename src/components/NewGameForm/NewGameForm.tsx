@@ -20,11 +20,11 @@ import { useState } from 'react';
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
-import {
+import type {
     NewGameInput,
-    NewGameInputSchema,
+    TriggerInvitationsProxy,
 } from '@/types/actions/TriggerInvitations';
+import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
 // Breakpoint at which the submit button switches from a full-width mobile
 // touch target to an inline fit-content button.

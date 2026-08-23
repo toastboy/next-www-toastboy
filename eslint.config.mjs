@@ -251,6 +251,10 @@ const config = [
                 },
             ],
             '@typescript-eslint/unbound-method': 'off',
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
+            ],
         },
     },
     // Testing Library / jest-dom overrides (Component tests only)

@@ -1,4 +1,4 @@
-import { Props } from '../CustomAppShell';
+import type { Props } from '../CustomAppShell';
 
 export const CustomAppShell = (props: Props) => (
     <div>CustomAppShell: {JSON.stringify(props)}</div>

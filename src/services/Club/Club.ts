@@ -1,6 +1,6 @@
 import prisma from 'prisma/prisma';
 import { ClubWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
-import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
+import type { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {

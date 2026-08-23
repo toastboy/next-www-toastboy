@@ -4,7 +4,7 @@ import { Badge, Flex, Group, Paper, Text, Title } from '@mantine/core';
 
 import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
 import type { TeamResultState } from '@/lib/gameResult';
-import { TeamPlayerType } from '@/types';
+import type { TeamPlayerType } from '@/types';
 
 export interface Props {
     team: TeamPlayerType[];

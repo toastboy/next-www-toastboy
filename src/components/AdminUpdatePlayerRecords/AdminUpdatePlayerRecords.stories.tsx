@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 
-import { GetProgressProxy } from '@/types/actions/GetProgress';
-import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
+import type { GetProgressProxy } from '@/types/actions/GetProgress';
+import type { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 import { AdminUpdatePlayerRecords } from './AdminUpdatePlayerRecords';
 

@@ -1,4 +1,4 @@
-import { Props } from '../CountryFlag';
+import type { Props } from '../CountryFlag';
 
 export const CountryFlag = (props: Props) => (
     <div>CountryFlag: {JSON.stringify(props)}</div>

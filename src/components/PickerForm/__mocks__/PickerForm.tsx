@@ -1,4 +1,4 @@
-import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import type { SetGameEnabledProxy } from '@/types/actions/SetGameEnabled';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';

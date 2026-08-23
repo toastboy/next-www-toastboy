@@ -1,4 +1,4 @@
-import { Props } from '../YearTable';
+import type { Props } from '../YearTable';
 
 export const YearTable = (props: Props) => (
     <div>YearTable: {JSON.stringify(props)}</div>

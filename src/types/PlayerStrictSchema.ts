@@ -1,4 +1,4 @@
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import { PlayerCreateOneZodSchema } from 'prisma/zod/schemas/createOnePlayer.schema';
 import { PlayerCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerCreateInput.schema';
 import { PlayerUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerUncheckedCreateInput.schema';

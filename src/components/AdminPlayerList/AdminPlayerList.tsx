@@ -35,8 +35,8 @@ import { formatDate } from '@/lib/dates';
 import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import { assertOkResponse, toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { PlayerDataType } from '@/types';
-import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
+import type { PlayerDataType } from '@/types';
+import type { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 type FinishedFilter = 'all' | 'finished' | 'active';

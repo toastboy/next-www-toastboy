@@ -1,4 +1,4 @@
-import { CountrySupporterWithPlayerDataType } from '@/types';
+import type { CountrySupporterWithPlayerDataType } from '@/types';
 
 import { defaultCountryList } from './country';
 import { createMockPlayer, defaultPlayer } from './player';

@@ -1,6 +1,7 @@
 import { Readable } from 'stream';
 import request from 'supertest';
-import { Mock, vi } from 'vitest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 vi.mock('@/lib/azure');
 vi.mock('services/Club');

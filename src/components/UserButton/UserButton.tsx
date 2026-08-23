@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation';
 
 import { config } from '@/lib/config';
 import { assertOkResponse, toPublicMessage } from '@/lib/errors';
-import { AuthUserSummary } from '@/types/AuthUser';
+import type { AuthUserSummary } from '@/types/AuthUser';
 
 import classes from './UserButton.module.css';
 

@@ -11,7 +11,7 @@ import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
 import outcomeService from '@/services/Outcome';
 import playerService from '@/services/Player';
-import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
+import type { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
 const buildInvitationToken = () => crypto.randomUUID();
 

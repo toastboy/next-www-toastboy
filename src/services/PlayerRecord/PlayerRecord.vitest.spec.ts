@@ -1,7 +1,7 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { TableNameSchema } from 'prisma/zod/schemas';
-import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 

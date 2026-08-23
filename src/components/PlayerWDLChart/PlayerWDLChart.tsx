@@ -2,7 +2,7 @@
 
 import { Progress, Tooltip } from '@mantine/core';
 
-import { PlayerDataType } from '@/types';
+import type { PlayerDataType } from '@/types';
 
 export interface Props {
     player: PlayerDataType;

@@ -12,8 +12,8 @@ import {
     getTeamResultState,
     isGame,
 } from '@/lib/gameResult';
-import { TeamPlayerType } from '@/types';
-import { SetGameResultProxy } from '@/types/actions/SetGameResult';
+import type { TeamPlayerType } from '@/types';
+import type { SetGameResultProxy } from '@/types/actions/SetGameResult';
 
 export interface Props {
     gameDay: GameDayType;

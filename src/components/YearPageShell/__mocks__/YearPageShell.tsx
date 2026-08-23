@@ -1,4 +1,4 @@
-import { Props } from '../YearPageShell';
+import type { Props } from '../YearPageShell';
 
 export const YearPageShell = (props: Props) => (
     <div>YearPageShell: {JSON.stringify(props)}</div>

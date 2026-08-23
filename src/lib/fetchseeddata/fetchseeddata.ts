@@ -1,5 +1,6 @@
 import { ClientSecretCredential } from '@azure/identity';
-import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
+import type { ContainerClient } from '@azure/storage-blob';
+import { BlobServiceClient } from '@azure/storage-blob';
 import * as fs from 'fs';
 import * as path from 'path';
 import { GAME_DATA_TABLES } from 'prisma/table-manifest';

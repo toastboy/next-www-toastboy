@@ -3,7 +3,7 @@
 import { Flex } from '@mantine/core';
 
 import { ClubBadge } from '@/components/ClubBadge/ClubBadge';
-import { ClubSupporterDataType } from '@/types';
+import type { ClubSupporterDataType } from '@/types';
 
 export interface Props {
     clubs: ClubSupporterDataType[];

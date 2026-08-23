@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 import { emitter } from '@/lib/events';
 import type { FootyChannel } from '@/types/FootyChannel';

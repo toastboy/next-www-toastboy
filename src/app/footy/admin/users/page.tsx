@@ -2,7 +2,7 @@ import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { StatusNotification } from '@/components/StatusNotification/StatusNotification';
-import { UserWithRolePayload } from '@/lib/core/auth';
+import type { UserWithRolePayload } from '@/lib/core/auth';
 import { toPublicMessage } from '@/lib/errors/AppError';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { FootyChannel } from '@/types/FootyChannel';

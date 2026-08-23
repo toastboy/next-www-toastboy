@@ -1,4 +1,4 @@
-import { Props } from '../PasswordResetForm';
+import type { Props } from '../PasswordResetForm';
 
 export const PasswordResetForm = (props: Props) => (
     <div>PasswordResetForm: {JSON.stringify(props)}</div>

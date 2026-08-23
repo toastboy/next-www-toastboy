@@ -1,4 +1,4 @@
-import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
+import type { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 
 export const defaultGameChat = {
     id: 1,

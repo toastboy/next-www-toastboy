@@ -2,7 +2,7 @@ import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
-import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
+import type { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 
 import { EnquiryForm } from './EnquiryForm';
 

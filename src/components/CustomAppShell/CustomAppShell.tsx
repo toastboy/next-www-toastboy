@@ -15,7 +15,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { NavBarNested } from '@/components/NavBarNested/NavBarNested';
-import { AuthUserSummary } from '@/types/AuthUser';
+import type { AuthUserSummary } from '@/types/AuthUser';
 
 /** Props for the application shell wrapper. */
 export interface Props {

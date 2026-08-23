@@ -6,7 +6,7 @@ import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useId } from 'react';
 
 import { config } from '@/lib/config';
-import { TurnoutByYearType } from '@/types';
+import type { TurnoutByYearType } from '@/types';
 
 import styles from './Turnout.module.css';
 

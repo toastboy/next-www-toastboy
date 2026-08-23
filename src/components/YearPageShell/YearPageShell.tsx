@@ -1,11 +1,12 @@
 'use client';
 
-import { Group, Stack, StackProps, Title } from '@mantine/core';
-import { ReactNode } from 'react';
+import type { StackProps } from '@mantine/core';
+import { Group, Stack, Title } from '@mantine/core';
+import type { ReactNode } from 'react';
 
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { FootyChannel } from '@/types/FootyChannel';
+import type { FootyChannel } from '@/types/FootyChannel';
 
 export interface Props extends Pick<
     StackProps,

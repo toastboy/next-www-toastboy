@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';

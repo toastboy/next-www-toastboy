@@ -1,4 +1,4 @@
-import { Props } from '../NavBarNested';
+import type { Props } from '../NavBarNested';
 
 export const NavBarNested = (props: Props) => (
     <div>NavBarNested: {JSON.stringify(props)}</div>

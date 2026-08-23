@@ -2,6 +2,8 @@ import 'server-only';
 
 import { headers } from 'next/headers';
 
+import type { auth } from '@/lib/auth';
+import type { getCurrentUser } from '@/lib/auth.server';
 import { AuthError } from '@/lib/errors';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
@@ -10,8 +12,8 @@ import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
 import type { AuthUserSummary } from '@/types/AuthUser';
 
-type AuthInstance = typeof import('@/lib/auth').auth;
-type GetCurrentUser = typeof import('@/lib/auth.server').getCurrentUser;
+type AuthInstance = typeof auth;
+type GetCurrentUser = typeof getCurrentUser;
 
 interface BeforeDeleteDeps {
     playerService: Pick<typeof playerService, 'anonymise' | 'setFinished'>;

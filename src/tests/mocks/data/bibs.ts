@@ -1,4 +1,4 @@
-import { WDLType } from '@/types/WDLType';
+import type { WDLType } from '@/types/WDLType';
 
 export const defaultBibsData = {
     won: 12,

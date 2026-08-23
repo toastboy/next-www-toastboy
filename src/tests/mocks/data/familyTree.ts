@@ -1,4 +1,4 @@
-import { FamilyTreeNodeType } from '@/types';
+import type { FamilyTreeNodeType } from '@/types';
 
 /**
  * Default mock family tree data with the founding player at the root.

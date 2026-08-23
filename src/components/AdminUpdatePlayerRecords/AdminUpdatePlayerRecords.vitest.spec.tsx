@@ -4,8 +4,8 @@ import { vi } from 'vitest';
 
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 import { Wrapper } from '@/tests/components/lib/common';
-import { GetProgressProxy } from '@/types/actions/GetProgress';
-import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
+import type { GetProgressProxy } from '@/types/actions/GetProgress';
+import type { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 const { captureUnexpectedErrorMock } = vi.hoisted(() => ({
     captureUnexpectedErrorMock: vi.fn(),

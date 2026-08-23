@@ -1,4 +1,4 @@
-import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
+import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
 export const defaultCountry = {
     fifaCode: 'ENG',

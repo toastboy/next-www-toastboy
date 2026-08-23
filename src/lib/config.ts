@@ -1,4 +1,5 @@
-import { ConfigSchema, ConfigType } from '@/types/config';
+import type { ConfigType } from '@/types/config';
+import { ConfigSchema } from '@/types/config';
 
 const rawConfig: ConfigType = {
     minGamesForAveragesTable: 10,

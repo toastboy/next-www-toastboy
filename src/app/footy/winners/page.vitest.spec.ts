@@ -1,4 +1,5 @@
 import { TableNameSchema } from 'prisma/zod/schemas';
+import type * as React from 'react';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
@@ -16,7 +17,7 @@ vi.mock('next/navigation', () => ({
 // React is partially mocked so cache becomes a passthrough, preventing result
 // sharing between tests
 vi.mock('react', async () => {
-    const actual = await vi.importActual<typeof import('react')>('react');
+    const actual = await vi.importActual<typeof React>('react');
     return { ...actual, cache: (fn: unknown) => fn };
 });
 

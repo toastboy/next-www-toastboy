@@ -1,4 +1,4 @@
-import { TurnoutByYearType } from '@/types/TurnoutByYearType';
+import type { TurnoutByYearType } from '@/types/TurnoutByYearType';
 
 export const defaultTurnoutByYearList = [
     {

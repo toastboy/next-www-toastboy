@@ -1,4 +1,4 @@
-import { Props } from '../GameDaySummary';
+import type { Props } from '../GameDaySummary';
 
 export const GameDaySummary = (props: Props) => (
     <div>GameDaySummary: {JSON.stringify(props)}</div>

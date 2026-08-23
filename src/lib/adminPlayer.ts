@@ -1,5 +1,5 @@
 import { normalizeEmail } from '@/lib/email/normalizeEmail';
-import { PlayerDataType } from '@/types';
+import type { PlayerDataType } from '@/types';
 
 export type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'auth';
 export type SortDirection = 'asc' | 'desc';

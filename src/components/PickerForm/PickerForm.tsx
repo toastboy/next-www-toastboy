@@ -24,7 +24,7 @@ import {
     IconSelector,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';

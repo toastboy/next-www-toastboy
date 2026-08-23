@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { Props as GameDayLinkProps } from '@/components/GameDayLink/GameDayLink';
+import type { Props as GameDayLinkProps } from '@/components/GameDayLink/GameDayLink';
 import { GameDayList } from '@/components/GameDayList/GameDayList';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultGameDayList } from '@/tests/mocks/data/gameDay';

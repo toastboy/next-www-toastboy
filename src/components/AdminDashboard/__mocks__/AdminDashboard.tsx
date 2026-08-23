@@ -1,4 +1,4 @@
-import { Props } from '../AdminDashboard';
+import type { Props } from '../AdminDashboard';
 
 export const AdminDashboard = (props: Props) => (
     <div>AdminDashboard: {JSON.stringify(props)}</div>

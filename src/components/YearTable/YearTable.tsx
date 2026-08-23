@@ -5,7 +5,7 @@ import type { TableName } from 'prisma/zod/schemas';
 
 import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
 import { UnqualifiedTableName } from '@/lib/tables';
-import { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordDataType } from '@/types';
 
 export interface Props {
     table: TableName;

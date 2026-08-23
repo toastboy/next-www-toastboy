@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as topojson from 'topojson-client';
 import type { GeometryCollection, Topology } from 'topojson-specification';
 
-import { CountrySupporterWithPlayerDataType } from '@/types';
+import type { CountrySupporterWithPlayerDataType } from '@/types';
 
 /**
  * Mapping from database country names to their corresponding TopoJSON atlas

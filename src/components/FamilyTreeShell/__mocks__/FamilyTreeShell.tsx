@@ -1,4 +1,4 @@
-import { Props } from '../FamilyTreeShell';
+import type { Props } from '../FamilyTreeShell';
 
 export const FamilyTreeShell = (props: Props) => (
     <div>FamilyTreeShell: {JSON.stringify(props)}</div>

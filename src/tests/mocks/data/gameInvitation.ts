@@ -1,4 +1,4 @@
-import { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
+import type { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 
 export const defaultGameInvitation = {
     uuid: '123e4567-e89b-12d3-a456-426614174000',

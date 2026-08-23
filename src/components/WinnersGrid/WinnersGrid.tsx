@@ -4,7 +4,7 @@ import { Flex } from '@mantine/core';
 import type { TableName } from 'prisma/zod/schemas';
 
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
-import { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordDataType } from '@/types';
 
 export interface Props {
     winners: { table: TableName; records: PlayerRecordDataType[] }[];

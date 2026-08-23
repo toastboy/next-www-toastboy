@@ -1,4 +1,4 @@
-import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
+import type { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 
 export const defaultClub = {
     id: 1,

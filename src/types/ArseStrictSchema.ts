@@ -1,4 +1,4 @@
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import {
     ArseCreateInputObjectZodSchema,
     ArseCreateOneZodSchema,

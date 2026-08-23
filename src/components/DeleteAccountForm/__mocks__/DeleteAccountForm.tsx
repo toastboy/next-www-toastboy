@@ -1,4 +1,4 @@
-import { Props } from '../DeleteAccountForm';
+import type { Props } from '../DeleteAccountForm';
 
 export const DeleteAccountForm = (props: Props) => (
     <div>DeleteAccountForm: {JSON.stringify(props)}</div>

@@ -5,7 +5,7 @@ import { Turnout } from '@/components/Turnout/Turnout';
 import { config } from '@/lib/config';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultTurnoutByYearList } from '@/tests/mocks/data/turnoutByYear';
-import { TurnoutByYearType } from '@/types';
+import type { TurnoutByYearType } from '@/types';
 
 const createMockTurnoutByYear = (
     overrides: Partial<TurnoutByYearType> = {},

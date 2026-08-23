@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
-import { PlayerFormType } from '@/types';
+import type { PlayerFormType } from '@/types';
 
 import { buildGrid, buildYearGroups, PlayerHeatmap } from './PlayerHeatmap';
 

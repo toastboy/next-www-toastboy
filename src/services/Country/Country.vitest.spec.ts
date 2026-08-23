@@ -1,6 +1,6 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
+import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 

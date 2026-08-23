@@ -2,7 +2,7 @@
 
 import { Badge, Box } from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
-import { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 /**
  * DebugSizeOverlay

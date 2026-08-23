@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { Team } from '@/components/Team/Team';
-import { Props as TeamPlayerProps } from '@/components/TeamPlayer/TeamPlayer';
+import type { Props as TeamPlayerProps } from '@/components/TeamPlayer/TeamPlayer';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 

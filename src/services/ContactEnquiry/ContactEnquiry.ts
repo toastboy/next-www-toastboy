@@ -1,5 +1,5 @@
 import prisma from 'prisma/prisma';
-import { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
+import type { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
 import { ContactEnquiryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/ContactEnquiryWhereUniqueInput.schema';
 
 import { hashVerificationToken } from '@/lib/verificationToken';

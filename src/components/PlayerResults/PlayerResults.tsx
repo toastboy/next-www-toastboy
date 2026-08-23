@@ -5,7 +5,7 @@ import { Divider, Paper, Table, Title } from '@mantine/core';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { getYearName } from '@/lib/tables';
-import { PlayerDisplayType } from '@/services/Player';
+import type { PlayerDisplayType } from '@/services/Player';
 
 export interface Props {
     player: PlayerDisplayType;

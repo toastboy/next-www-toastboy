@@ -1,6 +1,6 @@
 import prisma from 'prisma/prisma';
 import { GameInvitationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
-import { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
+import type { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {

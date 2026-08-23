@@ -15,7 +15,7 @@ import { type TableName } from 'prisma/zod/schemas';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
 import { ShortTableTitle } from '@/lib/tables';
-import { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordDataType } from '@/types';
 import { FootyChannel } from '@/types/FootyChannel';
 
 export interface Props {

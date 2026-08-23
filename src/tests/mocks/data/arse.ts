@@ -1,4 +1,4 @@
-import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
+import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
 export const defaultArse = {
     id: 1,

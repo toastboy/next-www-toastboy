@@ -18,7 +18,7 @@ import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { TableScore } from '@/components/TableScore/TableScore';
 import { groupDisplays, visibleRowCount } from '@/lib/collapsibleGroups';
 import { config } from '@/lib/config';
-import { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordDataType } from '@/types';
 
 export interface Props {
     table: TableName;

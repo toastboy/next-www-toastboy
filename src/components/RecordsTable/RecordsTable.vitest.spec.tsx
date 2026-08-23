@@ -1,18 +1,19 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TableName, TableNameSchema } from 'prisma/zod/schemas';
+import type { TableName } from 'prisma/zod/schemas';
+import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
-import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
+import type { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
-import { Props as TableScoreProps } from '@/components/TableScore/TableScore';
+import type { Props as TableScoreProps } from '@/components/TableScore/TableScore';
 import { config } from '@/lib/config';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import {
     createMockPlayerRecordData,
     defaultPlayerRecordDataList,
 } from '@/tests/mocks/data/playerRecordData';
-import { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordDataType } from '@/types';
 
 vi.mock('@/components/PlayerLink/PlayerLink');
 vi.mock('@/components/TableScore/TableScore');

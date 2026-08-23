@@ -11,8 +11,8 @@ import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { PlayerDisplayType } from '@/services/Player';
-import {
+import type { PlayerDisplayType } from '@/services/Player';
+import type {
     ClubSupporterDataType,
     CountrySupporterDataType,
     PlayerDataEmailDisplayType,

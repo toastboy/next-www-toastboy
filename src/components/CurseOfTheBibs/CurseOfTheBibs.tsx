@@ -1,7 +1,8 @@
 'use client';
 
-import { PieChart, PieChartDatum } from '@/components/PieChart/PieChart';
-import { WDLType } from '@/types/WDLType';
+import type { PieChartDatum } from '@/components/PieChart/PieChart';
+import { PieChart } from '@/components/PieChart/PieChart';
+import type { WDLType } from '@/types/WDLType';
 
 export interface Props {
     bibsData: WDLType;

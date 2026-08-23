@@ -1,4 +1,4 @@
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import z from 'zod';
 
 const emailListSchema = z.array(

@@ -1,25 +1,25 @@
 import prisma from 'prisma/prisma';
+import type { TeamName } from 'prisma/zod/schemas';
 import {
     OutcomeWhereUniqueInputObjectSchema,
     PlayerResponseSchema,
-    TeamName,
     TeamNameSchema,
 } from 'prisma/zod/schemas';
-import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
+import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import z from 'zod';
 
 import { InternalError } from '@/lib/errors';
 import { getPlayerPoints, isGame } from '@/lib/gameResult';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import gameDayService from '@/services/GameDay';
-import {
+import type {
     PlayerFormType,
-    TeamPlayerSchema,
-    type TeamPlayerType,
+    TeamPlayerType,
     Turnout,
     TurnoutByYearType,
     WDLType,
 } from '@/types';
+import { TeamPlayerSchema } from '@/types';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
 import {
     OutcomeCreateOneStrictSchema,

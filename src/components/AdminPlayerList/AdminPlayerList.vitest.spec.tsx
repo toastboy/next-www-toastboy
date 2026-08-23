@@ -20,7 +20,7 @@ import {
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
-import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
+import type { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 const { mockRefresh } = vi.hoisted(() => ({

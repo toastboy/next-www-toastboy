@@ -21,11 +21,11 @@ import { useState } from 'react';
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import {
+import type {
     DeleteAccountInput,
-    DeleteAccountSchema,
     DeletePlayerProxy,
 } from '@/types/actions/DeletePlayer';
+import { DeleteAccountSchema } from '@/types/actions/DeletePlayer';
 
 export interface Props {
     onDeletePlayer: DeletePlayerProxy;

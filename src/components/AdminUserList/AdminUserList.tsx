@@ -14,7 +14,7 @@ import {
     UnstyledButton,
 } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
-import { UserWithRole } from 'better-auth/plugins/admin';
+import type { UserWithRole } from 'better-auth/plugins/admin';
 import { useState } from 'react';
 
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';

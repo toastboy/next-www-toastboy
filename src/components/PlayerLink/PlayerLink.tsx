@@ -1,17 +1,13 @@
 'use client';
 
-import {
-    Anchor,
-    MantineStyleProps,
-    Tooltip,
-    useMantineTheme,
-} from '@mantine/core';
+import type { MantineStyleProps } from '@mantine/core';
+import { Anchor, Tooltip, useMantineTheme } from '@mantine/core';
 import {
     IconArrowBigLeftLine,
     IconArrowBigRightLine,
 } from '@tabler/icons-react';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 /**
  * Component for rendering a link to a player's profile with various formatting options.

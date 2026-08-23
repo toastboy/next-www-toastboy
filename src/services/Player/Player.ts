@@ -1,5 +1,5 @@
 import prisma from 'prisma/prisma';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import type { PlayerExtraEmailType as PrismaPlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { PlayerLoginWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerLoginWhereUniqueInput.schema';
 import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerWhereUniqueInput.schema';
@@ -7,7 +7,7 @@ import z from 'zod';
 
 import { getPlayerPoints } from '@/lib/gameResult';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import {
+import type {
     FamilyTreeNodeType,
     PlayerDataDisplayType,
     PlayerDataEmailDisplayType,

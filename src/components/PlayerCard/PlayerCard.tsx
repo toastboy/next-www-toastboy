@@ -9,8 +9,8 @@ import { PlayerClubs } from '@/components/PlayerClubs/PlayerClubs';
 import { PlayerCountries } from '@/components/PlayerCountries/PlayerCountries';
 import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
 import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
-import { PlayerDisplayType } from '@/services/Player';
-import { ClubSupporterDataType, CountrySupporterDataType } from '@/types';
+import type { PlayerDisplayType } from '@/services/Player';
+import type { ClubSupporterDataType, CountrySupporterDataType } from '@/types';
 
 import classes from './PlayerCard.module.css';
 

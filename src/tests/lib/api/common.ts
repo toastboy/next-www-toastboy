@@ -1,5 +1,6 @@
-import { ServerResponse } from 'http';
-import { NextRequest, NextResponse } from 'next/server';
+import type { ServerResponse } from 'http';
+import type { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 /**
  * Creates a mock server application for testing purposes.

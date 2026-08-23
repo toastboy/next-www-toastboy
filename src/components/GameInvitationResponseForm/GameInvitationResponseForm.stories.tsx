@@ -6,7 +6,7 @@ import {
     createMockGameInvitationResponseDetails,
     defaultGameInvitationResponseDetails,
 } from '@/tests/mocks/data/gameInvitationResponse';
-import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
+import type { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
 
 import { GameInvitationResponseForm } from './GameInvitationResponseForm';
 

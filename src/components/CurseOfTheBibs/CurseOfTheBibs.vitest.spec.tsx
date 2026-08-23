@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { CurseOfTheBibs } from '@/components/CurseOfTheBibs/CurseOfTheBibs';
-import { Props as PieChartProps } from '@/components/PieChart/PieChart';
+import type { Props as PieChartProps } from '@/components/PieChart/PieChart';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultBibsData } from '@/tests/mocks/data/bibs';
 

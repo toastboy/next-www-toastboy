@@ -1,4 +1,4 @@
-import { Props } from '../SendEmailForm';
+import type { Props } from '../SendEmailForm';
 
 export const SendEmailForm = ({ opened, onClose, ...props }: Props) => (
     <>

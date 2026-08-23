@@ -6,7 +6,7 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { getYearName, rankMap } from '@/lib/tables';
-import { PlayerDisplayType } from '@/services/Player';
+import type { PlayerDisplayType } from '@/services/Player';
 
 export interface Props {
     player: PlayerDisplayType;

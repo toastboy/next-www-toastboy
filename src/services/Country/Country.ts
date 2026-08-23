@@ -1,6 +1,6 @@
 import prisma from 'prisma/prisma';
 import { CountryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
-import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
+import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {

@@ -1,4 +1,4 @@
-import { PlayerResponse } from 'prisma/generated/browser';
+import type { PlayerResponse } from 'prisma/generated/browser';
 
 export interface GameInvitationResponseDetails {
     token: string;

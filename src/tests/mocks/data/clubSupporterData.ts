@@ -1,4 +1,4 @@
-import { ClubSupporterDataType } from '@/types';
+import type { ClubSupporterDataType } from '@/types';
 
 import { defaultClub } from './club';
 

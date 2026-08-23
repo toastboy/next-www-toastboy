@@ -1,4 +1,4 @@
-import { Props } from '../PlayerResults';
+import type { Props } from '../PlayerResults';
 
 export const PlayerResults = (props: Props) => (
     <div>PlayerResults: {JSON.stringify(props)}</div>

@@ -20,11 +20,11 @@ import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import {
+import type {
     EnquiryInput,
-    EnquirySchema,
     SendEnquiryProxy,
 } from '@/types/actions/SendEnquiry';
+import { EnquirySchema } from '@/types/actions/SendEnquiry';
 
 export interface Props {
     onSendEnquiry: SendEnquiryProxy;

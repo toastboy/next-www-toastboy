@@ -1,11 +1,10 @@
 import prisma from 'prisma/prisma';
+import type { GameDayStatus, TeamName } from 'prisma/zod/schemas';
 import {
-    GameDayStatus,
     GameDayWhereInputObjectSchema,
     GameDayWhereUniqueInputObjectSchema,
-    TeamName,
 } from 'prisma/zod/schemas';
-import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {

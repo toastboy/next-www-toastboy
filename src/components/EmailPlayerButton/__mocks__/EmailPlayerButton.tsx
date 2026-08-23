@@ -1,4 +1,4 @@
-import { Props } from '../EmailPlayerButton';
+import type { Props } from '../EmailPlayerButton';
 
 export const EmailPlayerButton = ({ player, ...props }: Props) => (
     <>

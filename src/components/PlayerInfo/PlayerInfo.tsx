@@ -6,7 +6,7 @@ import { EmailPlayerButton } from '@/components/EmailPlayerButton/EmailPlayerBut
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { formatDate } from '@/lib/dates';
-import { PlayerDisplayType } from '@/services/Player';
+import type { PlayerDisplayType } from '@/services/Player';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 import type { PlayerDataEmailDisplayType } from '@/types/PlayerDataType';
 import type { PlayerLastResultType } from '@/types/PlayerLastResultType';

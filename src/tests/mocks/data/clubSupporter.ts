@@ -1,4 +1,4 @@
-import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
+import type { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 
 export const defaultClubSupporter = {
     playerId: 12,

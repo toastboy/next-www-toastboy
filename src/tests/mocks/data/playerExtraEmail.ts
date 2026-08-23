@@ -1,4 +1,4 @@
-import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
+import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 
 export const defaultPlayerExtraEmail = {
     id: 1,

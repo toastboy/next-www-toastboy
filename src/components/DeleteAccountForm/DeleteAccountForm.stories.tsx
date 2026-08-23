@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, within } from 'storybook/test';
 
-import { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
+import type { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
 
 import { DeleteAccountForm } from './DeleteAccountForm';
 

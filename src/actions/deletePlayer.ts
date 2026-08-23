@@ -4,7 +4,7 @@ import {
     beforeDeletePlayerCore,
     deletePlayerCore,
 } from '@/lib/core/deletePlayer';
-import { AuthUserSummary } from '@/types/AuthUser';
+import type { AuthUserSummary } from '@/types/AuthUser';
 
 /**
  * Perform pre-deletion cleanup for a player-associated authenticated user.

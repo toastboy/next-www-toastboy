@@ -1,6 +1,7 @@
 import { timingSafeEqual } from 'crypto';
 import { revalidatePath } from 'next/cache';
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { buildJsonErrorResponse } from '@/lib/api';
 import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';

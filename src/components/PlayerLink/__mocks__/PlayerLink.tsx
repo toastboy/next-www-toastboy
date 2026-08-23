@@ -1,4 +1,4 @@
-import { Props } from '../PlayerLink';
+import type { Props } from '../PlayerLink';
 
 export const PlayerLink = (props: Props) => (
     <div>PlayerLink: {JSON.stringify(props)}</div>

@@ -1,8 +1,8 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { TableName } from 'prisma/generated/browser';
+import type { TableName } from 'prisma/generated/browser';
 import { TableNameSchema } from 'prisma/zod/schemas';
-import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { cache } from 'react';
 import z from 'zod';
 

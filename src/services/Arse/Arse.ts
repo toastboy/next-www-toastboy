@@ -3,7 +3,7 @@ import {
     ArseWhereInputObjectSchema,
     ArseWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
-import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
+import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {

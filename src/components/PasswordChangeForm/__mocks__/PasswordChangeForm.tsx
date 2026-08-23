@@ -1,4 +1,4 @@
-import { Props } from '../PasswordChangeForm';
+import type { Props } from '../PasswordChangeForm';
 
 export const PasswordChangeForm = (props: Props) => (
     <div>PasswordChangeForm: {JSON.stringify(props)}</div>

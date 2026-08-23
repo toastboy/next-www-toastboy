@@ -1,4 +1,4 @@
-import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
+import type { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 
 export const defaultCountrySupporter = {
     playerId: 12,

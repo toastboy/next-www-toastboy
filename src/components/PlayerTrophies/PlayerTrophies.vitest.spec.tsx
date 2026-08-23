@@ -3,7 +3,7 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
 import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
-import { Props as PlayerTrophyTallyProps } from '@/components/PlayerTrophyTally/PlayerTrophyTally';
+import type { Props as PlayerTrophyTallyProps } from '@/components/PlayerTrophyTally/PlayerTrophyTally';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultTrophiesList } from '@/tests/mocks/data/playerRecord';
 

@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { readdir } from 'fs/promises';
 import * as path from 'path';
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { GAME_DATA_TABLES } from 'prisma/table-manifest';
 import { fileURLToPath } from 'url';

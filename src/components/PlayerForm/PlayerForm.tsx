@@ -4,7 +4,7 @@ import { Badge, Flex, Tooltip } from '@mantine/core';
 import Link from 'next/link';
 
 import { formatDate } from '@/lib/dates';
-import { PlayerFormType } from '@/types';
+import type { PlayerFormType } from '@/types';
 
 export interface Props {
     form: PlayerFormType[];

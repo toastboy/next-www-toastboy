@@ -1,6 +1,6 @@
 'use server';
 
-import { SendMailOptions } from 'nodemailer';
+import type { SendMailOptions } from 'nodemailer';
 
 import { requireAdmin } from '@/lib/auth.server';
 import { sendEmailToAllActivePlayersCore } from '@/lib/core/sendEmailToAllActivePlayers';

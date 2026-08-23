@@ -1,11 +1,13 @@
 'use client';
 
-import {
-    Box,
-    Button,
+import type {
     ComboboxData,
     ComboboxItem,
     ComboboxItemGroup,
+} from '@mantine/core';
+import {
+    Box,
+    Button,
     Container,
     Flex,
     MultiSelect,
@@ -37,13 +39,13 @@ import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { ClubSupporterDataType } from '@/types';
-import type { UpdatePlayerProxy } from '@/types/actions/UpdatePlayer';
-import {
+import type { ClubSupporterDataType } from '@/types';
+import type {
     UpdatePlayerInput,
-    UpdatePlayerSchema,
+    UpdatePlayerProxy,
 } from '@/types/actions/UpdatePlayer';
-import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
+import { UpdatePlayerSchema } from '@/types/actions/UpdatePlayer';
+import type { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 
 export interface Props {
     player: PlayerType & { accountEmail?: string | null };

@@ -14,7 +14,7 @@ import { type D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { FamilyTreeNodeType } from '@/types';
+import type { FamilyTreeNodeType } from '@/types';
 
 import { computeTreeRadius } from './familyTreeRadius';
 

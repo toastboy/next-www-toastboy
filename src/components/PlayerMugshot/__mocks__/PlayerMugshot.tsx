@@ -1,4 +1,4 @@
-import { Props } from '../PlayerMugshot';
+import type { Props } from '../PlayerMugshot';
 
 export const PlayerMugshot = ({ onReady, ...props }: Props) => (
     <>

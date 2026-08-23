@@ -1,6 +1,6 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
+import type { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 

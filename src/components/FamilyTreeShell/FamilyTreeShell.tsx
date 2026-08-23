@@ -3,7 +3,7 @@
 import { Flex, Text, Title } from '@mantine/core';
 
 import { FamilyTree } from '@/components/FamilyTree/FamilyTree';
-import { FamilyTreeNodeType } from '@/types';
+import type { FamilyTreeNodeType } from '@/types';
 
 export interface Props {
     data: FamilyTreeNodeType;

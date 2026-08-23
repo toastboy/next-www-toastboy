@@ -27,11 +27,9 @@ import z from 'zod';
 
 import { config } from '@/lib/config';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import {
-    InvitationResponseInputSchema,
-    SubmitGameInvitationResponseProxy,
-} from '@/types/actions/SubmitGameInvitationResponse';
-import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
+import type { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
+import { InvitationResponseInputSchema } from '@/types/actions/SubmitGameInvitationResponse';
+import type { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
 const formSchema = InvitationResponseInputSchema.omit({ token: true }).extend({
     comment: z.string().max(127).optional(),

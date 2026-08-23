@@ -1,6 +1,6 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
+import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 

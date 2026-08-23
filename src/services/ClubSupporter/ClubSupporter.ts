@@ -3,10 +3,10 @@ import {
     ClubSupporterWhereInputObjectSchema,
     ClubSupporterWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
-import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
+import type { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import { ClubSupporterDataType } from '@/types';
+import type { ClubSupporterDataType } from '@/types';
 import {
     ClubSupporterCreateOneStrictSchema,
     ClubSupporterUpsertOneStrictSchema,

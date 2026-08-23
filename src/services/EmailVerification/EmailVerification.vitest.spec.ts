@@ -1,5 +1,5 @@
 import prisma from 'prisma/prisma';
-import { EmailVerificationType } from 'prisma/zod/schemas/models/EmailVerification.schema';
+import type { EmailVerificationType } from 'prisma/zod/schemas/models/EmailVerification.schema';
 import type { Mock } from 'vitest';
 
 import { hashVerificationToken } from '@/lib/verificationToken';

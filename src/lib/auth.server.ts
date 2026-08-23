@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 
 import { auth } from '@/lib/auth';
 import { AuthError } from '@/lib/errors';
-import { AuthRole, AuthUserSummary } from '@/types/AuthUser';
+import type { AuthRole, AuthUserSummary } from '@/types/AuthUser';
 
 const MOCK_AUTH_COOKIE = 'mock-auth-state';
 const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';

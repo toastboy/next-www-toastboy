@@ -1,4 +1,4 @@
-import { Props } from '../PlayerProfile';
+import type { Props } from '../PlayerProfile';
 
 export const PlayerProfile = ({
     onSendEmail: _onSendEmail,

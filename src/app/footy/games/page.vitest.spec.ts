@@ -1,3 +1,4 @@
+import type * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -14,7 +15,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('react', async () => {
-    const actual = await vi.importActual<typeof import('react')>('react');
+    const actual = await vi.importActual<typeof React>('react');
     return { ...actual, cache: (fn: unknown) => fn };
 });
 

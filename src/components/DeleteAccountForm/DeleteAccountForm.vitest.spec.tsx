@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import { DeleteAccountForm } from '@/components/DeleteAccountForm/DeleteAccountForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
+import type { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
 
 describe('DeleteAccountForm', () => {
     const mockDeletePlayer: DeletePlayerProxy = vi

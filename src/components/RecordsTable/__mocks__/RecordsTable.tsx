@@ -1,4 +1,4 @@
-import { Props } from '../RecordsTable';
+import type { Props } from '../RecordsTable';
 
 export const RecordsTable = (props: Props) => (
     <div>RecordsTable: {JSON.stringify(props)}</div>

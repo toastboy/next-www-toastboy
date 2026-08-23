@@ -3,7 +3,7 @@
 import { Text, Title } from '@mantine/core';
 
 import { PlayerCountryMap } from '@/components/PlayerCountryMap/PlayerCountryMap';
-import { CountrySupporterWithPlayerDataType } from '@/types';
+import type { CountrySupporterWithPlayerDataType } from '@/types';
 
 export interface Props {
     countries: CountrySupporterWithPlayerDataType[];

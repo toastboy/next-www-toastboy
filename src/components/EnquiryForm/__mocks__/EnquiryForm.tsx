@@ -1,4 +1,4 @@
-import { Props } from '../EnquiryForm';
+import type { Props } from '../EnquiryForm';
 
 export const EnquiryForm = (props: Props) => (
     <div>EnquiryForm: {JSON.stringify(props)}</div>

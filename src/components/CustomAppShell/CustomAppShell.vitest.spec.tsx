@@ -1,6 +1,8 @@
+import type * as MantineCore from '@mantine/core';
 import { Text } from '@mantine/core';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { usePathname } from 'next/navigation';
+import type * as React from 'react';
 import type { ReactNode } from 'react';
 import { vi } from 'vitest';
 
@@ -18,7 +20,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@mantine/core', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@mantine/core')>();
+    const actual = await importOriginal<typeof MantineCore>();
 
     const AppShell = Object.assign(
         ({

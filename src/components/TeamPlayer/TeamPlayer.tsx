@@ -6,7 +6,7 @@ import { GoalieIndicator } from '@/components/GoalieIndicator/GoalieIndicator';
 import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
-import { TeamPlayerType } from '@/types';
+import type { TeamPlayerType } from '@/types';
 
 export interface Props {
     teamPlayer: TeamPlayerType;

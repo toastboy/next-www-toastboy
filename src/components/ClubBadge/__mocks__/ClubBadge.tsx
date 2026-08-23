@@ -1,4 +1,4 @@
-import { Props } from '../ClubBadge';
+import type { Props } from '../ClubBadge';
 
 export const ClubBadge = (props: Props) => (
     <div>ClubBadge: {JSON.stringify(props)}</div>

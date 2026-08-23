@@ -30,8 +30,8 @@ import { PlayerResponse } from 'prisma/generated/enums';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { config } from '@/lib/config';
-import { SubmitResponseProxy } from '@/types/actions/SubmitResponse';
-import { OutcomePlayerType } from '@/types/OutcomePlayerType';
+import type { SubmitResponseProxy } from '@/types/actions/SubmitResponse';
+import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
 interface ResponsesFormProps {
     gameId: number;

@@ -1,4 +1,4 @@
-import { APIRequestContext } from '@playwright/test';
+import type { APIRequestContext } from '@playwright/test';
 
 const MAILPIT_URL = 'http://localhost:8025';
 

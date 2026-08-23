@@ -1,4 +1,4 @@
-import { PlayerRecordDataType } from '@/types';
+import type { PlayerRecordDataType } from '@/types';
 
 import { defaultPlayer, defaultPlayerList } from './player';
 import { defaultPlayerRecord } from './playerRecord';

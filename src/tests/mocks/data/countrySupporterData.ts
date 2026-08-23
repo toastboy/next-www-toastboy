@@ -1,4 +1,4 @@
-import { CountrySupporterDataType } from '@/types';
+import type { CountrySupporterDataType } from '@/types';
 
 import { defaultCountry, defaultCountryList } from './country';
 

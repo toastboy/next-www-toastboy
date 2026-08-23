@@ -1,8 +1,8 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
+import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
@@ -11,7 +11,7 @@ import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { defaultOutcome } from '@/tests/mocks/data/outcome';
 import { defaultPlayer, invalidPlayer } from '@/tests/mocks/data/player';
 import { createMockPlayerLastResult } from '@/tests/mocks/data/playerRecord';
-import { PlayerFormType } from '@/types';
+import type { PlayerFormType } from '@/types';
 import type { PlayerCreateWriteInput } from '@/types/PlayerStrictSchema';
 
 describe('PlayerService', () => {

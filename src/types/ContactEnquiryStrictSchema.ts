@@ -1,4 +1,4 @@
-import { Prisma } from 'prisma/generated/client';
+import type { Prisma } from 'prisma/generated/client';
 import { ContactEnquiryCreateOneZodSchema } from 'prisma/zod/schemas/createOneContactEnquiry.schema';
 import { ContactEnquiryCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryCreateInput.schema';
 import { ContactEnquiryUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryUncheckedCreateInput.schema';

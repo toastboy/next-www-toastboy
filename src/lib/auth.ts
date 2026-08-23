@@ -9,7 +9,7 @@ import { beforeDeletePlayer } from '@/actions/deletePlayer';
 import { sendEmailCore } from '@/lib/core/sendEmail';
 import { getSecrets } from '@/lib/secrets';
 import { getPublicBaseUrl } from '@/lib/urls';
-import { AuthUserSummary } from '@/types/AuthUser';
+import type { AuthUserSummary } from '@/types/AuthUser';
 
 const secrets = getSecrets();
 

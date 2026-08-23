@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
+import type { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultTeamPlayer } from '@/tests/mocks/data/teamPlayer';

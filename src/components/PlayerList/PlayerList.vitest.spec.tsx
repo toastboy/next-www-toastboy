@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type * as React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PlayerList } from '@/components/PlayerList/PlayerList';
@@ -50,7 +51,7 @@ const renderWithInitialState = async (
 ) => {
     vi.resetModules();
     vi.doMock('react', async () => {
-        const actual = await vi.importActual<typeof import('react')>('react');
+        const actual = await vi.importActual<typeof React>('react');
         let stateIndex = 0;
 
         return {

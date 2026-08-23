@@ -1,3 +1,4 @@
+import type * as MantineForm from '@mantine/form';
 import type { useForm as useFormType } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -12,15 +13,15 @@ import {
     createMockGameInvitationResponseDetails,
     defaultGameInvitationResponseDetails,
 } from '@/tests/mocks/data/gameInvitationResponse';
-import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
-import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
+import type { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
+import type { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
 const formMockState = vi.hoisted(() => ({
     submitUndefinedComment: false,
 }));
 
 vi.mock('@mantine/form', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@mantine/form')>();
+    const actual = await importOriginal<typeof MantineForm>();
 
     return {
         ...actual,

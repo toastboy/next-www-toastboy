@@ -58,13 +58,21 @@ test.describe('EnquiryForm', () => {
         // through to a native form GET submission, navigating the page.
         await fillWhenHydrated(nameInput, 'hydration probe');
         await nameInput.fill('');
-        const submitButton = page.getByRole('button', { name: 'Send message' });
 
+        // Blur and wait for the resulting validation error to render before
+        // clicking submit. Leaving the field focused means clicking "Send
+        // message" blurs it first, and the error text Mantine inserts above
+        // the button shifts the button down mid-click - the mouseup (at
+        // coordinates fixed when the click started) then misses the button,
+        // so the browser never fires a real click on it and the form never
+        // submits, leaving only this field's blur-triggered error visible.
+        await nameInput.blur();
+        await expect(page.getByText('Name is required')).toBeVisible();
+
+        const submitButton = page.getByRole('button', { name: 'Send message' });
         await submitButton.scrollIntoViewIfNeeded();
 
         await submitButton.click();
-        await submitButton.scrollIntoViewIfNeeded();
-        await expect(page.getByText('Name is required')).toBeVisible();
         await expect(page.getByText('Invalid email')).toBeVisible();
         await expect(page.getByText('Message is required')).toBeVisible();
     });

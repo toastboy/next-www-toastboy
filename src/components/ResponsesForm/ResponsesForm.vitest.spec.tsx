@@ -335,6 +335,41 @@ describe('Responses', () => {
         ).toBeInTheDocument();
     });
 
+    it('does not clear a response when the already-selected option is clicked again', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={defaultResponsesAdminData}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /^Yes:\s*1$/ }));
+        const row = within(
+            screen.getByRole('region', { name: 'Yes' }),
+        ).getByRole('group', { name: 'Alex Keeper' });
+
+        const select = within(row).getByRole<HTMLInputElement>('combobox', {
+            name: /response/i,
+        });
+        expect(select).toHaveValue('Yes');
+
+        await user.click(select);
+        await user.click(
+            await screen.findByRole('option', { name: 'Yes', hidden: true }),
+        );
+
+        expect(select).toHaveValue('Yes');
+        expect(
+            within(row).getByRole('button', { name: 'Update' }),
+        ).toBeDisabled();
+    });
+
     it('updates a player response and calls onSave', async () => {
         const user = userEvent.setup();
 

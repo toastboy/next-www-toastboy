@@ -311,6 +311,7 @@ export const ResponsesForm = ({
                                     </Text>
                                     <Select
                                         aria-label="Response"
+                                        allowDeselect={false}
                                         data={Object.values(PlayerResponse).map(
                                             (option) => ({
                                                 value: option,

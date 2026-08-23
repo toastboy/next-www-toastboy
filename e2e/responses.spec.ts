@@ -88,11 +88,6 @@ test.describe('Responses admin page', () => {
                 name: /response/i,
             });
 
-            // Shared fixture data means the target player's response may already match
-            // (e.g. carried over from an earlier project in the same suite run); re-selecting
-            // an already-selected option is unreliable, so skip the interaction entirely.
-            if ((await combobox.inputValue()) === response) return;
-
             // The SSE-triggered refresh (see the comment in updatePlayer below) can land
             // mid-interaction and remount the row, closing the dropdown before the option
             // is clicked. Retry the open-then-select sequence rather than failing outright.

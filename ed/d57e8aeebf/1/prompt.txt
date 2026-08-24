@@ -1,0 +1,18 @@
+I'm now working on SYS-447. I think this is a case for using branch protection rules or pre-commit hooks in git, right? There's no detail in the ticket but basically I'm in the habit of using a comment starting with '&&&&' to indicate code that's intended for local development only and not to be committed.
+
+---
+
+Tell me more about husky
+
+---
+
+Looks like the hook is preventing its own commit!
+
+
+> git -c user.useConfigOnly=true commit --quiet --allow-empty-message --file - -S
+husky - pre-commit script failed (code 1)
+
+---
+
+> git -c user.useConfigOnly=true commit --quiet --allow-empty-message --file - -S
+husky - pre-commit script failed (code 1)

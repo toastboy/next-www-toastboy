@@ -54,7 +54,7 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@azure/identity": "^4.13.1",
+        "@azure/identity": "^4.13.2",
         "@azure/storage-blob": "^12.33.0",
         "@eslint/eslintrc": "^3.3.6",
         "@mantine/code-highlight": "^9.5.1",

@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "a014acab76d7",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/services/PlayerRecord/PlayerRecord.vitest.spec.ts",
+    "src/tests/services/data/PlayerRecord.test.json",
+    "src/tests/shared/fixtures.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a0/14acab76d7/0/metadata.json",
+      "transcript": "/a0/14acab76d7/0/full.jsonl",
+      "compact_transcript": "/a0/14acab76d7/0/transcript.jsonl",
+      "content_hash": "/a0/14acab76d7/0/content_hash.txt",
+      "prompt": "/a0/14acab76d7/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 118,
+    "cache_creation_tokens": 128941,
+    "cache_read_tokens": 5527058,
+    "output_tokens": 22901,
+    "api_call_count": 59
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "edd57e8aeebf",
+  "session_id": "8b399f44-184e-4f19-8262-3548773f8472",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-24T12:58:37.622887Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "package-lock.json"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "fab3f1d2961d",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 142,
+    "cache_creation_tokens": 163682,
+    "cache_read_tokens": 6186202,
+    "output_tokens": 25952,
+    "api_call_count": 71
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01RT6HLPouwVMccbyA7QjcFS",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "fab3f1d2961d",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 52,
+        "end": 53,
+        "entry_ids": [
+          "8fe20dea-f9a2-4465-968f-d600e97a8900"
+        ],
+        "tool_use_id": "toolu_01RT6HLPouwVMccbyA7QjcFS"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01RT6HLPouwVMccbyA7QjcFS"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01SUXvCk3nPJV8yaTVk1D6ss",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "fab3f1d2961d",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 291,
+        "end": 292,
+        "entry_ids": [
+          "267aa7a4-7b20-4724-a6a2-3e864f473ce8"
+        ],
+        "tool_use_id": "toolu_01SUXvCk3nPJV8yaTVk1D6ss"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01SUXvCk3nPJV8yaTVk1D6ss"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-24T12:58:37.595732Z",
+    "agent_lines": 17,
+    "agent_removed": 0,
+    "human_added": 2,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 19,
+    "total_lines_changed": 19,
+    "agent_percentage": 89.47368421052632,
+    "metric_version": 2
+  }
+}

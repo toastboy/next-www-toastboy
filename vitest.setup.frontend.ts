@@ -131,53 +131,6 @@ vi.mock('next/cache', () => ({
     revalidateTag: vi.fn(),
 }));
 
-// TODO: Now we have dependency injection for actions, we can remove these
-// mocks, I think
-
-vi.mock('@/actions/sendEmail', () => ({
-    sendEmail: vi.fn().mockResolvedValue(undefined),
-}));
-
-vi.mock('@/actions/sendEnquiry', () => ({
-    sendEnquiry: vi.fn(),
-}));
-
-vi.mock('@/actions/auth-export', () => ({
-    authExport: vi.fn().mockResolvedValue(undefined),
-}));
-
-vi.mock('@/actions/submitGameInvitationResponse', () => ({
-    submitGameInvitationResponse: vi.fn(),
-}));
-
-vi.mock('@/actions/deletePlayer', () => ({
-    deletePlayer: vi.fn(),
-}));
-
-vi.mock('@/actions/triggerInvitations', () => ({
-    triggerInvitations: vi.fn(),
-}));
-
-vi.mock('@/actions/createMoreGameDays', () => ({
-    createMoreGameDays: vi.fn(),
-}));
-
-vi.mock('@/actions/createPlayer', () => ({
-    createPlayer: vi.fn(),
-}));
-
-vi.mock('@/actions/verifyEmail', () => ({
-    sendEmailVerification: vi.fn(),
-}));
-
-vi.mock('@/actions/updatePlayer', () => ({
-    updatePlayer: vi.fn(),
-}));
-
-vi.mock('@/actions/updatePlayerRecords', () => ({
-    updatePlayerRecords: vi.fn().mockResolvedValue(undefined),
-}));
-
 const mockMatchMedia = (query: string) => ({
     matches: false,
     media: query,

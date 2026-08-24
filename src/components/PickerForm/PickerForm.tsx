@@ -429,7 +429,6 @@ export const PickerForm = ({
         </>
     );
 
-    // TODO: New game date component?
     return (
         <Container
             size="lg"

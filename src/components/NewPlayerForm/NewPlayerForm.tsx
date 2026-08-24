@@ -5,7 +5,6 @@ import {
     Box,
     Button,
     Container,
-    Divider,
     Flex,
     MantineProvider,
     Paper,
@@ -214,8 +213,6 @@ export const NewPlayerForm = ({
                         >
                             New Player
                         </Title>
-                        {/* TODO: Do I want these dividers? They look a bit weird in the middle of a form, but they do help separate the title from the form. */}
-                        <Divider mb="xs" />
                     </Stack>
 
                     <Box

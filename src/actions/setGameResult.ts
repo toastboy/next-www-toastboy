@@ -23,9 +23,6 @@ import { FootyChannel } from '@/types/FootyChannel';
 export async function setGameResult(rawData: unknown) {
     await requireAdmin();
 
-    // TODO: Isn't this always going to be fed by a form, and thus always be a
-    // FormData object? If so, we should probably be parsing it as such, and
-    // validating the form data instead of the raw data.
     const data = SetGameResultInputSchema.parse(rawData);
     const gameDay = await setGameResultCore(data);
 

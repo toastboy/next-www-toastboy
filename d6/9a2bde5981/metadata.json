@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "d69a2bde5981",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/NewPlayerForm/NewPlayerForm.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "vitest.setup.frontend.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d6/9a2bde5981/0/metadata.json",
+      "transcript": "/d6/9a2bde5981/0/full.jsonl",
+      "compact_transcript": "/d6/9a2bde5981/0/transcript.jsonl",
+      "content_hash": "/d6/9a2bde5981/0/content_hash.txt",
+      "prompt": "/d6/9a2bde5981/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 34741,
+    "cache_read_tokens": 659144,
+    "output_tokens": 3051,
+    "api_call_count": 12
+  }
+}

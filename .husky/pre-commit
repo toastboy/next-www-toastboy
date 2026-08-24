@@ -1,0 +1,26 @@
+marker='&&&&'
+
+# Excludes its own path: this script's source necessarily contains the
+# marker literal, so scanning itself would always self-match.
+pathspec=':!.husky/pre-commit'
+
+if [ -z "$(git diff --cached --name-only --diff-filter=ACM -- "$pathspec")" ]; then
+    exit 0
+fi
+
+# Piped straight into xargs rather than captured into a variable: command
+# substitution silently strips NUL bytes, which would collapse the -z
+# (NUL-delimited) file list into one run-on, unusable string.
+# `|| true` is required: husky runs this script with `sh -e`, and git grep
+# exits 1 for "no match" (not an error) — without it, the normal no-marker
+# case would abort the script under errexit before the check below runs.
+matches=$(git diff --cached --name-only --diff-filter=ACM -z -- "$pathspec" \
+    | xargs -0 git grep -n --cached -F -- "$marker" -- 2>/dev/null || true)
+
+if [ -n "$matches" ]; then
+    echo "error: commit blocked — staged changes contain the '$marker' local-only marker:" >&2
+    echo "$matches" >&2
+    echo "" >&2
+    echo "Remove the marked code (or the marker) before committing." >&2
+    exit 1
+fi

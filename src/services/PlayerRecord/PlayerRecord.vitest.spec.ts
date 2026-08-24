@@ -2,8 +2,10 @@ import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import { PlayerRecordSchema } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
+import { z } from 'zod';
 
 import { InternalError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
@@ -424,8 +426,9 @@ describe('PlayerRecordService', () => {
                 },
             ]);
 
-            const defaultPlayerRecordList = loadJsonFixture<PlayerRecordType[]>(
+            const defaultPlayerRecordList = loadJsonFixture(
                 'services/data/PlayerRecord.test.json',
+                z.array(PlayerRecordSchema),
             );
 
             (prisma.playerRecord.findMany as Mock).mockImplementation(() => {
@@ -483,8 +486,9 @@ describe('PlayerRecordService', () => {
 
     describe('getTable', () => {
         beforeEach(() => {
-            const defaultPlayerRecordList = loadJsonFixture<PlayerRecordType[]>(
+            const defaultPlayerRecordList = loadJsonFixture(
                 'services/data/PlayerRecord.test.json',
+                z.array(PlayerRecordSchema),
             );
 
             (prisma.playerRecord.findMany as Mock).mockImplementation(
@@ -565,8 +569,9 @@ describe('PlayerRecordService', () => {
 
     describe('getTable qualified/unqualified averages', () => {
         beforeEach(() => {
-            const defaultPlayerRecordList = loadJsonFixture<PlayerRecordType[]>(
+            const defaultPlayerRecordList = loadJsonFixture(
                 'services/data/PlayerRecord.test.json',
+                z.array(PlayerRecordSchema),
             );
 
             (prisma.playerRecord.findMany as Mock).mockImplementation(
@@ -624,8 +629,9 @@ describe('PlayerRecordService', () => {
 
     describe('getTable qualified/unqualified speedy', () => {
         beforeEach(() => {
-            const defaultPlayerRecordList = loadJsonFixture<PlayerRecordType[]>(
+            const defaultPlayerRecordList = loadJsonFixture(
                 'services/data/PlayerRecord.test.json',
+                z.array(PlayerRecordSchema),
             );
 
             (prisma.playerRecord.findMany as Mock).mockImplementation(

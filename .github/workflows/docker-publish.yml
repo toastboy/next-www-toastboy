@@ -67,7 +67,7 @@ jobs:
 
             - name: Extract metadata for app image
               id: meta-app
-              uses: docker/metadata-action@v5
+              uses: docker/metadata-action@v6
               with:
                   images: ${{ env.RUNNER_IMAGE }}
 
@@ -106,7 +106,7 @@ jobs:
                   touch "/tmp/digests/${digest#sha256:}"
 
             - name: Upload digest
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v6
               with:
                   name: digests-app-${{ env.PLATFORM_PAIR }}
                   path: /tmp/digests/*
@@ -144,7 +144,7 @@ jobs:
 
             - name: Extract metadata for seeder image
               id: meta-seeder
-              uses: docker/metadata-action@v5
+              uses: docker/metadata-action@v6
               with:
                   images: ${{ env.SEEDER_IMAGE }}
 
@@ -165,7 +165,7 @@ jobs:
                   touch "/tmp/digests/${digest#sha256:}"
 
             - name: Upload digest
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v6
               with:
                   name: digests-seeder-${{ env.PLATFORM_PAIR }}
                   path: /tmp/digests/*
@@ -181,7 +181,7 @@ jobs:
             packages: write
         steps:
             - name: Download digests
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v7
               with:
                   path: /tmp/digests
                   pattern: digests-app-*
@@ -199,7 +199,7 @@ jobs:
 
             - name: Extract metadata for app image
               id: meta-app
-              uses: docker/metadata-action@v5
+              uses: docker/metadata-action@v6
               with:
                   images: ${{ env.RUNNER_IMAGE }}
 
@@ -222,7 +222,7 @@ jobs:
             packages: write
         steps:
             - name: Download digests
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v7
               with:
                   path: /tmp/digests
                   pattern: digests-seeder-*
@@ -240,7 +240,7 @@ jobs:
 
             - name: Extract metadata for seeder image
               id: meta-seeder
-              uses: docker/metadata-action@v5
+              uses: docker/metadata-action@v6
               with:
                   images: ${{ env.SEEDER_IMAGE }}
 

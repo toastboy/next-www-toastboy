@@ -89,8 +89,6 @@ COPY --from=builder /prisma.config.ts ./prisma.config.ts
 COPY --from=builder /sentry.edge.config.ts ./sentry.edge.config.ts
 COPY --from=builder /sentry.server.config.ts ./sentry.server.config.ts
 
-RUN npx prisma generate
-
 RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs \
     && chown -R nextjs:nextjs /app
 

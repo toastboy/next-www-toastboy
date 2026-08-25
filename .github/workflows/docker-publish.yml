@@ -11,9 +11,13 @@ env:
     SEEDER_IMAGE: ghcr.io/${{ github.repository_owner }}/next-www-toastboy-seeder
 
 jobs:
-    publish:
+    build-app:
         timeout-minutes: 30
-        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                platform: [linux/amd64, linux/arm64]
+        runs-on: ${{ matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
         permissions:
             contents: read
             packages: write
@@ -21,9 +25,14 @@ jobs:
         steps:
             - uses: actions/checkout@v7
 
-            # Only the builder stage needs these - Next.js embeds NEXT_PUBLIC_*
+            - name: Prepare platform pair
+              run: |
+                  platform=${{ matrix.platform }}
+                  echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
+
+            # Only this stage needs these - Next.js embeds NEXT_PUBLIC_*
             # into the client bundle and the Sentry plugin uploads source maps
-            # at build time. The final runner stage never inherits them (see
+            # at build time. The final runner image never inherits them (see
             # src/lib/secrets.ts's isBuildTimeCollection check), so none of
             # this ends up baked into the pushed image.
             - name: Load secrets from 1Password
@@ -53,9 +62,6 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Set up QEMU
-              uses: docker/setup-qemu-action@v4
-
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v4
 
@@ -65,15 +71,15 @@ jobs:
               with:
                   images: ${{ env.RUNNER_IMAGE }}
 
-            - name: Build and push app image
+            - name: Build and push app image by digest
+              id: build-app
               uses: docker/build-push-action@v7
               with:
                   context: .
-                  push: true
                   target: runner
-                  tags: ${{ steps.meta-app.outputs.tags }}
                   labels: ${{ steps.meta-app.outputs.labels }}
-                  platforms: linux/amd64,linux/arm64
+                  platforms: ${{ matrix.platform }}
+                  outputs: type=image,name=${{ env.RUNNER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
                   build-args: |
                       DATABASE_URL=${{ env.DATABASE_URL }}
                       AZURE_TENANT_ID=${{ env.AZURE_TENANT_ID }}
@@ -93,18 +99,157 @@ jobs:
                       MAIL_GRAPH_CLIENT_ID=${{ env.MAIL_GRAPH_CLIENT_ID }}
                       MAIL_GRAPH_CLIENT_SECRET=${{ env.MAIL_GRAPH_CLIENT_SECRET }}
 
+            - name: Export digest
+              run: |
+                  mkdir -p /tmp/digests
+                  digest="${{ steps.build-app.outputs.digest }}"
+                  touch "/tmp/digests/${digest#sha256:}"
+
+            - name: Upload digest
+              uses: actions/upload-artifact@v4
+              with:
+                  name: digests-app-${{ env.PLATFORM_PAIR }}
+                  path: /tmp/digests/*
+                  if-no-files-found: error
+                  retention-days: 1
+
+    build-seeder:
+        timeout-minutes: 30
+        strategy:
+            fail-fast: false
+            matrix:
+                platform: [linux/amd64, linux/arm64]
+        runs-on: ${{ matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Prepare platform pair
+              run: |
+                  platform=${{ matrix.platform }}
+                  echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
+
+            - name: Log in to GHCR
+              uses: docker/login-action@v4.6.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
+
             - name: Extract metadata for seeder image
               id: meta-seeder
               uses: docker/metadata-action@v5
               with:
                   images: ${{ env.SEEDER_IMAGE }}
 
-            - name: Build and push seeder image
+            - name: Build and push seeder image by digest
+              id: build-seeder
               uses: docker/build-push-action@v7
               with:
                   context: .
-                  push: true
                   target: seeder
-                  tags: ${{ steps.meta-seeder.outputs.tags }}
                   labels: ${{ steps.meta-seeder.outputs.labels }}
-                  platforms: linux/amd64,linux/arm64
+                  platforms: ${{ matrix.platform }}
+                  outputs: type=image,name=${{ env.SEEDER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+
+            - name: Export digest
+              run: |
+                  mkdir -p /tmp/digests
+                  digest="${{ steps.build-seeder.outputs.digest }}"
+                  touch "/tmp/digests/${digest#sha256:}"
+
+            - name: Upload digest
+              uses: actions/upload-artifact@v4
+              with:
+                  name: digests-seeder-${{ env.PLATFORM_PAIR }}
+                  path: /tmp/digests/*
+                  if-no-files-found: error
+                  retention-days: 1
+
+    merge-app:
+        timeout-minutes: 10
+        runs-on: ubuntu-24.04
+        needs: [build-app]
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - name: Download digests
+              uses: actions/download-artifact@v4
+              with:
+                  path: /tmp/digests
+                  pattern: digests-app-*
+                  merge-multiple: true
+
+            - name: Log in to GHCR
+              uses: docker/login-action@v4.6.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
+
+            - name: Extract metadata for app image
+              id: meta-app
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.RUNNER_IMAGE }}
+
+            - name: Create manifest list and push
+              working-directory: /tmp/digests
+              run: |
+                  docker buildx imagetools create \
+                    $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+                    $(printf '${{ env.RUNNER_IMAGE }}@sha256:%s ' *)
+
+            - name: Inspect image
+              run: docker buildx imagetools inspect ${{ env.RUNNER_IMAGE }}:${{ steps.meta-app.outputs.version }}
+
+    merge-seeder:
+        timeout-minutes: 10
+        runs-on: ubuntu-24.04
+        needs: [build-seeder]
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - name: Download digests
+              uses: actions/download-artifact@v4
+              with:
+                  path: /tmp/digests
+                  pattern: digests-seeder-*
+                  merge-multiple: true
+
+            - name: Log in to GHCR
+              uses: docker/login-action@v4.6.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
+
+            - name: Extract metadata for seeder image
+              id: meta-seeder
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.SEEDER_IMAGE }}
+
+            - name: Create manifest list and push
+              working-directory: /tmp/digests
+              run: |
+                  docker buildx imagetools create \
+                    $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+                    $(printf '${{ env.SEEDER_IMAGE }}@sha256:%s ' *)
+
+            - name: Inspect image
+              run: docker buildx imagetools inspect ${{ env.SEEDER_IMAGE }}:${{ steps.meta-seeder.outputs.version }}

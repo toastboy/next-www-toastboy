@@ -1,5 +1,4 @@
 # Version control
-.git
 .gitignore
 
 # Node artifacts
@@ -35,6 +34,7 @@ docker
 tmp
 terraform
 scripts
+!scripts/docker
 
 # IDE directories
 .vscode

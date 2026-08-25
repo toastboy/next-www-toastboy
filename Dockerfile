@@ -8,7 +8,7 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
 FROM base AS deps
 RUN apt-get update && \
     # apt-get install -y --no-install-recommends build-essential ca-certificates openssl && \
-    apt-get install -y --no-install-recommends openssl && \
+    apt-get install -y --no-install-recommends openssl git && \
     rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci
@@ -21,6 +21,8 @@ ARG STORAGE_CLIENT_ID
 ARG STORAGE_CLIENT_SECRET
 ARG BETTER_AUTH_SECRET
 ARG BETTER_AUTH_URL
+ARG NEXT_PUBLIC_SITE_URL
+ARG CRON_SECRET
 ARG AUTH_GOOGLE_CLIENT_ID
 ARG AUTH_GOOGLE_CLIENT_SECRET
 ARG AUTH_MICROSOFT_CLIENT_ID
@@ -36,6 +38,8 @@ ENV STORAGE_CLIENT_ID=${STORAGE_CLIENT_ID}
 ENV STORAGE_CLIENT_SECRET=${STORAGE_CLIENT_SECRET}
 ENV BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
 ENV BETTER_AUTH_URL=${BETTER_AUTH_URL}
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+ENV CRON_SECRET=${CRON_SECRET}
 ENV AUTH_GOOGLE_CLIENT_ID=${AUTH_GOOGLE_CLIENT_ID}
 ENV AUTH_GOOGLE_CLIENT_SECRET=${AUTH_GOOGLE_CLIENT_SECRET}
 ENV AUTH_MICROSOFT_CLIENT_ID=${AUTH_MICROSOFT_CLIENT_ID}

@@ -1,6 +1,7 @@
 import 'server-only';
 
 import * as fs from 'fs';
+import { PHASE_PRODUCTION_BUILD } from 'next/constants';
 import * as path from 'path';
 
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
@@ -105,7 +106,20 @@ export function getSecrets(): typeof secrets {
         })
         .map(([key]) => key);
 
-    if (missingSecrets.length > 0 && process.env.NODE_ENV !== 'test') {
+    // No route is statically prerendered (see docs/ontology.yaml / CLAUDE.md
+    // architecture notes - everything is server-rendered on demand), so
+    // secrets are only genuinely needed once a request comes in at runtime.
+    // Next.js still imports route modules during `next build` to collect
+    // their static config, which would otherwise trip this check for any
+    // module that reads secrets at import time rather than per-request.
+    const isBuildTimeCollection =
+        process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
+
+    if (
+        missingSecrets.length > 0 &&
+        process.env.NODE_ENV !== 'test' &&
+        !isBuildTimeCollection
+    ) {
         throw new InternalError('Missing required secrets.', {
             details: {
                 missingSecrets,

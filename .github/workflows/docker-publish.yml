@@ -1,0 +1,108 @@
+name: Publish Docker images
+
+on:
+    push:
+        branches: ["*"]
+        tags: ["*"]
+    workflow_dispatch:
+
+env:
+    RUNNER_IMAGE: ghcr.io/${{ github.repository_owner }}/next-www-toastboy
+    SEEDER_IMAGE: ghcr.io/${{ github.repository_owner }}/next-www-toastboy-seeder
+
+jobs:
+    publish:
+        timeout-minutes: 30
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - uses: actions/checkout@v7
+
+            # Only the builder stage needs these - Next.js embeds NEXT_PUBLIC_*
+            # into the client bundle and the Sentry plugin uploads source maps
+            # at build time. The final runner stage never inherits them (see
+            # src/lib/secrets.ts's isBuildTimeCollection check), so none of
+            # this ends up baked into the pushed image.
+            - name: Load secrets from 1Password
+              uses: 1password/load-secrets-action@v5
+              with:
+                  export-env: true
+              env:
+                  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+                  DATABASE_URL: "op://next-www-toastboy/Database - next-www-toastboy/prisma url"
+                  AZURE_TENANT_ID: "op://next-www-toastboy/Terraform/tenant id"
+                  STORAGE_CLIENT_ID: "op://next-www-toastboy/App - Storage/username"
+                  STORAGE_CLIENT_SECRET: "op://next-www-toastboy/App - Storage/credential"
+                  BETTER_AUTH_SECRET: "op://next-www-toastboy/Better Auth/credential"
+                  AUTH_GOOGLE_CLIENT_ID: "op://next-www-toastboy/Auth - Google/username"
+                  AUTH_GOOGLE_CLIENT_SECRET: "op://next-www-toastboy/Auth - Google/credential"
+                  AUTH_MICROSOFT_CLIENT_ID: "op://next-www-toastboy/App - Auth/username"
+                  AUTH_MICROSOFT_CLIENT_SECRET: "op://next-www-toastboy/App - Auth/credential"
+                  CRON_SECRET: "op://next-www-toastboy/Cron/credential"
+                  SENTRY_AUTH_TOKEN: "op://next-www-toastboy/Sentry/credential"
+                  MAIL_GRAPH_CLIENT_ID: "op://next-www-toastboy/App - Mail/username"
+                  MAIL_GRAPH_CLIENT_SECRET: "op://next-www-toastboy/App - Mail/credential"
+
+            - name: Log in to GHCR
+              uses: docker/login-action@v4.6.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
+
+            - name: Extract metadata for app image
+              id: meta-app
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.RUNNER_IMAGE }}
+
+            - name: Build and push app image
+              uses: docker/build-push-action@v7
+              with:
+                  push: true
+                  target: runner
+                  tags: ${{ steps.meta-app.outputs.tags }}
+                  labels: ${{ steps.meta-app.outputs.labels }}
+                  platforms: linux/amd64,linux/arm64
+                  build-args: |
+                      DATABASE_URL=${{ env.DATABASE_URL }}
+                      AZURE_TENANT_ID=${{ env.AZURE_TENANT_ID }}
+                      STORAGE_CLIENT_ID=${{ env.STORAGE_CLIENT_ID }}
+                      STORAGE_CLIENT_SECRET=${{ env.STORAGE_CLIENT_SECRET }}
+                      BETTER_AUTH_SECRET=${{ env.BETTER_AUTH_SECRET }}
+                      BETTER_AUTH_URL=https://www.toastboy.co.uk
+                      NEXT_PUBLIC_SITE_URL=https://www.toastboy.co.uk
+                      CRON_SECRET=${{ env.CRON_SECRET }}
+                      AUTH_GOOGLE_CLIENT_ID=${{ env.AUTH_GOOGLE_CLIENT_ID }}
+                      AUTH_GOOGLE_CLIENT_SECRET=${{ env.AUTH_GOOGLE_CLIENT_SECRET }}
+                      AUTH_MICROSOFT_CLIENT_ID=${{ env.AUTH_MICROSOFT_CLIENT_ID }}
+                      AUTH_MICROSOFT_CLIENT_SECRET=${{ env.AUTH_MICROSOFT_CLIENT_SECRET }}
+                      SENTRY_AUTH_TOKEN=${{ env.SENTRY_AUTH_TOKEN }}
+                      MAIL_FROM_ADDRESS=footy@toastboy.co.uk
+                      MAIL_FROM_NAME=Toastboy FC Mailer
+                      MAIL_GRAPH_CLIENT_ID=${{ env.MAIL_GRAPH_CLIENT_ID }}
+                      MAIL_GRAPH_CLIENT_SECRET=${{ env.MAIL_GRAPH_CLIENT_SECRET }}
+
+            - name: Extract metadata for seeder image
+              id: meta-seeder
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.SEEDER_IMAGE }}
+
+            - name: Build and push seeder image
+              uses: docker/build-push-action@v7
+              with:
+                  push: true
+                  target: seeder
+                  tags: ${{ steps.meta-seeder.outputs.tags }}
+                  labels: ${{ steps.meta-seeder.outputs.labels }}
+                  platforms: linux/amd64,linux/arm64

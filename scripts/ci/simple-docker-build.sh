@@ -5,6 +5,8 @@ docker buildx build \
     --build-arg AZURE_TENANT_ID=${AZURE_TENANT_ID} \
     --build-arg BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET} \
     --build-arg BETTER_AUTH_URL=${BETTER_AUTH_URL} \
+    --build-arg NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL} \
+    --build-arg CRON_SECRET=${CRON_SECRET} \
     --build-arg AUTH_GOOGLE_CLIENT_ID=${AUTH_GOOGLE_CLIENT_ID} \
     --build-arg AUTH_GOOGLE_CLIENT_SECRET=${AUTH_GOOGLE_CLIENT_SECRET} \
     --build-arg AUTH_MICROSOFT_CLIENT_ID=${AUTH_MICROSOFT_CLIENT_ID} \

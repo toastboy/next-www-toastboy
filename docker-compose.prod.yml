@@ -18,9 +18,7 @@ services:
       retries: 5
 
   seeder:
-    build:
-      context: .
-      target: seeder
+    image: ghcr.io/toastboy/next-www-toastboy-seeder:main
     depends_on:
       db:
         condition: service_healthy
@@ -33,7 +31,7 @@ services:
       - seed
 
   nodeapp:
-    image: next-www-toastboy:latest
+    image: ghcr.io/toastboy/next-www-toastboy:main
     restart: always
     ports:
       - "3000:3000"
@@ -58,14 +56,12 @@ services:
       - AZURE_TENANT_ID
       - STORAGE_CLIENT_SECRET
       - BETTER_AUTH_SECRET
-      - BETTER_AUTH_URL
       - AUTH_GOOGLE_CLIENT_ID
       - AUTH_GOOGLE_CLIENT_SECRET
       - AUTH_MICROSOFT_CLIENT_ID
       - AUTH_MICROSOFT_CLIENT_SECRET
+      - CRON_SECRET
       - SENTRY_AUTH_TOKEN
-      - MAIL_FROM_ADDRESS
-      - MAIL_FROM_NAME
       - MAIL_GRAPH_CLIENT_ID
       - MAIL_GRAPH_CLIENT_SECRET
 
@@ -78,8 +74,6 @@ secrets:
     environment: STORAGE_CLIENT_SECRET
   BETTER_AUTH_SECRET:
     environment: BETTER_AUTH_SECRET
-  BETTER_AUTH_URL:
-    environment: BETTER_AUTH_URL
   AUTH_GOOGLE_CLIENT_ID:
     environment: AUTH_GOOGLE_CLIENT_ID
   AUTH_GOOGLE_CLIENT_SECRET:
@@ -88,12 +82,10 @@ secrets:
     environment: AUTH_MICROSOFT_CLIENT_ID
   AUTH_MICROSOFT_CLIENT_SECRET:
     environment: AUTH_MICROSOFT_CLIENT_SECRET
+  CRON_SECRET:
+    environment: CRON_SECRET
   SENTRY_AUTH_TOKEN:
     environment: SENTRY_AUTH_TOKEN
-  MAIL_FROM_ADDRESS:
-    environment: MAIL_FROM_ADDRESS
-  MAIL_FROM_NAME:
-    environment: MAIL_FROM_NAME
   MAIL_GRAPH_CLIENT_ID:
     environment: MAIL_GRAPH_CLIENT_ID
   MAIL_GRAPH_CLIENT_SECRET:

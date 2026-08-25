@@ -8,7 +8,7 @@ import prisma from 'prisma/prisma';
 import { beforeDeletePlayer } from '@/actions/deletePlayer';
 import { sendEmailCore } from '@/lib/core/sendEmail';
 import { getSecrets } from '@/lib/secrets';
-import { getPublicBaseUrl } from '@/lib/urls';
+import { getPublicBaseUrl, getTrustedOrigins } from '@/lib/urls';
 import type { AuthUserSummary } from '@/types/AuthUser';
 
 const secrets = getSecrets();
@@ -48,6 +48,7 @@ interface EmailVerificationContext {
 
 export const auth = betterAuth({
     baseURL: getPublicBaseUrl(),
+    trustedOrigins: getTrustedOrigins(),
     secret: secrets.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
         provider: 'mysql',

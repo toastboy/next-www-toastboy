@@ -86,8 +86,6 @@ jobs:
                       STORAGE_CLIENT_ID=${{ env.STORAGE_CLIENT_ID }}
                       STORAGE_CLIENT_SECRET=${{ env.STORAGE_CLIENT_SECRET }}
                       BETTER_AUTH_SECRET=${{ env.BETTER_AUTH_SECRET }}
-                      BETTER_AUTH_URL=https://www.toastboy.co.uk
-                      NEXT_PUBLIC_SITE_URL=https://www.toastboy.co.uk
                       CRON_SECRET=${{ env.CRON_SECRET }}
                       AUTH_GOOGLE_CLIENT_ID=${{ env.AUTH_GOOGLE_CLIENT_ID }}
                       AUTH_GOOGLE_CLIENT_SECRET=${{ env.AUTH_GOOGLE_CLIENT_SECRET }}

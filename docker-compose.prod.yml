@@ -51,6 +51,12 @@ services:
     environment:
       DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=10&pool_timeout=20&connect_timeout=10"
       SECRETS_DIR: /run/secrets
+      # Both read at runtime (not baked into the image), so the same image
+      # works unmodified for local testing (leave unset - falls back to
+      # http://localhost:3000) and for every stage of the production domain
+      # migration (set to the current canonical origin(s), no rebuild needed).
+      SITE_URL: ${SITE_URL:-}
+      TRUSTED_ORIGINS: ${TRUSTED_ORIGINS:-}
     secrets:
       - STORAGE_CLIENT_ID
       - AZURE_TENANT_ID

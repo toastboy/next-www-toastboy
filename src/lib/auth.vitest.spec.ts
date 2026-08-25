@@ -9,6 +9,7 @@ const {
     beforeDeletePlayerMock,
     getSecretsMock,
     getPublicBaseUrlMock,
+    getTrustedOriginsMock,
 } = vi.hoisted(() => ({
     sendEmailCoreMock: vi.fn().mockResolvedValue(undefined),
     beforeDeletePlayerMock: vi.fn().mockResolvedValue(undefined),
@@ -21,6 +22,7 @@ const {
         AZURE_TENANT_ID: 'tenant-id',
     }),
     getPublicBaseUrlMock: vi.fn().mockReturnValue('https://example.test'),
+    getTrustedOriginsMock: vi.fn().mockReturnValue(['http://localhost:3000']),
 }));
 
 vi.mock('better-auth', () => ({
@@ -64,6 +66,7 @@ vi.mock('@/lib/secrets', () => ({
 
 vi.mock('@/lib/urls', () => ({
     getPublicBaseUrl: getPublicBaseUrlMock,
+    getTrustedOrigins: getTrustedOriginsMock,
 }));
 
 // Trigger module load so betterAuth is called and config is captured.

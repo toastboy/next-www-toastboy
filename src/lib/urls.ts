@@ -41,3 +41,23 @@ export function getPublicBaseUrl(): string {
 
     return 'http://localhost:3000';
 }
+
+/**
+ * Returns the origins Better Auth should trust for CORS/CSRF checks, in
+ * addition to baseURL (which Better Auth trusts implicitly).
+ *
+ * Reads TRUSTED_ORIGINS (comma-separated, server-only, read at runtime — not
+ * baked in at build time), so the allow-list can change per deployment (e.g.
+ * widened while a new domain shadows the old one) without rebuilding the
+ * image. Defaults to localhost:3000 only, for local testing, when unset —
+ * real deployments are expected to set TRUSTED_ORIGINS explicitly.
+ */
+export function getTrustedOrigins(): string[] {
+    const configured = process.env.TRUSTED_ORIGINS?.split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean);
+
+    return configured && configured.length > 0
+        ? configured
+        : ['http://localhost:3000'];
+}

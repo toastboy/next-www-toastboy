@@ -60,6 +60,7 @@ vi.mock('@/lib/secrets', () => ({
 
 vi.mock('@/lib/urls', () => ({
     getPublicBaseUrl: vi.fn().mockReturnValue('https://example.test'),
+    getTrustedOrigins: vi.fn().mockReturnValue(['http://localhost:3000']),
 }));
 
 // Trigger module load with the no-social-provider secrets.

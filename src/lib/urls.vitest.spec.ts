@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getPublicBaseUrl, safeDecodeURIComponent } from '@/lib/urls';
+import {
+    getPublicBaseUrl,
+    getTrustedOrigins,
+    safeDecodeURIComponent,
+} from '@/lib/urls';
 
 describe('safeDecodeURIComponent', () => {
     it('decodes a valid percent-encoded string', () => {
@@ -66,5 +70,41 @@ describe('getPublicBaseUrl', () => {
     it('strips multiple trailing slashes from env URLs', () => {
         vi.stubEnv('SITE_URL', 'https://example.com///');
         expect(getPublicBaseUrl()).toBe('https://example.com');
+    });
+});
+
+describe('getTrustedOrigins', () => {
+    afterEach(() => {
+        vi.unstubAllEnvs();
+    });
+
+    it('defaults to localhost:3000 when TRUSTED_ORIGINS is unset', () => {
+        vi.stubEnv('TRUSTED_ORIGINS', '');
+        expect(getTrustedOrigins()).toEqual(['http://localhost:3000']);
+    });
+
+    it('parses a single configured origin', () => {
+        vi.stubEnv('TRUSTED_ORIGINS', 'https://next-www.toastboy.co.uk');
+        expect(getTrustedOrigins()).toEqual([
+            'https://next-www.toastboy.co.uk',
+        ]);
+    });
+
+    it('parses multiple comma-separated origins, trimming whitespace', () => {
+        vi.stubEnv(
+            'TRUSTED_ORIGINS',
+            ' https://next-www.toastboy.co.uk , https://www.toastboy.co.uk ',
+        );
+        expect(getTrustedOrigins()).toEqual([
+            'https://next-www.toastboy.co.uk',
+            'https://www.toastboy.co.uk',
+        ]);
+    });
+
+    it('drops empty entries caused by trailing or repeated commas', () => {
+        vi.stubEnv('TRUSTED_ORIGINS', 'https://next-www.toastboy.co.uk,,');
+        expect(getTrustedOrigins()).toEqual([
+            'https://next-www.toastboy.co.uk',
+        ]);
     });
 });

@@ -1,0 +1,82 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "d7af8869bf4d",
+  "session_id": "21479e2c-87ed-4e9e-a593-4e8a9887e570",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-25T12:51:47.805707Z",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "save_step_count": 3,
+  "files_touched": [
+    ".dockerignore",
+    ".github/workflows/docker-publish.yml",
+    "Dockerfile",
+    "package-lock.json",
+    "package.json",
+    "scripts/ci/simple-docker-build.sh",
+    "src/lib/secrets.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "288a52a332b9",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 128,
+    "cache_creation_tokens": 160868,
+    "cache_read_tokens": 6417904,
+    "output_tokens": 48047,
+    "api_call_count": 64
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-25T12:51:47.771765Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 113,
+    "total_committed": 109,
+    "total_lines_changed": 113,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 130,
+      "user_lines_removed": 113,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "Dockerfile": 5,
+        "package-lock.json": 106,
+        "package.json": 2,
+        "scripts/ci/simple-docker-build.sh": 2,
+        "src/lib/secrets.ts": 15
+      },
+      "user_removed_per_file": {
+        ".dockerignore": 1,
+        "Dockerfile": 1,
+        "package-lock.json": 108,
+        "package.json": 2,
+        "src/lib/secrets.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 130,
+      "agent_lines_removed": 113
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 238,
+      "agent_lines_removed": 113
+    }
+  ]
+}

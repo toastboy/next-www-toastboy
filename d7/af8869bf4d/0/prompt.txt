@@ -1,0 +1,32 @@
+I'm working on getting the docker image integrated into a deployment stack for production together with a database. Look at docker-compose.prod.yml and establish what has been its purpose so far: in particular why the seeder service is there in prod.
+
+---
+
+OK, so I need to decide how to tag docker builds, what repo to use and how to use it in deployments. To begin with I'll be using docker-compose files like I do for all my other service (see tf-cloudflare and an-baremetal) but eventually I'll want to use a local k8s cluster
+
+---
+
+<task-notification>
+<task-id>bebm2c374</task-id>
+<tool-use-id>toolu_0176ATFtzKhtaEWm2t2UzLea</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/f47f3428-2ca5-4a08-98aa-07533d879cf3/tasks/bebm2c374.output</output-file>
+<status>completed</status>
+<summary>Background command "docker buildx build \
+    --build-arg DATABASE_URL="REDACTED" \
+    --build-arg STORAGE_CLIENT_ID="x" \
+    --build-arg STORAGE_CLIENT_SECRET="x" \
+    --build-arg AZURE_TENANT_ID="x" \
+    --build-arg BETTER_AUTH_SECRET="x" \
+    --build-arg BETTER_AUTH_URL="http://localhost:3000" \
+    --build-arg NEXT_PUBLIC_SITE_URL="http://localhost:3000" \
+    --build-arg CRON_SECRET="x" \
+    --build-arg AUTH_GOOGLE_CLIENT_ID="x" \
+    --build-arg AUTH_GOOGLE_CLIENT_SECRET="x" \
+    --build-arg AUTH_MICROSOFT_CLIENT_ID="x" \
+    --build-arg AUTH_MICROSOFT_CLIENT_SECRET="x" \
+    --build-arg SENTRY_AUTH_TOKEN="x" \
+    --target runner \
+    --load \
+    -t next-www-toastboy:test \
+    . 2&gt;&amp;1 | tail -150" completed (exit code 0)</summary>
+</task-notification>

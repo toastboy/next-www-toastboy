@@ -111,7 +111,7 @@
         "@eslint/config-array": "^0.23.5",
         "@eslint/js": "^9.39.4",
         "@eslint/object-schema": "^3.0.5",
-        "@faker-js/faker": "^10.5.0",
+        "@faker-js/faker": "^10.6.0",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/mdx": "^3.1.1",
         "@mdx-js/react": "^3.1.1",

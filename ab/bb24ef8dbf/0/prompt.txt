@@ -1,0 +1,2302 @@
+❯ npx knip 
+Unused devDependencies (1)
+@next/mdx  package.json:120:10
+Configuration hints (2)
+.mdx       knip.json  Compiled extension excluded by project (imports not followed)
+.prisma    knip.json  Compiled extension excluded by project (imports not followed)
+
+---
+
+New failure in CI:
+
+2026-08-25T14:46:04.6861746Z Current runner version: '2.336.0'
+2026-08-25T14:46:04.6880636Z ##[group]Runner Image Provisioner
+2026-08-25T14:46:04.6881425Z Hosted Compute Agent
+2026-08-25T14:46:04.6881943Z Version: 20260729.566
+2026-08-25T14:46:04.6882472Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+2026-08-25T14:46:04.6883072Z Build Date: 2026-07-29T19:17:02Z
+2026-08-25T14:46:04.6883698Z Worker ID: {17fad663-3993-4306-afa2-e9a4cdc4f301}
+2026-08-25T14:46:04.6884440Z Azure Region: centralus
+2026-08-25T14:46:04.6884954Z ##[endgroup]
+2026-08-25T14:46:04.6886238Z ##[group]Operating System
+2026-08-25T14:46:04.6886764Z Ubuntu
+2026-08-25T14:46:04.6887224Z 24.04.4
+2026-08-25T14:46:04.6887709Z LTS
+2026-08-25T14:46:04.6888131Z ##[endgroup]
+2026-08-25T14:46:04.6888599Z ##[group]Runner Image
+2026-08-25T14:46:04.6889089Z Image: ubuntu-24.04
+2026-08-25T14:46:04.6889586Z Version: 20260816.277.1
+2026-08-25T14:46:04.6890624Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260816.277/images/ubuntu/Ubuntu2404-Readme.md
+2026-08-25T14:46:04.6891888Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260816.277
+2026-08-25T14:46:04.6892750Z ##[endgroup]
+2026-08-25T14:46:04.6893778Z ##[group]GITHUB_TOKEN Permissions
+2026-08-25T14:46:04.6895755Z Contents: read
+2026-08-25T14:46:04.6896285Z Metadata: read
+2026-08-25T14:46:04.6896759Z Packages: write
+2026-08-25T14:46:04.6897218Z ##[endgroup]
+2026-08-25T14:46:04.6898958Z Secret source: Actions
+2026-08-25T14:46:04.6899804Z Prepare workflow directory
+2026-08-25T14:46:04.7320300Z Prepare all required actions
+2026-08-25T14:46:04.7360946Z Getting action download info
+2026-08-25T14:46:05.0214261Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-08-25T14:46:05.5302759Z Download action repository '1password/load-secrets-action@v5' (SHA:70062d7a876d3eb6334754fa26efd2fbd90c32f2)
+2026-08-25T14:46:06.2453671Z Download action repository 'docker/login-action@v4.6.0' (SHA:dbcb813823bdd20940b903addbd779551569679f)
+2026-08-25T14:46:06.8056556Z Download action repository 'docker/setup-qemu-action@v4' (SHA:96fe6ef7f33517b61c61be40b68a1882f3264fb8)
+2026-08-25T14:46:07.2394603Z Download action repository 'docker/setup-buildx-action@v4' (SHA:37fe631027851001ddb9b187196cc803df7f5f0e)
+2026-08-25T14:46:07.7983955Z Download action repository 'docker/metadata-action@v5' (SHA:c299e40c65443455700f0fdfc63efafe5b349051)
+2026-08-25T14:46:08.9097693Z Download action repository 'docker/build-push-action@v7' (SHA:53b7df96c91f9c12dcc8a07bcb9ccacbed38856a)
+2026-08-25T14:46:09.6433769Z Complete job name: publish
+2026-08-25T14:46:09.6904747Z ##[group]Run actions/checkout@v7
+2026-08-25T14:46:09.6905271Z with:
+2026-08-25T14:46:09.6905585Z   repository: toastboy/next-www-toastboy
+2026-08-25T14:46:09.6907635Z   token: ***
+2026-08-25T14:46:09.6907903Z   ssh-strict: true
+2026-08-25T14:46:09.6908190Z   ssh-user: git
+2026-08-25T14:46:09.6908472Z   persist-credentials: true
+2026-08-25T14:46:09.6908760Z   clean: true
+2026-08-25T14:46:09.6909052Z   sparse-checkout-cone-mode: true
+2026-08-25T14:46:09.6909402Z   fetch-depth: 1
+2026-08-25T14:46:09.6909681Z   fetch-tags: false
+2026-08-25T14:46:09.6909941Z   show-progress: true
+2026-08-25T14:46:09.6910200Z   lfs: false
+2026-08-25T14:46:09.6910460Z   submodules: false
+2026-08-25T14:46:09.6910750Z   set-safe-directory: true
+2026-08-25T14:46:09.6911086Z   allow-unsafe-pr-checkout: false
+2026-08-25T14:46:09.6911471Z env:
+2026-08-25T14:46:09.6911744Z   RUNNER_IMAGE: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:09.6912159Z   SEEDER_IMAGE: ghcr.io/toastboy/next-www-toastboy-seeder
+2026-08-25T14:46:09.6912603Z ##[endgroup]
+2026-08-25T14:46:09.7712922Z Syncing repository: toastboy/next-www-toastboy
+2026-08-25T14:46:09.7714482Z ##[group]Getting Git version info
+2026-08-25T14:46:09.7714977Z Working directory is '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-08-25T14:46:09.7715736Z [command]/usr/bin/git version
+2026-08-25T14:46:09.7744875Z git version 2.55.0
+2026-08-25T14:46:09.7758513Z ##[endgroup]
+2026-08-25T14:46:09.7766055Z Temporarily overriding HOME='/home/runner/work/_temp/eed9103c-3a25-4b76-9d6e-57ecbe319066' before making global git config changes
+2026-08-25T14:46:09.7767188Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-25T14:46:09.7770132Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-25T14:46:09.7803815Z Deleting the contents of '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-08-25T14:46:09.7806759Z ##[group]Determining repository object format
+2026-08-25T14:46:09.7807691Z ##[endgroup]
+2026-08-25T14:46:09.7808218Z ##[group]Initializing the repository
+2026-08-25T14:46:09.7810941Z [command]/usr/bin/git init /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-25T14:46:09.7907182Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-25T14:46:09.7908272Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-25T14:46:09.7909038Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-25T14:46:09.7909599Z hint: call:
+2026-08-25T14:46:09.7909981Z hint:
+2026-08-25T14:46:09.7910571Z hint:     git config --global init.defaultBranch <name>
+2026-08-25T14:46:09.7911075Z hint:
+2026-08-25T14:46:09.7911562Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-25T14:46:09.7912206Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-25T14:46:09.7912804Z hint:
+2026-08-25T14:46:09.7913190Z hint:     git branch -m <name>
+2026-08-25T14:46:09.7913592Z hint:
+2026-08-25T14:46:09.7914174Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-25T14:46:09.7915176Z Initialized empty Git repository in /home/runner/work/next-www-toastboy/next-www-toastboy/.git/
+2026-08-25T14:46:09.7916707Z [command]/usr/bin/git remote add origin https://github.com/toastboy/next-www-toastboy
+2026-08-25T14:46:09.7951423Z ##[endgroup]
+2026-08-25T14:46:09.7951930Z ##[group]Disabling automatic garbage collection
+2026-08-25T14:46:09.7953875Z [command]/usr/bin/git config --local gc.auto 0
+2026-08-25T14:46:09.7974908Z ##[endgroup]
+2026-08-25T14:46:09.7975500Z ##[group]Setting up auth
+2026-08-25T14:46:09.7975963Z Removing SSH command configuration
+2026-08-25T14:46:09.7979244Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-25T14:46:09.8001514Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-25T14:46:09.8902445Z Removing HTTP extra header
+2026-08-25T14:46:09.8907380Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-25T14:46:09.8928708Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-25T14:46:09.9078590Z Removing includeIf entries pointing to credentials config files
+2026-08-25T14:46:09.9083557Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-25T14:46:09.9105891Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-25T14:46:09.9265349Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-25T14:46:09.9291820Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path /home/runner/work/_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:46:09.9314020Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:46:09.9337462Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:46:09.9358746Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:46:09.9377671Z ##[endgroup]
+2026-08-25T14:46:09.9378344Z ##[group]Fetching the repository
+2026-08-25T14:46:09.9383272Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +59246a7f807ff78cd619bd3533fc008c984944ab:refs/remotes/origin/main
+2026-08-25T14:46:11.3289246Z From https://github.com/toastboy/next-www-toastboy
+2026-08-25T14:46:11.3289927Z  * [new ref]         59246a7f807ff78cd619bd3533fc008c984944ab -> origin/main
+2026-08-25T14:46:11.3298048Z [command]/usr/bin/git branch --list --remote origin/main
+2026-08-25T14:46:11.3317753Z   origin/main
+2026-08-25T14:46:11.3323799Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-08-25T14:46:11.3340825Z 59246a7f807ff78cd619bd3533fc008c984944ab
+2026-08-25T14:46:11.3342593Z ##[endgroup]
+2026-08-25T14:46:11.3343183Z ##[group]Determining the checkout info
+2026-08-25T14:46:11.3343892Z ##[endgroup]
+2026-08-25T14:46:11.3346872Z [command]/usr/bin/git sparse-checkout disable
+2026-08-25T14:46:11.3380178Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-08-25T14:46:11.3400780Z ##[group]Checking out the ref
+2026-08-25T14:46:11.3403318Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-08-25T14:46:11.4063192Z Switched to a new branch 'main'
+2026-08-25T14:46:11.4068138Z branch 'main' set up to track 'origin/main'.
+2026-08-25T14:46:11.4070876Z ##[endgroup]
+2026-08-25T14:46:11.4103592Z [command]/usr/bin/git log -1 --format=%H
+2026-08-25T14:46:11.4121892Z 59246a7f807ff78cd619bd3533fc008c984944ab
+2026-08-25T14:46:11.4293778Z ##[group]Run 1password/load-secrets-action@v5
+2026-08-25T14:46:11.4294138Z with:
+2026-08-25T14:46:11.4294731Z   export-env: true
+2026-08-25T14:46:11.4295045Z   unset-previous: false
+2026-08-25T14:46:11.4295317Z   version: latest
+2026-08-25T14:46:11.4295596Z env:
+2026-08-25T14:46:11.4295918Z   RUNNER_IMAGE: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:11.4296305Z   SEEDER_IMAGE: ghcr.io/toastboy/next-www-toastboy-seeder
+2026-08-25T14:46:11.4303544Z   OP_SERVICE_ACCOUNT_TOKEN: ***
+2026-08-25T14:46:11.4303953Z   DATABASE_URL: op://next-www-toastboy/Database - next-www-toastboy/prisma url
+2026-08-25T14:46:11.4304748Z   AZURE_TENANT_ID: op://next-www-toastboy/Terraform/tenant id
+2026-08-25T14:46:11.4305200Z   STORAGE_CLIENT_ID: op://next-www-toastboy/App - Storage/username
+2026-08-25T14:46:11.4305695Z   STORAGE_CLIENT_SECRET: op://next-www-toastboy/App - Storage/credential
+2026-08-25T14:46:11.4306170Z   BETTER_AUTH_SECRET: op://next-www-toastboy/Better Auth/credential
+2026-08-25T14:46:11.4306713Z   AUTH_GOOGLE_CLIENT_ID: op://next-www-toastboy/Auth - Google/username
+2026-08-25T14:46:11.4307165Z   AUTH_GOOGLE_CLIENT_SECRET: op://next-www-toastboy/Auth - Google/credential
+2026-08-25T14:46:11.4307621Z   AUTH_MICROSOFT_CLIENT_ID: op://next-www-toastboy/App - Auth/username
+2026-08-25T14:46:11.4308143Z   AUTH_MICROSOFT_CLIENT_SECRET: op://next-www-toastboy/App - Auth/credential
+2026-08-25T14:46:11.4308570Z   CRON_SECRET: op://next-www-toastboy/Cron/credential
+2026-08-25T14:46:11.4308958Z   SENTRY_AUTH_TOKEN: op://next-www-toastboy/Sentry/credential
+2026-08-25T14:46:11.4309415Z   MAIL_GRAPH_CLIENT_ID: op://next-www-toastboy/App - Mail/username
+2026-08-25T14:46:11.4309834Z   MAIL_GRAPH_CLIENT_SECRET: op://next-www-toastboy/App - Mail/credential
+2026-08-25T14:46:11.4310243Z ##[endgroup]
+2026-08-25T14:46:11.5171222Z Authenticated with Service account.
+2026-08-25T14:46:11.5189464Z Validating version number: 'latest'
+2026-08-25T14:46:11.5190158Z Version number 'latest' is valid
+2026-08-25T14:46:11.5190952Z Resolving version: latest
+2026-08-25T14:46:11.5191402Z Getting latest version number
+2026-08-25T14:46:11.8289906Z Downloading 1Password CLI from: https://cache.agilebits.com/dist/1P/op2/pkg/v2.39.0/op_linux_amd64_v2.39.0.zip
+2026-08-25T14:46:12.1187903Z Installing 1Password CLI
+2026-08-25T14:46:12.1212703Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/ac482b9e-8808-462b-bfe9-91ff65cbd01b
+2026-08-25T14:46:12.4202305Z 1Password CLI installed
+2026-08-25T14:46:12.4216019Z [command]/usr/bin/sh -c op env ls
+2026-08-25T14:46:12.9446844Z DATABASE_URL
+2026-08-25T14:46:12.9447170Z BETTER_AUTH_SECRET
+2026-08-25T14:46:12.9447380Z SENTRY_AUTH_TOKEN
+2026-08-25T14:46:12.9447603Z AUTH_GOOGLE_CLIENT_ID
+2026-08-25T14:46:12.9447959Z AUTH_GOOGLE_CLIENT_SECRET
+2026-08-25T14:46:12.9448266Z CRON_SECRET
+2026-08-25T14:46:12.9448537Z STORAGE_CLIENT_ID
+2026-08-25T14:46:12.9448867Z STORAGE_CLIENT_SECRET
+2026-08-25T14:46:12.9449191Z AUTH_MICROSOFT_CLIENT_ID
+2026-08-25T14:46:12.9449518Z AUTH_MICROSOFT_CLIENT_SECRET
+2026-08-25T14:46:12.9449866Z AZURE_TENANT_ID
+2026-08-25T14:46:12.9450126Z MAIL_GRAPH_CLIENT_ID
+2026-08-25T14:46:12.9450406Z MAIL_GRAPH_CLIENT_SECRET
+2026-08-25T14:46:12.9455757Z Populating variable: DATABASE_URL
+2026-08-25T14:46:14.0101113Z Populating variable: BETTER_AUTH_SECRET
+2026-08-25T14:46:14.4236868Z Populating variable: SENTRY_AUTH_TOKEN
+2026-08-25T14:46:14.8663267Z Populating variable: AUTH_GOOGLE_CLIENT_ID
+2026-08-25T14:46:15.4306175Z Populating variable: AUTH_GOOGLE_CLIENT_SECRET
+2026-08-25T14:46:15.8332254Z Populating variable: CRON_SECRET
+2026-08-25T14:46:16.2735046Z Populating variable: STORAGE_CLIENT_ID
+2026-08-25T14:46:16.6910561Z Populating variable: STORAGE_CLIENT_SECRET
+2026-08-25T14:46:17.0319336Z Populating variable: AUTH_MICROSOFT_CLIENT_ID
+2026-08-25T14:46:17.4634005Z Populating variable: AUTH_MICROSOFT_CLIENT_SECRET
+2026-08-25T14:46:18.2948236Z Populating variable: AZURE_TENANT_ID
+2026-08-25T14:46:18.2950255Z Populating variable: MAIL_GRAPH_CLIENT_ID
+2026-08-25T14:46:18.7119463Z Populating variable: MAIL_GRAPH_CLIENT_SECRET
+2026-08-25T14:46:19.0487736Z ##[group]Run docker/login-action@v4.6.0
+2026-08-25T14:46:19.0488029Z with:
+2026-08-25T14:46:19.0488247Z   registry: ghcr.io
+2026-08-25T14:46:19.0488485Z   username: toastboy70
+2026-08-25T14:46:19.0490441Z   password: ***
+2026-08-25T14:46:19.0490664Z   logout: true
+2026-08-25T14:46:19.0490887Z env:
+2026-08-25T14:46:19.0491140Z   RUNNER_IMAGE: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:19.0491507Z   SEEDER_IMAGE: ghcr.io/toastboy/next-www-toastboy-seeder
+2026-08-25T14:46:19.0491960Z   DATABASE_URL: ***
+2026-08-25T14:46:19.0492249Z   BETTER_AUTH_SECRET: ***
+2026-08-25T14:46:19.0493111Z   SENTRY_AUTH_TOKEN: ***
+2026-08-25T14:46:19.0493517Z   AUTH_GOOGLE_CLIENT_ID: ***
+2026-08-25T14:46:19.0493909Z   AUTH_GOOGLE_CLIENT_SECRET: ***
+2026-08-25T14:46:19.0494213Z   CRON_SECRET: ***
+2026-08-25T14:46:19.0494882Z   STORAGE_CLIENT_ID: ***
+2026-08-25T14:46:19.0495230Z   STORAGE_CLIENT_SECRET: ***
+2026-08-25T14:46:19.0495610Z   AUTH_MICROSOFT_CLIENT_ID: ***
+2026-08-25T14:46:19.0496065Z   AUTH_MICROSOFT_CLIENT_SECRET: ***
+2026-08-25T14:46:19.0496383Z   AZURE_TENANT_ID: ***
+2026-08-25T14:46:19.0496695Z   MAIL_GRAPH_CLIENT_ID: ***
+2026-08-25T14:46:19.0497035Z   MAIL_GRAPH_CLIENT_SECRET: ***
+2026-08-25T14:46:19.0497946Z   OP_MANAGED_VARIABLES: DATABASE_URL,BETTER_AUTH_SECRET,SENTRY_AUTH_TOKEN,AUTH_GOOGLE_CLIENT_ID,AUTH_GOOGLE_CLIENT_SECRET,CRON_SECRET,STORAGE_CLIENT_ID,STORAGE_CLIENT_SECRET,AUTH_MICROSOFT_CLIENT_ID,AUTH_MICROSOFT_CLIENT_SECRET,AZURE_TENANT_ID,MAIL_GRAPH_CLIENT_ID,MAIL_GRAPH_CLIENT_SECRET
+2026-08-25T14:46:19.0498851Z ##[endgroup]
+2026-08-25T14:46:19.2211322Z Logging into ghcr.io...
+2026-08-25T14:46:19.7520896Z Login Succeeded!
+2026-08-25T14:46:19.7628858Z ##[group]Run docker/setup-qemu-action@v4
+2026-08-25T14:46:19.7629255Z with:
+2026-08-25T14:46:19.7629568Z   image: docker.io/tonistiigi/binfmt:latest
+2026-08-25T14:46:19.7629949Z   platforms: all
+2026-08-25T14:46:19.7630238Z   reset: false
+2026-08-25T14:46:19.7630641Z   cache-image: true
+2026-08-25T14:46:19.7630929Z env:
+2026-08-25T14:46:19.7631259Z   RUNNER_IMAGE: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:19.7631800Z   SEEDER_IMAGE: ghcr.io/toastboy/next-www-toastboy-seeder
+2026-08-25T14:46:19.7632919Z   DATABASE_URL: ***
+2026-08-25T14:46:19.7633391Z   BETTER_AUTH_SECRET: ***
+2026-08-25T14:46:19.7634929Z   SENTRY_AUTH_TOKEN: ***
+2026-08-25T14:46:19.7635659Z   AUTH_GOOGLE_CLIENT_ID: ***
+2026-08-25T14:46:19.7636241Z   AUTH_GOOGLE_CLIENT_SECRET: ***
+2026-08-25T14:46:19.7636718Z   CRON_SECRET: ***
+2026-08-25T14:46:19.7637139Z   STORAGE_CLIENT_ID: ***
+2026-08-25T14:46:19.7637627Z   STORAGE_CLIENT_SECRET: ***
+2026-08-25T14:46:19.7638071Z   AUTH_MICROSOFT_CLIENT_ID: ***
+2026-08-25T14:46:19.7638621Z   AUTH_MICROSOFT_CLIENT_SECRET: ***
+2026-08-25T14:46:19.7639056Z   AZURE_TENANT_ID: ***
+2026-08-25T14:46:19.7639455Z   MAIL_GRAPH_CLIENT_ID: ***
+2026-08-25T14:46:19.7639929Z   MAIL_GRAPH_CLIENT_SECRET: ***
+2026-08-25T14:46:19.7641244Z   OP_MANAGED_VARIABLES: DATABASE_URL,BETTER_AUTH_SECRET,SENTRY_AUTH_TOKEN,AUTH_GOOGLE_CLIENT_ID,AUTH_GOOGLE_CLIENT_SECRET,CRON_SECRET,STORAGE_CLIENT_ID,STORAGE_CLIENT_SECRET,AUTH_MICROSOFT_CLIENT_ID,AUTH_MICROSOFT_CLIENT_SECRET,AZURE_TENANT_ID,MAIL_GRAPH_CLIENT_ID,MAIL_GRAPH_CLIENT_SECRET
+2026-08-25T14:46:19.7642219Z ##[endgroup]
+2026-08-25T14:46:19.8860310Z ##[group]Docker info
+2026-08-25T14:46:19.8892791Z [command]/usr/bin/docker version
+2026-08-25T14:46:19.9390813Z Client: Docker Engine - Community
+2026-08-25T14:46:19.9391603Z  Version:           28.0.4
+2026-08-25T14:46:19.9392152Z  API version:       1.48
+2026-08-25T14:46:19.9392692Z  Go version:        go1.23.7
+2026-08-25T14:46:19.9393220Z  Git commit:        b8034c0
+2026-08-25T14:46:19.9393749Z  Built:             Tue Mar 25 15:07:16 2025
+2026-08-25T14:46:19.9406016Z  OS/Arch:           linux/amd64
+2026-08-25T14:46:19.9406587Z  Context:           default
+2026-08-25T14:46:19.9406870Z 
+2026-08-25T14:46:19.9407060Z Server: Docker Engine - Community
+2026-08-25T14:46:19.9407517Z  Engine:
+2026-08-25T14:46:19.9407890Z   Version:          28.0.4
+2026-08-25T14:46:19.9408353Z   API version:      1.48 (minimum version 1.24)
+2026-08-25T14:46:19.9408886Z   Go version:       go1.23.7
+2026-08-25T14:46:19.9409310Z   Git commit:       6430e49
+2026-08-25T14:46:19.9409756Z   Built:            Tue Mar 25 15:07:16 2025
+2026-08-25T14:46:19.9410237Z   OS/Arch:          linux/amd64
+2026-08-25T14:46:19.9410677Z   Experimental:     false
+2026-08-25T14:46:19.9411108Z  containerd:
+2026-08-25T14:46:19.9411476Z   Version:          v2.3.3
+2026-08-25T14:46:19.9411980Z   GitCommit:        aad11006b869517fcd3009450b6f82da282e1a9b
+2026-08-25T14:46:19.9412525Z  runc:
+2026-08-25T14:46:19.9412883Z   Version:          1.4.3
+2026-08-25T14:46:19.9413338Z   GitCommit:        v1.4.3-0-gbb14dab
+2026-08-25T14:46:19.9413793Z  docker-init:
+2026-08-25T14:46:19.9414156Z   Version:          0.19.0
+2026-08-25T14:46:19.9414880Z   GitCommit:        de40ad0
+2026-08-25T14:46:19.9430185Z [command]/usr/bin/docker info
+2026-08-25T14:46:20.4672487Z Client: Docker Engine - Community
+2026-08-25T14:46:20.4672958Z  Version:    28.0.4
+2026-08-25T14:46:20.4673251Z  Context:    default
+2026-08-25T14:46:20.4673503Z  Debug Mode: false
+2026-08-25T14:46:20.4673781Z  Plugins:
+2026-08-25T14:46:20.4674063Z   buildx: Docker Buildx (Docker Inc.)
+2026-08-25T14:46:20.4674590Z     Version:  v0.36.1
+2026-08-25T14:46:20.4675040Z     Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+2026-08-25T14:46:20.4675644Z   compose: Docker Compose (Docker Inc.)
+2026-08-25T14:46:20.4676072Z     Version:  v2.38.2
+2026-08-25T14:46:20.4676517Z     Path:     /usr/libexec/docker/cli-plugins/docker-compose
+2026-08-25T14:46:20.4676854Z 
+2026-08-25T14:46:20.4676992Z Server:
+2026-08-25T14:46:20.4677606Z  Containers: 0
+2026-08-25T14:46:20.4677893Z   Running: 0
+2026-08-25T14:46:20.4678149Z   Paused: 0
+2026-08-25T14:46:20.4678360Z   Stopped: 0
+2026-08-25T14:46:20.4678616Z  Images: 6
+2026-08-25T14:46:20.4678848Z  Server Version: 28.0.4
+2026-08-25T14:46:20.4679095Z  Storage Driver: overlay2
+2026-08-25T14:46:20.4679449Z   Backing Filesystem: extfs
+2026-08-25T14:46:20.4679695Z   Supports d_type: true
+2026-08-25T14:46:20.4679932Z   Using metacopy: false
+2026-08-25T14:46:20.4680175Z   Native Overlay Diff: false
+2026-08-25T14:46:20.4680422Z   userxattr: false
+2026-08-25T14:46:20.4680658Z  Logging Driver: json-file
+2026-08-25T14:46:20.4680899Z  Cgroup Driver: systemd
+2026-08-25T14:46:20.4681122Z  Cgroup Version: 2
+2026-08-25T14:46:20.4681393Z  Plugins:
+2026-08-25T14:46:20.4681642Z   Volume: local
+2026-08-25T14:46:20.4681941Z   Network: bridge host ipvlan macvlan null overlay
+2026-08-25T14:46:20.4682422Z   Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+2026-08-25T14:46:20.4682878Z  Swarm: inactive
+2026-08-25T14:46:20.4683192Z  Runtimes: io.containerd.runc.v2 runc
+2026-08-25T14:46:20.4683588Z  Default Runtime: runc
+2026-08-25T14:46:20.4683878Z  Init Binary: docker-init
+2026-08-25T14:46:20.4684225Z  containerd version: aad11006b869517fcd3009450b6f82da282e1a9b
+2026-08-25T14:46:20.4685101Z  runc version: v1.4.3-0-gbb14dab
+2026-08-25T14:46:20.4685441Z  init version: de40ad0
+2026-08-25T14:46:20.4685736Z  Security Options:
+2026-08-25T14:46:20.4686013Z   apparmor
+2026-08-25T14:46:20.4686254Z   seccomp
+2026-08-25T14:46:20.4686525Z    Profile: builtin
+2026-08-25T14:46:20.4686824Z   cgroupns
+2026-08-25T14:46:20.4687081Z  Kernel Version: 6.17.0-1022-azure
+2026-08-25T14:46:20.4687435Z  Operating System: Ubuntu 24.04.4 LTS
+2026-08-25T14:46:20.4687770Z  OSType: linux
+2026-08-25T14:46:20.4688052Z  Architecture: x86_64
+2026-08-25T14:46:20.4688358Z  CPUs: 4
+2026-08-25T14:46:20.4688636Z  Total Memory: 15.61GiB
+2026-08-25T14:46:20.4688951Z  Name: runnervm76f27
+2026-08-25T14:46:20.4689304Z  ID: 49fbd9fe-ba53-4f4b-b058-8c240f21fa06
+2026-08-25T14:46:20.4689695Z  Docker Root Dir: /var/lib/docker
+2026-08-25T14:46:20.4690042Z  Debug Mode: false
+2026-08-25T14:46:20.4690294Z  Username: githubactions
+2026-08-25T14:46:20.4690598Z  Experimental: false
+2026-08-25T14:46:20.4690891Z  Insecure Registries:
+2026-08-25T14:46:20.4696933Z   ::1/128
+2026-08-25T14:46:20.4697245Z   127.0.0.0/8
+2026-08-25T14:46:20.4697563Z  Live Restore Enabled: false
+2026-08-25T14:46:20.4697817Z 
+2026-08-25T14:46:20.4698395Z ##[endgroup]
+2026-08-25T14:46:20.4698956Z ##[group]Pulling binfmt Docker image
+2026-08-25T14:46:20.6294556Z Cache hit for: docker.io--tonistiigi--binfmt-latest-linux-x64
+2026-08-25T14:46:21.5506916Z Received 32265041 of 32265041 (100.0%), 41.0 MBs/sec
+2026-08-25T14:46:21.5507389Z Cache Size: ~31 MB (32265041 B)
+2026-08-25T14:46:21.5533979Z [command]/usr/bin/tar -xf /home/runner/work/_temp/fb70287c-37c8-4683-ae30-cb04a711886e/cache.tzst -P -C /home/runner/work/next-www-toastboy/next-www-toastboy --use-compress-program unzstd
+2026-08-25T14:46:21.6895922Z Cache restored successfully
+2026-08-25T14:46:21.6908870Z Restored docker.io--tonistiigi--binfmt-latest-linux-x64 from GitHub Actions cache
+2026-08-25T14:46:22.4667180Z Cached to hosted tool cache /opt/hostedtoolcache/docker.io--tonistiigi--binfmt/latest/linux-x64
+2026-08-25T14:46:22.4668067Z Copying /opt/hostedtoolcache/docker.io--tonistiigi--binfmt/latest/linux-x64/image.tar to /home/runner/.docker/.cache/images/docker.io--tonistiigi--binfmt/latest/linux-x64/image.tar
+2026-08-25T14:46:23.2358998Z Image found from cache in /home/runner/.docker/.cache/images/docker.io--tonistiigi--binfmt/latest/linux-x64/image.tar
+2026-08-25T14:46:23.2378726Z [command]/usr/bin/docker load -i /home/runner/.docker/.cache/images/docker.io--tonistiigi--binfmt/latest/linux-x64/image.tar
+2026-08-25T14:46:26.6741129Z Loaded image: tonistiigi/binfmt:latest
+2026-08-25T14:46:26.6818766Z [command]/usr/bin/docker pull docker.io/tonistiigi/binfmt:latest
+2026-08-25T14:46:27.3925307Z latest: Pulling from tonistiigi/binfmt
+2026-08-25T14:46:27.6306644Z Digest: sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0
+2026-08-25T14:46:27.6312203Z Status: Image is up to date for tonistiigi/binfmt:latest
+2026-08-25T14:46:27.6323846Z docker.io/tonistiigi/binfmt:latest
+2026-08-25T14:46:27.6352837Z [command]/usr/bin/docker save -o /home/runner/work/_temp/docker-actions-toolkit-aaz9ZL/749e64100d3fa0c09bdbc8a02e4fb9cb3ee64266f7f661c98371040689abacb3.tar docker.io/tonistiigi/binfmt:latest
+2026-08-25T14:46:28.4671087Z Copying /home/runner/work/_temp/docker-actions-toolkit-aaz9ZL/749e64100d3fa0c09bdbc8a02e4fb9cb3ee64266f7f661c98371040689abacb3.tar to /home/runner/.docker/.cache/images/docker.io--tonistiigi--binfmt/latest/linux-x64/image.tar
+2026-08-25T14:46:29.2089085Z Image cached to /home/runner/.docker/.cache/images/docker.io--tonistiigi--binfmt/latest/linux-x64/image.tar
+2026-08-25T14:46:29.2090741Z ##[endgroup]
+2026-08-25T14:46:29.2091378Z ##[group]Image info
+2026-08-25T14:46:29.2106774Z [command]/usr/bin/docker image inspect docker.io/tonistiigi/binfmt:latest
+2026-08-25T14:46:29.2792487Z [
+2026-08-25T14:46:29.2792889Z     {
+2026-08-25T14:46:29.2793432Z         "Id": "sha256:15935d0512bf0a8e5afa1df990d971cf97a619ede08fa60f2d5966a62de6d6b7",
+2026-08-25T14:46:29.2793887Z         "RepoTags": [
+2026-08-25T14:46:29.2794231Z             "tonistiigi/binfmt:latest"
+2026-08-25T14:46:29.2794854Z         ],
+2026-08-25T14:46:29.2795101Z         "RepoDigests": [
+2026-08-25T14:46:29.2795526Z             "tonistiigi/binfmt@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0"
+2026-08-25T14:46:29.2795984Z         ],
+2026-08-25T14:46:29.2796211Z         "Parent": "",
+2026-08-25T14:46:29.2796493Z         "Comment": "buildkit.dockerfile.v0",
+2026-08-25T14:46:29.2796845Z         "Created": "2026-06-05T19:12:02.167333037Z",
+2026-08-25T14:46:29.2797175Z         "DockerVersion": "",
+2026-08-25T14:46:29.2797450Z         "Author": "",
+2026-08-25T14:46:29.2797679Z         "Config": {
+2026-08-25T14:46:29.2797920Z             "Hostname": "",
+2026-08-25T14:46:29.2798170Z             "Domainname": "",
+2026-08-25T14:46:29.2798487Z             "User": "",
+2026-08-25T14:46:29.2798793Z             "AttachStdin": false,
+2026-08-25T14:46:29.2799151Z             "AttachStdout": false,
+2026-08-25T14:46:29.2799522Z             "AttachStderr": false,
+2026-08-25T14:46:29.2799817Z             "Tty": false,
+2026-08-25T14:46:29.2800115Z             "OpenStdin": false,
+2026-08-25T14:46:29.2800417Z             "StdinOnce": false,
+2026-08-25T14:46:29.2800734Z             "Env": [
+2026-08-25T14:46:29.2801143Z                 "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+2026-08-25T14:46:29.2801615Z                 "QEMU_PRESERVE_ARGV0=1"
+2026-08-25T14:46:29.2801947Z             ],
+2026-08-25T14:46:29.2802216Z             "Cmd": null,
+2026-08-25T14:46:29.2802517Z             "Image": "",
+2026-08-25T14:46:29.2802822Z             "Volumes": {
+2026-08-25T14:46:29.2803093Z                 "/tmp": {}
+2026-08-25T14:46:29.2803369Z             },
+2026-08-25T14:46:29.2803649Z             "WorkingDir": "/",
+2026-08-25T14:46:29.2803939Z             "Entrypoint": [
+2026-08-25T14:46:29.2804260Z                 "/usr/bin/binfmt"
+2026-08-25T14:46:29.2804761Z             ],
+2026-08-25T14:46:29.2805040Z             "OnBuild": null,
+2026-08-25T14:46:29.2805358Z             "Labels": null
+2026-08-25T14:46:29.2805632Z         },
+2026-08-25T14:46:29.2805893Z         "Architecture": "amd64",
+2026-08-25T14:46:29.2806250Z         "Os": "linux",
+2026-08-25T14:46:29.2806562Z         "Size": 85304497,
+2026-08-25T14:46:29.2806909Z         "GraphDriver": {
+2026-08-25T14:46:29.2807247Z             "Data": {
+2026-08-25T14:46:29.2807953Z                 "LowerDir": "/var/lib/docker/overlay2/84f6577c35aa3a2f46d68d27bc2dd52aa3aec69778342e3b16a616140270d641/diff",
+2026-08-25T14:46:29.2809072Z                 "MergedDir": "/var/lib/docker/overlay2/c9d02574b736ee965d741fe2a5b16ef908a1a8778acecd62ea48a0051bb600b5/merged",
+2026-08-25T14:46:29.2810353Z                 "UpperDir": "/var/lib/docker/overlay2/c9d02574b736ee965d741fe2a5b16ef908a1a8778acecd62ea48a0051bb600b5/diff",
+2026-08-25T14:46:29.2811311Z                 "WorkDir": "/var/lib/docker/overlay2/c9d02574b736ee965d741fe2a5b16ef908a1a8778acecd62ea48a0051bb600b5/work"
+2026-08-25T14:46:29.2811907Z             },
+2026-08-25T14:46:29.2812313Z             "Name": "overlay2"
+2026-08-25T14:46:29.2812647Z         },
+2026-08-25T14:46:29.2812931Z         "RootFS": {
+2026-08-25T14:46:29.2813236Z             "Type": "layers",
+2026-08-25T14:46:29.2813576Z             "Layers": [
+2026-08-25T14:46:29.2814127Z                 "sha256:c747b796d990a647df062f87e24f1ef5e4a90a312cd9c4ae8b7d09667d57befb",
+2026-08-25T14:46:29.2815113Z                 "sha256:6d831b0f477d9df7afe18e5a65c97e8084fef8fe10c2930b65f728ab68d0bb5b"
+2026-08-25T14:46:29.2815661Z             ]
+2026-08-25T14:46:29.2815961Z         },
+2026-08-25T14:46:29.2816242Z         "Metadata": {
+2026-08-25T14:46:29.2816690Z             "LastTagTime": "0001-01-01T00:00:00Z"
+2026-08-25T14:46:29.2817095Z         }
+2026-08-25T14:46:29.2817484Z     }
+2026-08-25T14:46:29.2817759Z ]
+2026-08-25T14:46:29.2818501Z ##[endgroup]
+2026-08-25T14:46:29.2819338Z ##[group]Binfmt version
+2026-08-25T14:46:29.2822215Z [command]/usr/bin/docker run --rm --privileged docker.io/tonistiigi/binfmt:latest --version
+2026-08-25T14:46:29.9975608Z binfmt/e29e7d7 qemu/v10.2.3 go/1.26.4
+2026-08-25T14:46:30.1539448Z ##[endgroup]
+2026-08-25T14:46:30.1539988Z ##[group]Installing QEMU static binaries
+2026-08-25T14:46:30.1553376Z [command]/usr/bin/docker run --rm --privileged docker.io/tonistiigi/binfmt:latest --install all
+2026-08-25T14:46:30.2538422Z installing: s390x OK
+2026-08-25T14:46:30.2538986Z installing: mips64 OK
+2026-08-25T14:46:30.2539438Z installing: loong64 OK
+2026-08-25T14:46:30.2539853Z installing: arm64 OK
+2026-08-25T14:46:30.2540258Z installing: arm OK
+2026-08-25T14:46:30.2540684Z installing: ppc64le OK
+2026-08-25T14:46:30.2541109Z installing: riscv64 OK
+2026-08-25T14:46:30.2541493Z installing: mips64le OK
+2026-08-25T14:46:30.2707489Z {
+2026-08-25T14:46:30.2707925Z   "supported": [
+2026-08-25T14:46:30.2708471Z     "linux/amd64",
+2026-08-25T14:46:30.2708828Z     "linux/amd64/v2",
+2026-08-25T14:46:30.2709194Z     "linux/amd64/v3",
+2026-08-25T14:46:30.2709521Z     "linux/amd64/v4",
+2026-08-25T14:46:30.2709851Z     "linux/arm64",
+2026-08-25T14:46:30.2710181Z     "linux/riscv64",
+2026-08-25T14:46:30.2710484Z     "linux/ppc64le",
+2026-08-25T14:46:30.2714912Z     "linux/s390x",
+2026-08-25T14:46:30.2715315Z     "linux/386",
+2026-08-25T14:46:30.2715629Z     "linux/mips64le",
+2026-08-25T14:46:30.2715972Z     "linux/mips64",
+2026-08-25T14:46:30.2716277Z     "linux/loong64",
+2026-08-25T14:46:30.2716600Z     "linux/arm/v7",
+2026-08-25T14:46:30.2716981Z     "linux/arm/v6"
+2026-08-25T14:46:30.2717270Z   ],
+2026-08-25T14:46:30.2717572Z   "emulators": [
+2026-08-25T14:46:30.2717818Z     "llvm-16-runtime.binfmt",
+2026-08-25T14:46:30.2718121Z     "llvm-17-runtime.binfmt",
+2026-08-25T14:46:30.2718388Z     "llvm-18-runtime.binfmt",
+2026-08-25T14:46:30.2718666Z     "python3.12",
+2026-08-25T14:46:30.2718895Z     "qemu-aarch64",
+2026-08-25T14:46:30.2719153Z     "qemu-arm",
+2026-08-25T14:46:30.2719379Z     "qemu-loongarch64",
+2026-08-25T14:46:30.2719649Z     "qemu-mips64",
+2026-08-25T14:46:30.2719875Z     "qemu-mips64el",
+2026-08-25T14:46:30.2720112Z     "qemu-ppc64le",
+2026-08-25T14:46:30.2720331Z     "qemu-riscv64",
+2026-08-25T14:46:30.2720547Z     "qemu-s390x"
+2026-08-25T14:46:30.2720758Z   ]
+2026-08-25T14:46:30.2720966Z }
+2026-08-25T14:46:30.4628824Z ##[endgroup]
+2026-08-25T14:46:30.4629478Z ##[group]Extracting available platforms
+2026-08-25T14:46:30.7753500Z linux/amd64,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/loong64,linux/arm/v7,linux/arm/v6
+2026-08-25T14:46:30.7754984Z ##[endgroup]
+2026-08-25T14:46:30.7880168Z ##[group]Run docker/setup-buildx-action@v4
+2026-08-25T14:46:30.7880487Z with:
+2026-08-25T14:46:30.7880741Z   driver: docker-container
+2026-08-25T14:46:30.7881033Z   use: true
+2026-08-25T14:46:30.7881285Z   keep-state: false
+2026-08-25T14:46:30.7881529Z   cache-binary: true
+2026-08-25T14:46:30.7881764Z   cleanup: true
+2026-08-25T14:46:30.7881975Z env:
+2026-08-25T14:46:30.7882228Z   RUNNER_IMAGE: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:30.7882727Z   SEEDER_IMAGE: ghcr.io/toastboy/next-www-toastboy-seeder
+2026-08-25T14:46:30.7883259Z   DATABASE_URL: ***
+2026-08-25T14:46:30.7883568Z   BETTER_AUTH_SECRET: ***
+2026-08-25T14:46:30.7884739Z   SENTRY_AUTH_TOKEN: ***
+2026-08-25T14:46:30.7885169Z   AUTH_GOOGLE_CLIENT_ID: ***
+2026-08-25T14:46:30.7885506Z   AUTH_GOOGLE_CLIENT_SECRET: ***
+2026-08-25T14:46:30.7885794Z   CRON_SECRET: ***
+2026-08-25T14:46:30.7886073Z   STORAGE_CLIENT_ID: ***
+2026-08-25T14:46:30.7886426Z   STORAGE_CLIENT_SECRET: ***
+2026-08-25T14:46:30.7886791Z   AUTH_MICROSOFT_CLIENT_ID: ***
+2026-08-25T14:46:30.7887152Z   AUTH_MICROSOFT_CLIENT_SECRET: ***
+2026-08-25T14:46:30.7887469Z   AZURE_TENANT_ID: ***
+2026-08-25T14:46:30.7887824Z   MAIL_GRAPH_CLIENT_ID: ***
+2026-08-25T14:46:30.7888204Z   MAIL_GRAPH_CLIENT_SECRET: ***
+2026-08-25T14:46:30.7889063Z   OP_MANAGED_VARIABLES: DATABASE_URL,BETTER_AUTH_SECRET,SENTRY_AUTH_TOKEN,AUTH_GOOGLE_CLIENT_ID,AUTH_GOOGLE_CLIENT_SECRET,CRON_SECRET,STORAGE_CLIENT_ID,STORAGE_CLIENT_SECRET,AUTH_MICROSOFT_CLIENT_ID,AUTH_MICROSOFT_CLIENT_SECRET,AZURE_TENANT_ID,MAIL_GRAPH_CLIENT_ID,MAIL_GRAPH_CLIENT_SECRET
+2026-08-25T14:46:30.7889972Z ##[endgroup]
+2026-08-25T14:46:30.9343215Z ##[group]Docker info
+2026-08-25T14:46:30.9362233Z [command]/usr/bin/docker version
+2026-08-25T14:46:30.9531018Z Client: Docker Engine - Community
+2026-08-25T14:46:30.9548251Z  Version:           28.0.4
+2026-08-25T14:46:30.9548582Z  API version:       1.48
+2026-08-25T14:46:30.9548849Z  Go version:        go1.23.7
+2026-08-25T14:46:30.9549125Z  Git commit:        b8034c0
+2026-08-25T14:46:30.9549526Z  Built:             Tue Mar 25 15:07:16 2025
+2026-08-25T14:46:30.9549825Z  OS/Arch:           linux/amd64
+2026-08-25T14:46:30.9550085Z  Context:           default
+2026-08-25T14:46:30.9550235Z 
+2026-08-25T14:46:30.9550361Z Server: Docker Engine - Community
+2026-08-25T14:46:30.9550709Z  Engine:
+2026-08-25T14:46:30.9550969Z   Version:          28.0.4
+2026-08-25T14:46:30.9551311Z   API version:      1.48 (minimum version 1.24)
+2026-08-25T14:46:30.9551688Z   Go version:       go1.23.7
+2026-08-25T14:46:30.9551944Z   Git commit:       6430e49
+2026-08-25T14:46:30.9552271Z   Built:            Tue Mar 25 15:07:16 2025
+2026-08-25T14:46:30.9552617Z   OS/Arch:          linux/amd64
+2026-08-25T14:46:30.9552880Z   Experimental:     false
+2026-08-25T14:46:30.9553198Z  containerd:
+2026-08-25T14:46:30.9553419Z   Version:          v2.3.3
+2026-08-25T14:46:30.9553715Z   GitCommit:        aad11006b869517fcd3009450b6f82da282e1a9b
+2026-08-25T14:46:30.9554024Z  runc:
+2026-08-25T14:46:30.9554471Z   Version:          1.4.3
+2026-08-25T14:46:30.9554826Z   GitCommit:        v1.4.3-0-gbb14dab
+2026-08-25T14:46:30.9555147Z  docker-init:
+2026-08-25T14:46:30.9555410Z   Version:          0.19.0
+2026-08-25T14:46:30.9555653Z   GitCommit:        de40ad0
+2026-08-25T14:46:30.9557194Z [command]/usr/bin/docker info
+2026-08-25T14:46:30.9983397Z Client: Docker Engine - Community
+2026-08-25T14:46:30.9984011Z  Version:    28.0.4
+2026-08-25T14:46:30.9984540Z  Context:    default
+2026-08-25T14:46:30.9984978Z  Debug Mode: false
+2026-08-25T14:46:30.9985366Z  Plugins:
+2026-08-25T14:46:30.9985758Z   buildx: Docker Buildx (Docker Inc.)
+2026-08-25T14:46:30.9986207Z     Version:  v0.36.1
+2026-08-25T14:46:30.9986683Z     Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+2026-08-25T14:46:30.9987162Z   compose: Docker Compose (Docker Inc.)
+2026-08-25T14:46:30.9987580Z     Version:  v2.38.2
+2026-08-25T14:46:30.9987974Z     Path:     /usr/libexec/docker/cli-plugins/docker-compose
+2026-08-25T14:46:30.9988277Z 
+2026-08-25T14:46:30.9988708Z Server:
+2026-08-25T14:46:30.9988978Z  Containers: 0
+2026-08-25T14:46:30.9989262Z   Running: 0
+2026-08-25T14:46:30.9989544Z   Paused: 0
+2026-08-25T14:46:30.9989835Z   Stopped: 0
+2026-08-25T14:46:30.9990126Z  Images: 7
+2026-08-25T14:46:30.9990403Z  Server Version: 28.0.4
+2026-08-25T14:46:30.9990747Z  Storage Driver: overlay2
+2026-08-25T14:46:30.9991071Z   Backing Filesystem: extfs
+2026-08-25T14:46:30.9991392Z   Supports d_type: true
+2026-08-25T14:46:30.9991706Z   Using metacopy: false
+2026-08-25T14:46:30.9992295Z   Native Overlay Diff: false
+2026-08-25T14:46:30.9992665Z   userxattr: false
+2026-08-25T14:46:30.9993009Z  Logging Driver: json-file
+2026-08-25T14:46:30.9993646Z  Cgroup Driver: systemd
+2026-08-25T14:46:30.9994065Z  Cgroup Version: 2
+2026-08-25T14:46:30.9994733Z  Plugins:
+2026-08-25T14:46:30.9995211Z   Volume: local
+2026-08-25T14:46:30.9995769Z   Network: bridge host ipvlan macvlan null overlay
+2026-08-25T14:46:30.9996524Z   Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+2026-08-25T14:46:30.9997265Z  Swarm: inactive
+2026-08-25T14:46:30.9997784Z  Runtimes: io.containerd.runc.v2 runc
+2026-08-25T14:46:30.9998389Z  Default Runtime: runc
+2026-08-25T14:46:30.9998874Z  Init Binary: docker-init
+2026-08-25T14:46:30.9999541Z  containerd version: aad11006b869517fcd3009450b6f82da282e1a9b
+2026-08-25T14:46:31.0000203Z  runc version: v1.4.3-0-gbb14dab
+2026-08-25T14:46:31.0000739Z  init version: de40ad0
+2026-08-25T14:46:31.0001147Z  Security Options:
+2026-08-25T14:46:31.0001604Z   apparmor
+2026-08-25T14:46:31.0002071Z   seccomp
+2026-08-25T14:46:31.0002481Z    Profile: builtin
+2026-08-25T14:46:31.0002959Z   cgroupns
+2026-08-25T14:46:31.0003417Z  Kernel Version: 6.17.0-1022-azure
+2026-08-25T14:46:31.0003936Z  Operating System: Ubuntu 24.04.4 LTS
+2026-08-25T14:46:31.0004590Z  OSType: linux
+2026-08-25T14:46:31.0005017Z  Architecture: x86_64
+2026-08-25T14:46:31.0005512Z  CPUs: 4
+2026-08-25T14:46:31.0005923Z  Total Memory: 15.61GiB
+2026-08-25T14:46:31.0006347Z  Name: runnervm76f27
+2026-08-25T14:46:31.0006848Z  ID: 49fbd9fe-ba53-4f4b-b058-8c240f21fa06
+2026-08-25T14:46:31.0007395Z  Docker Root Dir: /var/lib/docker
+2026-08-25T14:46:31.0007888Z  Debug Mode: false
+2026-08-25T14:46:31.0008306Z  Username: githubactions
+2026-08-25T14:46:31.0008796Z  Experimental: false
+2026-08-25T14:46:31.0009240Z  Insecure Registries:
+2026-08-25T14:46:31.0009695Z   ::1/128
+2026-08-25T14:46:31.0010067Z   127.0.0.0/8
+2026-08-25T14:46:31.0010509Z  Live Restore Enabled: false
+2026-08-25T14:46:31.0010776Z 
+2026-08-25T14:46:31.0011362Z ##[endgroup]
+2026-08-25T14:46:31.0560986Z ##[group]Buildx version
+2026-08-25T14:46:31.0580118Z [command]/usr/bin/docker buildx version
+2026-08-25T14:46:31.1041863Z github.com/docker/buildx v0.36.1 1d8dde89b8aba914e05e45366770736fea1fd690
+2026-08-25T14:46:31.1056271Z ##[endgroup]
+2026-08-25T14:46:31.1187345Z ##[group]Inspecting default docker context
+2026-08-25T14:46:31.1305528Z [
+2026-08-25T14:46:31.1306266Z   {
+2026-08-25T14:46:31.1307374Z     "Name": "default",
+2026-08-25T14:46:31.1307935Z     "Metadata": {},
+2026-08-25T14:46:31.1308519Z     "Endpoints": {
+2026-08-25T14:46:31.1308962Z       "docker": {
+2026-08-25T14:46:31.1309631Z         "Host": "unix:///var/run/docker.sock",
+2026-08-25T14:46:31.1310399Z         "SkipTLSVerify": false
+2026-08-25T14:46:31.1311053Z       }
+2026-08-25T14:46:31.1311471Z     },
+2026-08-25T14:46:31.1312008Z     "TLSMaterial": {},
+2026-08-25T14:46:31.1312618Z     "Storage": {
+2026-08-25T14:46:31.1313153Z       "MetadataPath": "<IN MEMORY>",
+2026-08-25T14:46:31.1313851Z       "TLSPath": "<IN MEMORY>"
+2026-08-25T14:46:31.1314619Z     }
+2026-08-25T14:46:31.1315031Z   }
+2026-08-25T14:46:31.1315479Z ]
+2026-08-25T14:46:31.1316467Z ##[endgroup]
+2026-08-25T14:46:31.1317354Z ##[group]Creating a new builder instance
+2026-08-25T14:46:31.2230418Z [command]/usr/bin/docker buildx create --name builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e --driver docker-container --buildkitd-flags --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host --use
+2026-08-25T14:46:31.2718077Z builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e
+2026-08-25T14:46:31.2734868Z ##[endgroup]
+2026-08-25T14:46:31.2735660Z ##[group]Booting builder
+2026-08-25T14:46:31.2758558Z [command]/usr/bin/docker buildx inspect --bootstrap --builder builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e
+2026-08-25T14:46:31.3232900Z #1 [internal] booting buildkit
+2026-08-25T14:46:31.4739485Z #1 pulling image moby/buildkit:buildx-stable-1
+2026-08-25T14:46:35.1570867Z #1 pulling image moby/buildkit:buildx-stable-1 3.8s done
+2026-08-25T14:46:35.3088458Z #1 creating container buildx_buildkit_builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e0
+2026-08-25T14:46:35.6239125Z #1 creating container buildx_buildkit_builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e0 0.5s done
+2026-08-25T14:46:35.6258158Z #1 DONE 4.3s
+2026-08-25T14:46:35.6550563Z Name:          builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e
+2026-08-25T14:46:35.6551447Z Driver:        docker-container
+2026-08-25T14:46:35.6560952Z Last Activity: 2026-08-25 14:46:31 +0000 UTC
+2026-08-25T14:46:35.6561753Z 
+2026-08-25T14:46:35.6562712Z Nodes:
+2026-08-25T14:46:35.6563556Z Name:                  builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e0
+2026-08-25T14:46:35.6567513Z Endpoint:              unix:///var/run/docker.sock
+2026-08-25T14:46:35.6570063Z Status:                running
+2026-08-25T14:46:35.6572272Z BuildKit daemon flags: --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host
+2026-08-25T14:46:35.6578206Z BuildKit version:      v0.32.2
+2026-08-25T14:46:35.6579517Z Platforms:             linux/amd64, linux/amd64/v2, linux/amd64/v3, linux/amd64/v4, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/mips64le, linux/mips64, linux/loong64, linux/arm/v7, linux/arm/v6
+2026-08-25T14:46:35.6580865Z Labels:
+2026-08-25T14:46:35.6581354Z  org.mobyproject.buildkit.worker.executor:         oci
+2026-08-25T14:46:35.6582062Z  org.mobyproject.buildkit.worker.hostname:         20c99c8d01fc
+2026-08-25T14:46:35.6582747Z  org.mobyproject.buildkit.worker.network:          host
+2026-08-25T14:46:35.6583401Z  org.mobyproject.buildkit.worker.oci.process-mode: sandbox
+2026-08-25T14:46:35.6584054Z  org.mobyproject.buildkit.worker.selinux.enabled:  false
+2026-08-25T14:46:35.6584912Z  org.mobyproject.buildkit.worker.snapshotter:      overlayfs
+2026-08-25T14:46:35.6585508Z GC Policy rule#0:
+2026-08-25T14:46:35.6585945Z  All:            false
+2026-08-25T14:46:35.6586611Z  Filters:        type==source.local type==exec.cachemount type==source.git.checkout
+2026-08-25T14:46:35.6587220Z  Keep Duration:  48h0m0s
+2026-08-25T14:46:35.6587670Z  Max Used Space: 488.3MiB
+2026-08-25T14:46:35.6588095Z GC Policy rule#1:
+2026-08-25T14:46:35.6588538Z  All:            false
+2026-08-25T14:46:35.6588966Z  Keep Duration:  1440h0m0s
+2026-08-25T14:46:35.6589423Z  Reserved Space: 9.313GiB
+2026-08-25T14:46:35.6589901Z  Max Used Space: 93.13GiB
+2026-08-25T14:46:35.6590406Z  Min Free Space: 27.01GiB
+2026-08-25T14:46:35.6590998Z GC Policy rule#2:
+2026-08-25T14:46:35.6591426Z  All:            false
+2026-08-25T14:46:35.6591862Z  Reserved Space: 9.313GiB
+2026-08-25T14:46:35.6592321Z  Max Used Space: 93.13GiB
+2026-08-25T14:46:35.6592769Z  Min Free Space: 27.01GiB
+2026-08-25T14:46:35.6593254Z GC Policy rule#3:
+2026-08-25T14:46:35.6593545Z  All:            true
+2026-08-25T14:46:35.6604894Z  Reserved Space: 9.313GiB
+2026-08-25T14:46:35.6605359Z  Max Used Space: 93.13GiB
+2026-08-25T14:46:35.6605867Z  Min Free Space: 27.01GiB
+2026-08-25T14:46:35.6606954Z ##[endgroup]
+2026-08-25T14:46:35.7340062Z ##[group]Inspect builder
+2026-08-25T14:46:35.7342712Z {
+2026-08-25T14:46:35.7343348Z   "nodes": [
+2026-08-25T14:46:35.7343830Z     {
+2026-08-25T14:46:35.7344635Z       "name": "builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e0",
+2026-08-25T14:46:35.7345311Z       "endpoint": "unix:///var/run/docker.sock",
+2026-08-25T14:46:35.7345887Z       "status": "running",
+2026-08-25T14:46:35.7346721Z       "buildkitd-flags": "--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host",
+2026-08-25T14:46:35.7347864Z       "buildkit": "v0.32.2",
+2026-08-25T14:46:35.7348900Z       "platforms": "linux/amd64,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/loong64,linux/arm/v7,linux/arm/v6",
+2026-08-25T14:46:35.7350091Z       "features": {
+2026-08-25T14:46:35.7350693Z         "Automatically load images to the Docker Engine image store": true,
+2026-08-25T14:46:35.7351392Z         "Cache export": true,
+2026-08-25T14:46:35.7352002Z         "Direct push": true,
+2026-08-25T14:46:35.7352474Z         "Docker exporter": true,
+2026-08-25T14:46:35.7353012Z         "Multi-platform build": true,
+2026-08-25T14:46:35.7353541Z         "OCI exporter": true
+2026-08-25T14:46:35.7353968Z       },
+2026-08-25T14:46:35.7354565Z       "labels": {
+2026-08-25T14:46:35.7355080Z         "org.mobyproject.buildkit.worker.executor": "oci",
+2026-08-25T14:46:35.7355883Z         "org.mobyproject.buildkit.worker.hostname": "20c99c8d01fc",
+2026-08-25T14:46:35.7356673Z         "org.mobyproject.buildkit.worker.network": "host",
+2026-08-25T14:46:35.7357471Z         "org.mobyproject.buildkit.worker.oci.process-mode": "sandbox",
+2026-08-25T14:46:35.7358350Z         "org.mobyproject.buildkit.worker.selinux.enabled": "false",
+2026-08-25T14:46:35.7359057Z         "org.mobyproject.buildkit.worker.snapshotter": "overlayfs"
+2026-08-25T14:46:35.7359658Z       },
+2026-08-25T14:46:35.7360142Z       "gcPolicy": [
+2026-08-25T14:46:35.7360742Z         {
+2026-08-25T14:46:35.7361244Z           "all": false,
+2026-08-25T14:46:35.7361832Z           "filter": [
+2026-08-25T14:46:35.7362506Z             "type==source.local type==exec.cachemount type==source.git.checkout"
+2026-08-25T14:46:35.7363258Z           ],
+2026-08-25T14:46:35.7363771Z           "keepDuration": "48h0m0s",
+2026-08-25T14:46:35.7369159Z           "maxUsedSpace": "488.3MiB"
+2026-08-25T14:46:35.7369708Z         },
+2026-08-25T14:46:35.7370261Z         {
+2026-08-25T14:46:35.7370717Z           "all": false,
+2026-08-25T14:46:35.7371265Z           "keepDuration": "1440h0m0s",
+2026-08-25T14:46:35.7371864Z           "reservedSpace": "9.313GiB",
+2026-08-25T14:46:35.7372493Z           "maxUsedSpace": "93.13GiB",
+2026-08-25T14:46:35.7373087Z           "minFreeSpace": "27.01GiB"
+2026-08-25T14:46:35.7373707Z         },
+2026-08-25T14:46:35.7374153Z         {
+2026-08-25T14:46:35.7375010Z           "all": false,
+2026-08-25T14:46:35.7375537Z           "reservedSpace": "9.313GiB",
+2026-08-25T14:46:35.7376184Z           "maxUsedSpace": "93.13GiB",
+2026-08-25T14:46:35.7376716Z           "minFreeSpace": "27.01GiB"
+2026-08-25T14:46:35.7377325Z         },
+2026-08-25T14:46:35.7377835Z         {
+2026-08-25T14:46:35.7378318Z           "all": true,
+2026-08-25T14:46:35.7378924Z           "reservedSpace": "9.313GiB",
+2026-08-25T14:46:35.7379594Z           "maxUsedSpace": "93.13GiB",
+2026-08-25T14:46:35.7380271Z           "minFreeSpace": "27.01GiB"
+2026-08-25T14:46:35.7380799Z         }
+2026-08-25T14:46:35.7381314Z       ]
+2026-08-25T14:46:35.7381754Z     }
+2026-08-25T14:46:35.7382168Z   ],
+2026-08-25T14:46:35.7382694Z   "name": "builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e",
+2026-08-25T14:46:35.7383305Z   "driver": "docker-container",
+2026-08-25T14:46:35.7383748Z   "lastActivity": "2026-08-25T14:46:31.000Z"
+2026-08-25T14:46:35.7384177Z }
+2026-08-25T14:46:35.7385037Z ##[endgroup]
+2026-08-25T14:46:35.7385697Z ##[group]BuildKit version
+2026-08-25T14:46:35.7386191Z builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e0: v0.32.2
+2026-08-25T14:46:35.7386966Z ##[endgroup]
+2026-08-25T14:46:35.7503418Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-08-25T14:46:35.7504896Z ##[group]Run docker/metadata-action@v5
+2026-08-25T14:46:35.7505316Z with:
+2026-08-25T14:46:35.7505715Z   images: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:35.7506101Z   context: workflow
+2026-08-25T14:46:35.7508193Z   github-token: ***
+2026-08-25T14:46:35.7508541Z env:
+2026-08-25T14:46:35.7508898Z   RUNNER_IMAGE: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:35.7509359Z   SEEDER_IMAGE: ghcr.io/toastboy/next-www-toastboy-seeder
+2026-08-25T14:46:35.7509890Z   DATABASE_URL: ***
+2026-08-25T14:46:35.7510351Z   BETTER_AUTH_SECRET: ***
+2026-08-25T14:46:35.7511324Z   SENTRY_AUTH_TOKEN: ***
+2026-08-25T14:46:35.7512178Z   AUTH_GOOGLE_CLIENT_ID: ***
+2026-08-25T14:46:35.7512596Z   AUTH_GOOGLE_CLIENT_SECRET: ***
+2026-08-25T14:46:35.7513025Z   CRON_SECRET: ***
+2026-08-25T14:46:35.7513405Z   STORAGE_CLIENT_ID: ***
+2026-08-25T14:46:35.7513874Z   STORAGE_CLIENT_SECRET: ***
+2026-08-25T14:46:35.7514488Z   AUTH_MICROSOFT_CLIENT_ID: ***
+2026-08-25T14:46:35.7514995Z   AUTH_MICROSOFT_CLIENT_SECRET: ***
+2026-08-25T14:46:35.7515447Z   AZURE_TENANT_ID: ***
+2026-08-25T14:46:35.7515835Z   MAIL_GRAPH_CLIENT_ID: ***
+2026-08-25T14:46:35.7516307Z   MAIL_GRAPH_CLIENT_SECRET: ***
+2026-08-25T14:46:35.7517278Z   OP_MANAGED_VARIABLES: DATABASE_URL,BETTER_AUTH_SECRET,SENTRY_AUTH_TOKEN,AUTH_GOOGLE_CLIENT_ID,AUTH_GOOGLE_CLIENT_SECRET,CRON_SECRET,STORAGE_CLIENT_ID,STORAGE_CLIENT_SECRET,AUTH_MICROSOFT_CLIENT_ID,AUTH_MICROSOFT_CLIENT_SECRET,AZURE_TENANT_ID,MAIL_GRAPH_CLIENT_ID,MAIL_GRAPH_CLIENT_SECRET
+2026-08-25T14:46:35.7518299Z ##[endgroup]
+2026-08-25T14:46:36.0545543Z (node:3243) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-08-25T14:46:36.0546260Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-08-25T14:46:36.4449425Z ##[group]Context info
+2026-08-25T14:46:36.4449815Z eventName: push
+2026-08-25T14:46:36.4450178Z sha: 59246a7f807ff78cd619bd3533fc008c984944ab
+2026-08-25T14:46:36.4450586Z ref: refs/heads/main
+2026-08-25T14:46:36.4450920Z workflow: Publish Docker images
+2026-08-25T14:46:36.4451277Z action: meta-app
+2026-08-25T14:46:36.4451574Z actor: toastboy70
+2026-08-25T14:46:36.4451871Z runNumber: 2
+2026-08-25T14:46:36.4452153Z runId: 32861564648
+2026-08-25T14:46:36.4452581Z commitDate: Tue Aug 25 2026 14:45:48 GMT+0000 (Coordinated Universal Time)
+2026-08-25T14:46:36.4453229Z ##[endgroup]
+2026-08-25T14:46:36.4453597Z ##[group]Processing images input
+2026-08-25T14:46:36.4453959Z name=ghcr.io/toastboy/next-www-toastboy,enable=true
+2026-08-25T14:46:36.4454667Z ##[endgroup]
+2026-08-25T14:46:36.4462179Z ##[group]Processing tags input
+2026-08-25T14:46:36.4462709Z type=schedule,pattern=nightly,enable=true,priority=1000
+2026-08-25T14:46:36.4463208Z type=ref,event=branch,enable=true,priority=600
+2026-08-25T14:46:36.4463672Z type=ref,event=tag,enable=true,priority=600
+2026-08-25T14:46:36.4464142Z type=ref,event=pr,prefix=pr-,enable=true,priority=600
+2026-08-25T14:46:36.4464901Z ##[endgroup]
+2026-08-25T14:46:36.4465423Z ##[group]Processing flavor input
+2026-08-25T14:46:36.4465780Z latest=auto
+2026-08-25T14:46:36.4466047Z prefix=
+2026-08-25T14:46:36.4466331Z prefixLatest=false
+2026-08-25T14:46:36.4466620Z suffix=
+2026-08-25T14:46:36.4466882Z suffixLatest=false
+2026-08-25T14:46:36.4467358Z ##[endgroup]
+2026-08-25T14:46:36.4509947Z ##[group]Docker image version
+2026-08-25T14:46:36.4510205Z main
+2026-08-25T14:46:36.4510719Z ##[endgroup]
+2026-08-25T14:46:36.4513743Z ##[group]Docker tags
+2026-08-25T14:46:36.4514174Z ghcr.io/toastboy/next-www-toastboy:main
+2026-08-25T14:46:36.4514917Z ##[endgroup]
+2026-08-25T14:46:36.4609176Z ##[group]Docker labels
+2026-08-25T14:46:36.4610065Z org.opencontainers.image.created=2026-08-25T14:46:36.446Z
+2026-08-25T14:46:36.4610769Z org.opencontainers.image.description=Rewrite of the footy website using modern schtick
+2026-08-25T14:46:36.4611396Z org.opencontainers.image.licenses=
+2026-08-25T14:46:36.4611977Z org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab
+2026-08-25T14:46:36.4612624Z org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy
+2026-08-25T14:46:36.4613219Z org.opencontainers.image.title=next-www-toastboy
+2026-08-25T14:46:36.4613900Z org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy
+2026-08-25T14:46:36.4614536Z org.opencontainers.image.version=main
+2026-08-25T14:46:36.4615167Z ##[endgroup]
+2026-08-25T14:46:36.4615735Z ##[group]Annotations
+2026-08-25T14:46:36.4616206Z manifest:org.opencontainers.image.created=2026-08-25T14:46:36.446Z
+2026-08-25T14:46:36.4616928Z manifest:org.opencontainers.image.description=Rewrite of the footy website using modern schtick
+2026-08-25T14:46:36.4617664Z manifest:org.opencontainers.image.licenses=
+2026-08-25T14:46:36.4618296Z manifest:org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab
+2026-08-25T14:46:36.4619071Z manifest:org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy
+2026-08-25T14:46:36.4619726Z manifest:org.opencontainers.image.title=next-www-toastboy
+2026-08-25T14:46:36.4620422Z manifest:org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy
+2026-08-25T14:46:36.4621007Z manifest:org.opencontainers.image.version=main
+2026-08-25T14:46:36.4621759Z ##[endgroup]
+2026-08-25T14:46:36.4622330Z ##[group]JSON output
+2026-08-25T14:46:36.4622806Z {
+2026-08-25T14:46:36.4623156Z   "tags": [
+2026-08-25T14:46:36.4623644Z     "ghcr.io/toastboy/next-www-toastboy:main"
+2026-08-25T14:46:36.4624031Z   ],
+2026-08-25T14:46:36.4624382Z   "tag-names": [
+2026-08-25T14:46:36.4624679Z     "main"
+2026-08-25T14:46:36.4624936Z   ],
+2026-08-25T14:46:36.4625185Z   "labels": {
+2026-08-25T14:46:36.4625598Z     "org.opencontainers.image.created": "2026-08-25T14:46:36.446Z",
+2026-08-25T14:46:36.4626304Z     "org.opencontainers.image.description": "Rewrite of the footy website using modern schtick",
+2026-08-25T14:46:36.4626948Z     "org.opencontainers.image.licenses": "",
+2026-08-25T14:46:36.4627532Z     "org.opencontainers.image.revision": "59246a7f807ff78cd619bd3533fc008c984944ab",
+2026-08-25T14:46:36.4628179Z     "org.opencontainers.image.source": "https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4628640Z     "org.opencontainers.image.title": "next-www-toastboy",
+2026-08-25T14:46:36.4629065Z     "org.opencontainers.image.url": "https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4629477Z     "org.opencontainers.image.version": "main"
+2026-08-25T14:46:36.4629763Z   },
+2026-08-25T14:46:36.4629971Z   "annotations": [
+2026-08-25T14:46:36.4630293Z     "manifest:org.opencontainers.image.created=2026-08-25T14:46:36.446Z",
+2026-08-25T14:46:36.4630822Z     "manifest:org.opencontainers.image.description=Rewrite of the footy website using modern schtick",
+2026-08-25T14:46:36.4631284Z     "manifest:org.opencontainers.image.licenses=",
+2026-08-25T14:46:36.4631721Z     "manifest:org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab",
+2026-08-25T14:46:36.4632264Z     "manifest:org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4632778Z     "manifest:org.opencontainers.image.title=next-www-toastboy",
+2026-08-25T14:46:36.4633240Z     "manifest:org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4633739Z     "manifest:org.opencontainers.image.version=main"
+2026-08-25T14:46:36.4634033Z   ]
+2026-08-25T14:46:36.4634232Z }
+2026-08-25T14:46:36.4634874Z ##[endgroup]
+2026-08-25T14:46:36.4635276Z ##[group]Bake file definition (tags)
+2026-08-25T14:46:36.4635600Z {
+2026-08-25T14:46:36.4635813Z   "target": {
+2026-08-25T14:46:36.4636068Z     "docker-metadata-action": {
+2026-08-25T14:46:36.4636599Z       "tags": [
+2026-08-25T14:46:36.4636863Z         "ghcr.io/toastboy/next-www-toastboy:main"
+2026-08-25T14:46:36.4637154Z       ],
+2026-08-25T14:46:36.4637399Z       "args": {
+2026-08-25T14:46:36.4637718Z         "DOCKER_META_IMAGES": "ghcr.io/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4638064Z         "DOCKER_META_VERSION": "main"
+2026-08-25T14:46:36.4638322Z       }
+2026-08-25T14:46:36.4638521Z     }
+2026-08-25T14:46:36.4638718Z   }
+2026-08-25T14:46:36.4638913Z }
+2026-08-25T14:46:36.4639268Z ##[endgroup]
+2026-08-25T14:46:36.4639640Z ##[group]Bake file definition (labels)
+2026-08-25T14:46:36.4639968Z {
+2026-08-25T14:46:36.4640205Z   "target": {
+2026-08-25T14:46:36.4640493Z     "docker-metadata-action": {
+2026-08-25T14:46:36.4640789Z       "labels": {
+2026-08-25T14:46:36.4641127Z         "org.opencontainers.image.created": "2026-08-25T14:46:36.446Z",
+2026-08-25T14:46:36.4641687Z         "org.opencontainers.image.description": "Rewrite of the footy website using modern schtick",
+2026-08-25T14:46:36.4642321Z         "org.opencontainers.image.licenses": "",
+2026-08-25T14:46:36.4642767Z         "org.opencontainers.image.revision": "59246a7f807ff78cd619bd3533fc008c984944ab",
+2026-08-25T14:46:36.4643357Z         "org.opencontainers.image.source": "https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4643891Z         "org.opencontainers.image.title": "next-www-toastboy",
+2026-08-25T14:46:36.4644526Z         "org.opencontainers.image.url": "https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4644999Z         "org.opencontainers.image.version": "main"
+2026-08-25T14:46:36.4645354Z       }
+2026-08-25T14:46:36.4645571Z     }
+2026-08-25T14:46:36.4645770Z   }
+2026-08-25T14:46:36.4646013Z }
+2026-08-25T14:46:36.4646428Z ##[endgroup]
+2026-08-25T14:46:36.4646886Z ##[group]Bake file definition (annotations)
+2026-08-25T14:46:36.4647199Z {
+2026-08-25T14:46:36.4647438Z   "target": {
+2026-08-25T14:46:36.4647664Z     "docker-metadata-action": {
+2026-08-25T14:46:36.4647983Z       "annotations": [
+2026-08-25T14:46:36.4648389Z         "manifest:org.opencontainers.image.created=2026-08-25T14:46:36.446Z",
+2026-08-25T14:46:36.4649009Z         "manifest:org.opencontainers.image.description=Rewrite of the footy website using modern schtick",
+2026-08-25T14:46:36.4649579Z         "manifest:org.opencontainers.image.licenses=",
+2026-08-25T14:46:36.4650098Z         "manifest:org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab",
+2026-08-25T14:46:36.4650747Z         "manifest:org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4651333Z         "manifest:org.opencontainers.image.title=next-www-toastboy",
+2026-08-25T14:46:36.4651886Z         "manifest:org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy",
+2026-08-25T14:46:36.4652420Z         "manifest:org.opencontainers.image.version=main"
+2026-08-25T14:46:36.4652839Z       ]
+2026-08-25T14:46:36.4653109Z     }
+2026-08-25T14:46:36.4653362Z   }
+2026-08-25T14:46:36.4653600Z }
+2026-08-25T14:46:36.4654075Z ##[endgroup]
+2026-08-25T14:46:36.4810321Z ##[group]Run docker/build-push-action@v7
+2026-08-25T14:46:36.4810631Z with:
+2026-08-25T14:46:36.4810844Z   context: .
+2026-08-25T14:46:36.4811062Z   push: true
+2026-08-25T14:46:36.4811274Z   target: runner
+2026-08-25T14:46:36.4811530Z   tags: ghcr.io/toastboy/next-www-toastboy:main
+2026-08-25T14:46:36.4813123Z   labels: org.opencontainers.image.created=2026-08-25T14:46:36.446Z
+org.opencontainers.image.description=Rewrite of the footy website using modern schtick
+org.opencontainers.image.licenses=
+org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab
+org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy
+org.opencontainers.image.title=next-www-toastboy
+org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy
+org.opencontainers.image.version=main
+2026-08-25T14:46:36.4814939Z   platforms: linux/amd64,linux/arm64
+2026-08-25T14:46:36.4818578Z   build-args: DATABASE_URL=***
+AZURE_TENANT_ID=***
+STORAGE_CLIENT_ID=***
+STORAGE_CLIENT_SECRET=***
+BETTER_AUTH_SECRET=***
+BETTER_AUTH_URL=https://www.toastboy.co.uk
+NEXT_PUBLIC_SITE_URL=https://www.toastboy.co.uk
+CRON_SECRET=***
+AUTH_GOOGLE_CLIENT_ID=***
+AUTH_GOOGLE_CLIENT_SECRET=***
+AUTH_MICROSOFT_CLIENT_ID=***
+AUTH_MICROSOFT_CLIENT_SECRET=***
+SENTRY_AUTH_TOKEN=***
+MAIL_FROM_ADDRESS=footy@toastboy.co.uk
+MAIL_FROM_NAME=Toastboy FC Mailer
+MAIL_GRAPH_CLIENT_ID=***
+MAIL_GRAPH_CLIENT_SECRET=***
+
+2026-08-25T14:46:36.4819999Z   load: false
+2026-08-25T14:46:36.4820220Z   no-cache: false
+2026-08-25T14:46:36.4820453Z   pull: false
+2026-08-25T14:46:36.4822331Z   github-token: ***
+2026-08-25T14:46:36.4822553Z env:
+2026-08-25T14:46:36.4822798Z   RUNNER_IMAGE: ghcr.io/toastboy/next-www-toastboy
+2026-08-25T14:46:36.4823152Z   SEEDER_IMAGE: ghcr.io/toastboy/next-www-toastboy-seeder
+2026-08-25T14:46:36.4823562Z   DATABASE_URL: ***
+2026-08-25T14:46:36.4823845Z   BETTER_AUTH_SECRET: ***
+2026-08-25T14:46:36.4825040Z   SENTRY_AUTH_TOKEN: ***
+2026-08-25T14:46:36.4825584Z   AUTH_GOOGLE_CLIENT_ID: ***
+2026-08-25T14:46:36.4825912Z   AUTH_GOOGLE_CLIENT_SECRET: ***
+2026-08-25T14:46:36.4826182Z   CRON_SECRET: ***
+2026-08-25T14:46:36.4826465Z   STORAGE_CLIENT_ID: ***
+2026-08-25T14:46:36.4826794Z   STORAGE_CLIENT_SECRET: ***
+2026-08-25T14:46:36.4827105Z   AUTH_MICROSOFT_CLIENT_ID: ***
+2026-08-25T14:46:36.4827448Z   AUTH_MICROSOFT_CLIENT_SECRET: ***
+2026-08-25T14:46:36.4827767Z   AZURE_TENANT_ID: ***
+2026-08-25T14:46:36.4828059Z   MAIL_GRAPH_CLIENT_ID: ***
+2026-08-25T14:46:36.4828387Z   MAIL_GRAPH_CLIENT_SECRET: ***
+2026-08-25T14:46:36.4829280Z   OP_MANAGED_VARIABLES: DATABASE_URL,BETTER_AUTH_SECRET,SENTRY_AUTH_TOKEN,AUTH_GOOGLE_CLIENT_ID,AUTH_GOOGLE_CLIENT_SECRET,CRON_SECRET,STORAGE_CLIENT_ID,STORAGE_CLIENT_SECRET,AUTH_MICROSOFT_CLIENT_ID,AUTH_MICROSOFT_CLIENT_SECRET,AZURE_TENANT_ID,MAIL_GRAPH_CLIENT_ID,MAIL_GRAPH_CLIENT_SECRET
+2026-08-25T14:46:36.4830173Z   DOCKER_METADATA_OUTPUT_VERSION: main
+2026-08-25T14:46:36.4830519Z   DOCKER_METADATA_OUTPUT_TAGS: ghcr.io/toastboy/next-www-toastboy:main
+2026-08-25T14:46:36.4830892Z   DOCKER_METADATA_OUTPUT_TAG_NAMES: main
+2026-08-25T14:46:36.4832497Z   DOCKER_METADATA_OUTPUT_LABELS: org.opencontainers.image.created=2026-08-25T14:46:36.446Z
+org.opencontainers.image.description=Rewrite of the footy website using modern schtick
+org.opencontainers.image.licenses=
+org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab
+org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy
+org.opencontainers.image.title=next-www-toastboy
+org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy
+org.opencontainers.image.version=main
+2026-08-25T14:46:36.4835850Z   DOCKER_METADATA_OUTPUT_ANNOTATIONS: manifest:org.opencontainers.image.created=2026-08-25T14:46:36.446Z
+manifest:org.opencontainers.image.description=Rewrite of the footy website using modern schtick
+manifest:org.opencontainers.image.licenses=
+manifest:org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab
+manifest:org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy
+manifest:org.opencontainers.image.title=next-www-toastboy
+manifest:org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy
+manifest:org.opencontainers.image.version=main
+2026-08-25T14:46:36.4840880Z   DOCKER_METADATA_OUTPUT_JSON: {"tags":["ghcr.io/toastboy/next-www-toastboy:main"],"tag-names":["main"],"labels":{"org.opencontainers.image.created":"2026-08-25T14:46:36.446Z","org.opencontainers.image.description":"Rewrite of the footy website using modern schtick","org.opencontainers.image.licenses":"","org.opencontainers.image.revision":"59246a7f807ff78cd619bd3533fc008c984944ab","org.opencontainers.image.source":"https://github.com/toastboy/next-www-toastboy","org.opencontainers.image.title":"next-www-toastboy","org.opencontainers.image.url":"https://github.com/toastboy/next-www-toastboy","org.opencontainers.image.version":"main"},"annotations":["manifest:org.opencontainers.image.created=2026-08-25T14:46:36.446Z","manifest:org.opencontainers.image.description=Rewrite of the footy website using modern schtick","manifest:org.opencontainers.image.licenses=","manifest:org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab","manifest:org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy","manifest:org.opencontainers.image.title=next-www-toastboy","manifest:org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy","manifest:org.opencontainers.image.version=main"]}
+2026-08-25T14:46:36.4844975Z   DOCKER_METADATA_OUTPUT_BAKE_FILE_TAGS: /home/runner/work/_temp/docker-actions-toolkit-Bsuvoh/docker-metadata-action-bake-tags.json
+2026-08-25T14:46:36.4845785Z   DOCKER_METADATA_OUTPUT_BAKE_FILE_LABELS: /home/runner/work/_temp/docker-actions-toolkit-Bsuvoh/docker-metadata-action-bake-labels.json
+2026-08-25T14:46:36.4846616Z   DOCKER_METADATA_OUTPUT_BAKE_FILE_ANNOTATIONS: /home/runner/work/_temp/docker-actions-toolkit-Bsuvoh/docker-metadata-action-bake-annotations.json
+2026-08-25T14:46:36.4847449Z   DOCKER_METADATA_OUTPUT_BAKE_FILE: /home/runner/work/_temp/docker-actions-toolkit-Bsuvoh/docker-metadata-action-bake.json
+2026-08-25T14:46:36.4847923Z ##[endgroup]
+2026-08-25T14:46:36.6892188Z ##[group]GitHub Actions runtime token ACs
+2026-08-25T14:46:36.6899944Z refs/heads/main: read/write
+2026-08-25T14:46:36.6900952Z ##[endgroup]
+2026-08-25T14:46:36.6910342Z ##[group]Docker info
+2026-08-25T14:46:36.6933869Z [command]/usr/bin/docker version
+2026-08-25T14:46:36.7097136Z Client: Docker Engine - Community
+2026-08-25T14:46:36.7097638Z  Version:           28.0.4
+2026-08-25T14:46:36.7098050Z  API version:       1.48
+2026-08-25T14:46:36.7098377Z  Go version:        go1.23.7
+2026-08-25T14:46:36.7098722Z  Git commit:        b8034c0
+2026-08-25T14:46:36.7099136Z  Built:             Tue Mar 25 15:07:16 2025
+2026-08-25T14:46:36.7099578Z  OS/Arch:           linux/amd64
+2026-08-25T14:46:36.7099950Z  Context:           default
+2026-08-25T14:46:36.7100152Z 
+2026-08-25T14:46:36.7100370Z Server: Docker Engine - Community
+2026-08-25T14:46:36.7100742Z  Engine:
+2026-08-25T14:46:36.7101033Z   Version:          28.0.4
+2026-08-25T14:46:36.7101406Z   API version:      1.48 (minimum version 1.24)
+2026-08-25T14:46:36.7101808Z   Go version:       go1.23.7
+2026-08-25T14:46:36.7102143Z   Git commit:       6430e49
+2026-08-25T14:46:36.7102489Z   Built:            Tue Mar 25 15:07:16 2025
+2026-08-25T14:46:36.7102880Z   OS/Arch:          linux/amd64
+2026-08-25T14:46:36.7103204Z   Experimental:     false
+2026-08-25T14:46:36.7103521Z  containerd:
+2026-08-25T14:46:36.7103811Z   Version:          v2.3.3
+2026-08-25T14:46:36.7104427Z   GitCommit:        aad11006b869517fcd3009450b6f82da282e1a9b
+2026-08-25T14:46:36.7104893Z  runc:
+2026-08-25T14:46:36.7105187Z   Version:          1.4.3
+2026-08-25T14:46:36.7105549Z   GitCommit:        v1.4.3-0-gbb14dab
+2026-08-25T14:46:36.7105922Z  docker-init:
+2026-08-25T14:46:36.7106674Z   Version:          0.19.0
+2026-08-25T14:46:36.7107024Z   GitCommit:        de40ad0
+2026-08-25T14:46:36.7132984Z [command]/usr/bin/docker info
+2026-08-25T14:46:36.7532273Z Client: Docker Engine - Community
+2026-08-25T14:46:36.7532764Z  Version:    28.0.4
+2026-08-25T14:46:36.7533194Z  Context:    default
+2026-08-25T14:46:36.7533435Z  Debug Mode: false
+2026-08-25T14:46:36.7533677Z  Plugins:
+2026-08-25T14:46:36.7533913Z   buildx: Docker Buildx (Docker Inc.)
+2026-08-25T14:46:36.7534193Z     Version:  v0.36.1
+2026-08-25T14:46:36.7534793Z     Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+2026-08-25T14:46:36.7535157Z   compose: Docker Compose (Docker Inc.)
+2026-08-25T14:46:36.7535436Z     Version:  v2.38.2
+2026-08-25T14:46:36.7535727Z     Path:     /usr/libexec/docker/cli-plugins/docker-compose
+2026-08-25T14:46:36.7535963Z 
+2026-08-25T14:46:36.7536058Z Server:
+2026-08-25T14:46:36.7536266Z  Containers: 1
+2026-08-25T14:46:36.7536498Z   Running: 1
+2026-08-25T14:46:36.7536705Z   Paused: 0
+2026-08-25T14:46:36.7536907Z   Stopped: 0
+2026-08-25T14:46:36.7537109Z  Images: 8
+2026-08-25T14:46:36.7537318Z  Server Version: 28.0.4
+2026-08-25T14:46:36.7537573Z  Storage Driver: overlay2
+2026-08-25T14:46:36.7537834Z   Backing Filesystem: extfs
+2026-08-25T14:46:36.7538082Z   Supports d_type: true
+2026-08-25T14:46:36.7538316Z   Using metacopy: false
+2026-08-25T14:46:36.7538550Z   Native Overlay Diff: false
+2026-08-25T14:46:36.7538792Z   userxattr: false
+2026-08-25T14:46:36.7539021Z  Logging Driver: json-file
+2026-08-25T14:46:36.7539263Z  Cgroup Driver: systemd
+2026-08-25T14:46:36.7539496Z  Cgroup Version: 2
+2026-08-25T14:46:36.7539713Z  Plugins:
+2026-08-25T14:46:36.7539919Z   Volume: local
+2026-08-25T14:46:36.7540172Z   Network: bridge host ipvlan macvlan null overlay
+2026-08-25T14:46:36.7540557Z   Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+2026-08-25T14:46:36.7540910Z  Swarm: inactive
+2026-08-25T14:46:36.7541154Z  Runtimes: runc io.containerd.runc.v2
+2026-08-25T14:46:36.7541439Z  Default Runtime: runc
+2026-08-25T14:46:36.7541678Z  Init Binary: docker-init
+2026-08-25T14:46:36.7542273Z  containerd version: aad11006b869517fcd3009450b6f82da282e1a9b
+2026-08-25T14:46:36.7542817Z  runc version: v1.4.3-0-gbb14dab
+2026-08-25T14:46:36.7543075Z  init version: de40ad0
+2026-08-25T14:46:36.7543307Z  Security Options:
+2026-08-25T14:46:36.7543529Z   apparmor
+2026-08-25T14:46:36.7543733Z   seccomp
+2026-08-25T14:46:36.7543949Z    Profile: builtin
+2026-08-25T14:46:36.7544161Z   cgroupns
+2026-08-25T14:46:36.7544506Z  Kernel Version: 6.17.0-1022-azure
+2026-08-25T14:46:36.7544788Z  Operating System: Ubuntu 24.04.4 LTS
+2026-08-25T14:46:36.7545054Z  OSType: linux
+2026-08-25T14:46:36.7545275Z  Architecture: x86_64
+2026-08-25T14:46:36.7545506Z  CPUs: 4
+2026-08-25T14:46:36.7545721Z  Total Memory: 15.61GiB
+2026-08-25T14:46:36.7545954Z  Name: runnervm76f27
+2026-08-25T14:46:36.7546209Z  ID: 49fbd9fe-ba53-4f4b-b058-8c240f21fa06
+2026-08-25T14:46:36.7546495Z  Docker Root Dir: /var/lib/docker
+2026-08-25T14:46:36.7546745Z  Debug Mode: false
+2026-08-25T14:46:36.7546967Z  Username: githubactions
+2026-08-25T14:46:36.7547206Z  Experimental: false
+2026-08-25T14:46:36.7547442Z  Insecure Registries:
+2026-08-25T14:46:36.7547753Z   ::1/128
+2026-08-25T14:46:36.7547955Z   127.0.0.0/8
+2026-08-25T14:46:36.7548170Z  Live Restore Enabled: false
+2026-08-25T14:46:36.7548326Z 
+2026-08-25T14:46:36.7569651Z ##[endgroup]
+2026-08-25T14:46:36.7570327Z ##[group]Proxy configuration
+2026-08-25T14:46:36.7572486Z No proxy configuration found
+2026-08-25T14:46:36.7573350Z ##[endgroup]
+2026-08-25T14:46:36.8086079Z ##[group]Buildx version
+2026-08-25T14:46:36.8106218Z [command]/usr/bin/docker buildx version
+2026-08-25T14:46:36.8502093Z github.com/docker/buildx v0.36.1 1d8dde89b8aba914e05e45366770736fea1fd690
+2026-08-25T14:46:36.8520375Z ##[endgroup]
+2026-08-25T14:46:36.8520901Z ##[group]Builder info
+2026-08-25T14:46:36.9241953Z {
+2026-08-25T14:46:36.9242232Z   "nodes": [
+2026-08-25T14:46:36.9242612Z     {
+2026-08-25T14:46:36.9243027Z       "name": "builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e0",
+2026-08-25T14:46:36.9243553Z       "endpoint": "unix:///var/run/docker.sock",
+2026-08-25T14:46:36.9244049Z       "status": "running",
+2026-08-25T14:46:36.9245131Z       "buildkitd-flags": "--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host",
+2026-08-25T14:46:36.9245696Z       "buildkit": "v0.32.2",
+2026-08-25T14:46:36.9246540Z       "platforms": "linux/amd64,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/loong64,linux/arm/v7,linux/arm/v6",
+2026-08-25T14:46:36.9247533Z       "features": {
+2026-08-25T14:46:36.9247971Z         "Automatically load images to the Docker Engine image store": true,
+2026-08-25T14:46:36.9248559Z         "Cache export": true,
+2026-08-25T14:46:36.9248888Z         "Direct push": true,
+2026-08-25T14:46:36.9249177Z         "Docker exporter": true,
+2026-08-25T14:46:36.9249516Z         "Multi-platform build": true,
+2026-08-25T14:46:36.9249840Z         "OCI exporter": true
+2026-08-25T14:46:36.9250121Z       },
+2026-08-25T14:46:36.9250374Z       "labels": {
+2026-08-25T14:46:36.9250692Z         "org.mobyproject.buildkit.worker.executor": "oci",
+2026-08-25T14:46:36.9251197Z         "org.mobyproject.buildkit.worker.hostname": "20c99c8d01fc",
+2026-08-25T14:46:36.9251733Z         "org.mobyproject.buildkit.worker.network": "host",
+2026-08-25T14:46:36.9252252Z         "org.mobyproject.buildkit.worker.oci.process-mode": "sandbox",
+2026-08-25T14:46:36.9252748Z         "org.mobyproject.buildkit.worker.selinux.enabled": "false",
+2026-08-25T14:46:36.9253166Z         "org.mobyproject.buildkit.worker.snapshotter": "overlayfs"
+2026-08-25T14:46:36.9253487Z       },
+2026-08-25T14:46:36.9253733Z       "gcPolicy": [
+2026-08-25T14:46:36.9254001Z         {
+2026-08-25T14:46:36.9254215Z           "all": false,
+2026-08-25T14:46:36.9254643Z           "filter": [
+2026-08-25T14:46:36.9255017Z             "type==source.local type==exec.cachemount type==source.git.checkout"
+2026-08-25T14:46:36.9255433Z           ],
+2026-08-25T14:46:36.9255655Z           "keepDuration": "48h0m0s",
+2026-08-25T14:46:36.9256290Z           "maxUsedSpace": "488.3MiB"
+2026-08-25T14:46:36.9256604Z         },
+2026-08-25T14:46:36.9256832Z         {
+2026-08-25T14:46:36.9257080Z           "all": false,
+2026-08-25T14:46:36.9257322Z           "keepDuration": "1440h0m0s",
+2026-08-25T14:46:36.9257607Z           "reservedSpace": "9.313GiB",
+2026-08-25T14:46:36.9257949Z           "maxUsedSpace": "93.13GiB",
+2026-08-25T14:46:36.9258248Z           "minFreeSpace": "27.01GiB"
+2026-08-25T14:46:36.9258544Z         },
+2026-08-25T14:46:36.9258798Z         {
+2026-08-25T14:46:36.9259058Z           "all": false,
+2026-08-25T14:46:36.9259358Z           "reservedSpace": "9.313GiB",
+2026-08-25T14:46:36.9259704Z           "maxUsedSpace": "93.13GiB",
+2026-08-25T14:46:36.9260068Z           "minFreeSpace": "27.01GiB"
+2026-08-25T14:46:36.9260380Z         },
+2026-08-25T14:46:36.9260635Z         {
+2026-08-25T14:46:36.9260874Z           "all": true,
+2026-08-25T14:46:36.9261110Z           "reservedSpace": "9.313GiB",
+2026-08-25T14:46:36.9261442Z           "maxUsedSpace": "93.13GiB",
+2026-08-25T14:46:36.9261814Z           "minFreeSpace": "27.01GiB"
+2026-08-25T14:46:36.9262167Z         }
+2026-08-25T14:46:36.9262371Z       ]
+2026-08-25T14:46:36.9262568Z     }
+2026-08-25T14:46:36.9262765Z   ],
+2026-08-25T14:46:36.9263086Z   "name": "builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e",
+2026-08-25T14:46:36.9263478Z   "driver": "docker-container",
+2026-08-25T14:46:36.9263758Z   "lastActivity": "2026-08-25T14:46:31.000Z"
+2026-08-25T14:46:36.9264085Z }
+2026-08-25T14:46:36.9265181Z ##[endgroup]
+2026-08-25T14:46:37.0486855Z [command]/usr/bin/docker buildx build --build-arg DATABASE_URL=*** --build-arg AZURE_TENANT_ID=*** --build-arg STORAGE_CLIENT_ID=*** --build-arg STORAGE_CLIENT_SECRET=*** --build-arg BETTER_AUTH_SECRET=*** --build-arg BETTER_AUTH_URL=https://www.toastboy.co.uk --build-arg NEXT_PUBLIC_SITE_URL=https://www.toastboy.co.uk --build-arg CRON_SECRET=*** --build-arg AUTH_GOOGLE_CLIENT_ID=*** --build-arg AUTH_GOOGLE_CLIENT_SECRET=*** --build-arg AUTH_MICROSOFT_CLIENT_ID=*** --build-arg AUTH_MICROSOFT_CLIENT_SECRET=*** --build-arg SENTRY_AUTH_TOKEN=*** --build-arg MAIL_FROM_ADDRESS=footy@toastboy.co.uk --build-arg MAIL_FROM_NAME=Toastboy FC Mailer --build-arg MAIL_GRAPH_CLIENT_ID=*** --build-arg MAIL_GRAPH_CLIENT_SECRET=*** --iidfile /home/runner/work/_temp/docker-actions-toolkit-2KNGuR/build-iidfile-51be3cfa4f.txt --label org.opencontainers.image.created=2026-08-25T14:46:36.446Z --label org.opencontainers.image.description=Rewrite of the footy website using modern schtick --label org.opencontainers.image.licenses= --label org.opencontainers.image.revision=59246a7f807ff78cd619bd3533fc008c984944ab --label org.opencontainers.image.source=https://github.com/toastboy/next-www-toastboy --label org.opencontainers.image.title=next-www-toastboy --label org.opencontainers.image.url=https://github.com/toastboy/next-www-toastboy --label org.opencontainers.image.version=main --platform linux/amd64,linux/arm64 --attest type=provenance,mode=max,builder-id=https://github.com/toastboy/next-www-toastboy/actions/runs/32861564648/attempts/1 --tag ghcr.io/toastboy/next-www-toastboy:main --target runner --metadata-file /home/runner/work/_temp/docker-actions-toolkit-2KNGuR/build-metadata-45284dfa24.json --push .
+2026-08-25T14:46:37.2660065Z #0 building with "builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e" instance using docker-container driver
+2026-08-25T14:46:37.2660738Z 
+2026-08-25T14:46:37.2660950Z #1 [internal] load build definition from Dockerfile
+2026-08-25T14:46:37.2661301Z #1 transferring dockerfile: 3.59kB done
+2026-08-25T14:46:37.2661689Z #1 DONE 0.0s
+2026-08-25T14:46:37.2661956Z 
+2026-08-25T14:46:37.2662188Z #2 [auth] docker/dockerfile:pull token for registry-1.docker.io
+2026-08-25T14:46:37.4162914Z #2 DONE 0.0s
+2026-08-25T14:46:37.4163152Z 
+2026-08-25T14:46:37.4163425Z #3 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+2026-08-25T14:46:37.8897059Z #3 DONE 0.7s
+2026-08-25T14:46:38.0532861Z 
+2026-08-25T14:46:38.0535856Z #4 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+2026-08-25T14:46:38.0537064Z #4 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e done
+2026-08-25T14:46:38.0555026Z #4 sha256:96918c57e42509b97f10c074d80672ecdbd3bb7dcd38c1bd95960cf291207416 2.10MB / 11.98MB 0.2s
+2026-08-25T14:46:38.1763499Z #4 sha256:96918c57e42509b97f10c074d80672ecdbd3bb7dcd38c1bd95960cf291207416 11.98MB / 11.98MB 0.3s done
+2026-08-25T14:46:38.3291700Z #4 extracting sha256:96918c57e42509b97f10c074d80672ecdbd3bb7dcd38c1bd95960cf291207416
+2026-08-25T14:46:38.3904117Z #4 extracting sha256:96918c57e42509b97f10c074d80672ecdbd3bb7dcd38c1bd95960cf291207416 0.2s done
+2026-08-25T14:46:38.3905583Z #4 DONE 0.5s
+2026-08-25T14:46:38.5886605Z 
+2026-08-25T14:46:38.5887449Z #5 [linux/amd64 internal] load metadata for docker.io/library/node:26.7.0-bookworm-slim
+2026-08-25T14:46:38.7734628Z #5 ...
+2026-08-25T14:46:38.7734888Z 
+2026-08-25T14:46:38.7735199Z #6 [auth] library/node:pull token for registry-1.docker.io
+2026-08-25T14:46:38.7735769Z #6 DONE 0.0s
+2026-08-25T14:46:38.9236714Z 
+2026-08-25T14:46:38.9237567Z #7 [linux/arm64 internal] load metadata for docker.io/library/node:26.7.0-bookworm-slim
+2026-08-25T14:46:39.1953196Z #7 DONE 0.8s
+2026-08-25T14:46:39.1953630Z 
+2026-08-25T14:46:39.1954214Z #5 [linux/amd64 internal] load metadata for docker.io/library/node:26.7.0-bookworm-slim
+2026-08-25T14:46:39.3779651Z #5 DONE 0.8s
+2026-08-25T14:46:39.3781609Z 
+2026-08-25T14:46:39.3782356Z #8 [internal] load .dockerignore
+2026-08-25T14:46:39.3782801Z #8 transferring context: 478B done
+2026-08-25T14:46:39.3783744Z #8 DONE 0.0s
+2026-08-25T14:46:39.4833855Z 
+2026-08-25T14:46:39.4836562Z #9 [linux/arm64 runner  1/15] FROM docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32
+2026-08-25T14:46:39.4840882Z #9 resolve docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32 done
+2026-08-25T14:46:39.6961585Z #9 ...
+2026-08-25T14:46:39.6962567Z 
+2026-08-25T14:46:39.6962760Z #10 [internal] load build context
+2026-08-25T14:46:39.6963231Z #10 transferring context: 23.02MB 0.3s done
+2026-08-25T14:46:39.6964052Z #10 DONE 0.3s
+2026-08-25T14:46:39.6964551Z 
+2026-08-25T14:46:39.6965188Z #9 [linux/arm64 runner  1/15] FROM docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32
+2026-08-25T14:46:39.6966247Z #9 sha256:99d1ca8f865453617844ef9e40d78ad660fbf150847c31a9355d38303f228bae 447B / 447B 0.1s done
+2026-08-25T14:46:39.8512750Z #9 sha256:f0f39e861c9cc292f09c56d9a14b6705313095a6085a783120cdcbaeac619122 52.43MB / 55.13MB 0.3s
+2026-08-25T14:46:39.8513993Z #9 sha256:75782e20ea1f4a9d9259bc20a5ecbbea8d5943bf5370bf0f5727900728f1cc9a 0B / 28.12MB 0.2s
+2026-08-25T14:46:40.0017490Z #9 sha256:75782e20ea1f4a9d9259bc20a5ecbbea8d5943bf5370bf0f5727900728f1cc9a 18.87MB / 28.12MB 0.3s
+2026-08-25T14:46:40.1517866Z #9 sha256:75782e20ea1f4a9d9259bc20a5ecbbea8d5943bf5370bf0f5727900728f1cc9a 28.12MB / 28.12MB 0.5s
+2026-08-25T14:46:40.7879193Z #9 sha256:f0f39e861c9cc292f09c56d9a14b6705313095a6085a783120cdcbaeac619122 55.13MB / 55.13MB 1.0s done
+2026-08-25T14:46:40.7880000Z #9 sha256:75782e20ea1f4a9d9259bc20a5ecbbea8d5943bf5370bf0f5727900728f1cc9a 28.12MB / 28.12MB 1.0s done
+2026-08-25T14:46:40.7881016Z #9 extracting sha256:75782e20ea1f4a9d9259bc20a5ecbbea8d5943bf5370bf0f5727900728f1cc9a
+2026-08-25T14:46:40.7881745Z #9 sha256:25c00aa1f498b3fb80cad53981a63553f07b47c867c4e257d19629689036c1df 3.31kB / 3.31kB 0.1s done
+2026-08-25T14:46:41.2191399Z #9 ...
+2026-08-25T14:46:41.2191692Z 
+2026-08-25T14:46:41.2192502Z #11 [linux/amd64 runner  1/15] FROM docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32
+2026-08-25T14:46:41.2193887Z #11 resolve docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32 done
+2026-08-25T14:46:41.2195425Z #11 sha256:283918f6b0066b6422154e90e21124417bff7e15da5e8265ba4434f7495fd405 447B / 447B 0.1s done
+2026-08-25T14:46:41.2196342Z #11 sha256:acd1e03018c71cb20c1b75b84a3650c101f5a69b16aea2092538c645f369b5b6 3.32kB / 3.32kB 0.1s done
+2026-08-25T14:46:41.2197275Z #11 sha256:eaf12148dc5c2317f0ac1615ff56cf7dc97f0b6f4ac8c95c7595dc4777b025e5 54.94MB / 54.94MB 1.2s done
+2026-08-25T14:46:41.2198526Z #11 sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 28.23MB / 28.23MB 1.1s done
+2026-08-25T14:46:41.2200258Z #11 extracting sha256:a8ac7f6c67abc236e4c745052c404112b8fab6fe8ac3a329d1ef3b867ad67c71 0.6s done
+2026-08-25T14:46:41.2201615Z #11 DONE 1.8s
+2026-08-25T14:46:41.4114400Z 
+2026-08-25T14:46:41.4115863Z #9 [linux/arm64 runner  1/15] FROM docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32
+2026-08-25T14:46:41.4117625Z #9 extracting sha256:75782e20ea1f4a9d9259bc20a5ecbbea8d5943bf5370bf0f5727900728f1cc9a 0.7s done
+2026-08-25T14:46:41.4118840Z #9 extracting sha256:25c00aa1f498b3fb80cad53981a63553f07b47c867c4e257d19629689036c1df 0.0s done
+2026-08-25T14:46:41.4120088Z #9 extracting sha256:f0f39e861c9cc292f09c56d9a14b6705313095a6085a783120cdcbaeac619122
+2026-08-25T14:46:42.4412896Z #9 ...
+2026-08-25T14:46:42.4413458Z 
+2026-08-25T14:46:42.4415019Z #11 [linux/amd64 runner  1/15] FROM docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32
+2026-08-25T14:46:42.4416200Z #11 extracting sha256:acd1e03018c71cb20c1b75b84a3650c101f5a69b16aea2092538c645f369b5b6 0.0s done
+2026-08-25T14:46:42.4417142Z #11 extracting sha256:eaf12148dc5c2317f0ac1615ff56cf7dc97f0b6f4ac8c95c7595dc4777b025e5 1.2s done
+2026-08-25T14:46:42.4417775Z #11 DONE 3.1s
+2026-08-25T14:46:42.5611745Z 
+2026-08-25T14:46:42.5612765Z #11 [linux/amd64 runner  1/15] FROM docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32
+2026-08-25T14:46:42.5614067Z #11 extracting sha256:283918f6b0066b6422154e90e21124417bff7e15da5e8265ba4434f7495fd405 0.0s done
+2026-08-25T14:46:42.5614771Z #11 DONE 3.1s
+2026-08-25T14:46:42.5614911Z 
+2026-08-25T14:46:42.5615306Z #9 [linux/arm64 runner  1/15] FROM docker.io/library/node:26.7.0-bookworm-slim@sha256:4db36457f406501e6f608802e5da617e5fbd0e80b75901b6a09de1ae5a667d32
+2026-08-25T14:46:42.5616056Z #9 extracting sha256:f0f39e861c9cc292f09c56d9a14b6705313095a6085a783120cdcbaeac619122 1.2s done
+2026-08-25T14:46:42.5616768Z #9 extracting sha256:99d1ca8f865453617844ef9e40d78ad660fbf150847c31a9355d38303f228bae done
+2026-08-25T14:46:42.5617241Z #9 DONE 3.1s
+2026-08-25T14:46:42.5617387Z 
+2026-08-25T14:46:42.5617778Z #12 [linux/amd64 deps 1/3] RUN apt-get update &&     apt-get install -y --no-install-recommends openssl git &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:46:42.5618472Z #12 0.099 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+2026-08-25T14:46:42.8023593Z #12 0.143 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+2026-08-25T14:46:42.8024182Z #12 0.161 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+2026-08-25T14:46:42.8398811Z #12 0.189 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+2026-08-25T14:46:42.8399647Z #12 0.377 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+2026-08-25T14:46:42.9946839Z #12 0.382 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [335 kB]
+2026-08-25T14:46:43.5483510Z #12 1.086 Fetched 9374 kB in 1s (9169 kB/s)
+2026-08-25T14:46:43.8837337Z #12 1.086 Reading package lists...
+2026-08-25T14:46:44.4860048Z #12 1.684 Reading package lists...
+2026-08-25T14:46:44.6488617Z #12 2.034 Building dependency tree...
+2026-08-25T14:46:44.6489186Z #12 2.096 Reading state information...
+2026-08-25T14:46:44.6489748Z #12 2.186 The following additional packages will be installed:
+2026-08-25T14:46:44.8001094Z #12 2.186   git-man libbrotli1 libcurl3-gnutls liberror-perl libexpat1 libgdbm-compat4
+2026-08-25T14:46:44.9123011Z #12 2.186   libgdbm6 libgssapi-krb5-2 libk5crypto3 libkeyutils1 libkrb5-3
+2026-08-25T14:46:44.9123497Z #12 2.186   libkrb5support0 libldap-2.5-0 libnghttp2-14 libperl5.36 libpsl5 librtmp1
+2026-08-25T14:46:44.9124012Z #12 2.187   libsasl2-2 libsasl2-modules-db libssh2-1 libssl3 perl perl-modules-5.36
+2026-08-25T14:46:44.9124787Z #12 2.187 Suggested packages:
+2026-08-25T14:46:44.9125199Z #12 2.187   gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+2026-08-25T14:46:44.9125718Z #12 2.187   gitk gitweb git-cvs git-mediawiki git-svn gdbm-l10n krb5-doc krb5-user
+2026-08-25T14:46:44.9126171Z #12 2.187   sensible-utils ca-certificates perl-doc libterm-readline-gnu-perl
+2026-08-25T14:46:44.9126625Z #12 2.187   | libterm-readline-perl-perl make libtap-harness-archive-perl
+2026-08-25T14:46:44.9126988Z #12 2.187 Recommended packages:
+2026-08-25T14:46:44.9127348Z #12 2.187   ca-certificates patch less ssh-client krb5-locales libldap-common
+2026-08-25T14:46:44.9127741Z #12 2.187   publicsuffix libsasl2-modules netbase
+2026-08-25T14:46:45.2842670Z #12 2.822 The following NEW packages will be installed:
+2026-08-25T14:46:45.4467370Z #12 2.822   git git-man libbrotli1 libcurl3-gnutls liberror-perl libexpat1
+2026-08-25T14:46:45.4468210Z #12 2.823   libgdbm-compat4 libgdbm6 libgssapi-krb5-2 libk5crypto3 libkeyutils1
+2026-08-25T14:46:45.4469073Z #12 2.823   libkrb5-3 libkrb5support0 libldap-2.5-0 libnghttp2-14 libperl5.36 libpsl5
+2026-08-25T14:46:45.4469607Z #12 2.823   librtmp1 libsasl2-2 libsasl2-modules-db libssh2-1 libssl3 openssl perl
+2026-08-25T14:46:45.4470015Z #12 2.823   perl-modules-5.36
+2026-08-25T14:46:45.4470364Z #12 2.861 0 upgraded, 25 newly installed, 0 to remove and 0 not upgraded.
+2026-08-25T14:46:45.4470742Z #12 2.861 Need to get 22.2 MB of archives.
+2026-08-25T14:46:45.4471111Z #12 2.861 After this operation, 111 MB of additional disk space will be used.
+2026-08-25T14:46:45.4471714Z #12 2.861 Get:1 http://deb.debian.org/debian bookworm/main amd64 perl-modules-5.36 all 5.36.0-7+deb12u3 [2815 kB]
+2026-08-25T14:46:45.4472593Z #12 2.984 Get:2 http://deb.debian.org/debian bookworm/main amd64 libgdbm6 amd64 1.23-3 [72.2 kB]
+2026-08-25T14:46:45.5473169Z #12 2.994 Get:3 http://deb.debian.org/debian bookworm/main amd64 libgdbm-compat4 amd64 1.23-3 [48.2 kB]
+2026-08-25T14:46:45.5474146Z #12 2.995 Get:4 http://deb.debian.org/debian bookworm/main amd64 libperl5.36 amd64 5.36.0-7+deb12u3 [4196 kB]
+2026-08-25T14:46:45.5475111Z #12 3.047 Get:5 http://deb.debian.org/debian bookworm/main amd64 perl amd64 5.36.0-7+deb12u3 [239 kB]
+2026-08-25T14:46:45.5476311Z #12 3.048 Get:6 http://deb.debian.org/debian bookworm/main amd64 libbrotli1 amd64 1.0.9-2+b6 [275 kB]
+2026-08-25T14:46:45.5477309Z #12 3.055 Get:7 http://deb.debian.org/debian bookworm/main amd64 libkrb5support0 amd64 1.20.1-2+deb12u5 [33.2 kB]
+2026-08-25T14:46:45.5478422Z #12 3.056 Get:8 http://deb.debian.org/debian bookworm/main amd64 libk5crypto3 amd64 1.20.1-2+deb12u5 [79.7 kB]
+2026-08-25T14:46:45.5479305Z #12 3.060 Get:9 http://deb.debian.org/debian bookworm/main amd64 libkeyutils1 amd64 1.6.3-2 [8808 B]
+2026-08-25T14:46:45.5479884Z #12 3.061 Get:10 http://deb.debian.org/debian bookworm/main amd64 libssl3 amd64 3.0.20-1~deb12u2 [2036 kB]
+2026-08-25T14:46:45.5480445Z #12 3.067 Get:11 http://deb.debian.org/debian bookworm/main amd64 libkrb5-3 amd64 1.20.1-2+deb12u5 [332 kB]
+2026-08-25T14:46:45.5481016Z #12 3.078 Get:12 http://deb.debian.org/debian bookworm/main amd64 libgssapi-krb5-2 amd64 1.20.1-2+deb12u5 [135 kB]
+2026-08-25T14:46:45.5481642Z #12 3.080 Get:13 http://deb.debian.org/debian bookworm/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg-10 [20.3 kB]
+2026-08-25T14:46:45.5482233Z #12 3.080 Get:14 http://deb.debian.org/debian bookworm/main amd64 libsasl2-2 amd64 2.1.28+dfsg-10 [59.7 kB]
+2026-08-25T14:46:45.5482799Z #12 3.081 Get:15 http://deb.debian.org/debian bookworm/main amd64 libldap-2.5-0 amd64 2.5.13+dfsg-5 [183 kB]
+2026-08-25T14:46:45.5483384Z #12 3.085 Get:16 http://deb.debian.org/debian bookworm/main amd64 libnghttp2-14 amd64 1.52.0-1+deb12u3 [72.4 kB]
+2026-08-25T14:46:45.7679334Z #12 3.086 Get:17 http://deb.debian.org/debian bookworm/main amd64 libpsl5 amd64 0.21.2-1 [58.7 kB]
+2026-08-25T14:46:45.7680105Z #12 3.090 Get:18 http://deb.debian.org/debian bookworm/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2+b2 [60.8 kB]
+2026-08-25T14:46:45.7680755Z #12 3.090 Get:19 http://deb.debian.org/debian bookworm/main amd64 libssh2-1 amd64 1.10.0-3+b1 [179 kB]
+2026-08-25T14:46:45.7681364Z #12 3.096 Get:20 http://deb.debian.org/debian bookworm/main amd64 libcurl3-gnutls amd64 7.88.1-10+deb12u15 [386 kB]
+2026-08-25T14:46:45.7682037Z #12 3.098 Get:21 http://deb.debian.org/debian bookworm/main amd64 libexpat1 amd64 2.5.0-1+deb12u2 [99.9 kB]
+2026-08-25T14:46:45.7682643Z #12 3.100 Get:22 http://deb.debian.org/debian bookworm/main amd64 liberror-perl all 0.17029-2 [29.0 kB]
+2026-08-25T14:46:45.7683202Z #12 3.101 Get:23 http://deb.debian.org/debian bookworm/main amd64 git-man all 1:2.39.5-0+deb12u3 [2053 kB]
+2026-08-25T14:46:45.7683764Z #12 3.107 Get:24 http://deb.debian.org/debian bookworm/main amd64 git amd64 1:2.39.5-0+deb12u3 [7264 kB]
+2026-08-25T14:46:45.7684471Z #12 3.155 Get:25 http://deb.debian.org/debian bookworm/main amd64 openssl amd64 3.0.20-1~deb12u2 [1439 kB]
+2026-08-25T14:46:45.8602858Z #12 3.398 debconf: delaying package configuration, since apt-utils is not installed
+2026-08-25T14:46:46.0914956Z #12 ...
+2026-08-25T14:46:46.0915233Z 
+2026-08-25T14:46:46.0915428Z #13 [linux/amd64 runner  2/15] WORKDIR /app
+2026-08-25T14:46:46.0915769Z #13 DONE 3.6s
+2026-08-25T14:46:46.2516278Z 
+2026-08-25T14:46:46.2516845Z #14 [linux/arm64 runner  2/15] WORKDIR /app
+2026-08-25T14:46:46.2517196Z #14 DONE 3.6s
+2026-08-25T14:46:46.2517330Z 
+2026-08-25T14:46:46.2517535Z #15 [linux/amd64 prod-deps 1/2] COPY package.json package-lock.json ./
+2026-08-25T14:46:46.2517914Z #15 DONE 3.6s
+2026-08-25T14:46:46.2518040Z 
+2026-08-25T14:46:46.2518429Z #12 [linux/amd64 deps 1/3] RUN apt-get update &&     apt-get install -y --no-install-recommends openssl git &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:46:46.2519227Z #12 3.639 Fetched 22.2 MB in 0s (64.2 MB/s)
+2026-08-25T14:46:46.2706506Z #12 3.808 Selecting previously unselected package perl-modules-5.36.
+2026-08-25T14:46:46.4280358Z #12 3.808 (Reading database ... 
+2026-08-25T14:46:46.4281126Z (Reading database ... 5%
+2026-08-25T14:46:46.4281782Z (Reading database ... 10%
+2026-08-25T14:46:46.4282468Z (Reading database ... 15%
+2026-08-25T14:46:46.4283025Z (Reading database ... 20%
+2026-08-25T14:46:46.4283580Z (Reading database ... 25%
+2026-08-25T14:46:46.4284143Z (Reading database ... 30%
+2026-08-25T14:46:46.4284832Z (Reading database ... 35%
+2026-08-25T14:46:46.4285386Z (Reading database ... 40%
+2026-08-25T14:46:46.4285887Z (Reading database ... 45%
+2026-08-25T14:46:46.4286385Z (Reading database ... 50%
+2026-08-25T14:46:46.4286858Z (Reading database ... 55%
+2026-08-25T14:46:46.4287331Z (Reading database ... 60%
+2026-08-25T14:46:46.4287800Z (Reading database ... 65%
+2026-08-25T14:46:46.4288295Z (Reading database ... 70%
+2026-08-25T14:46:46.4288791Z (Reading database ... 75%
+2026-08-25T14:46:46.4289269Z (Reading database ... 80%
+2026-08-25T14:46:46.4289753Z (Reading database ... 85%
+2026-08-25T14:46:46.4290258Z (Reading database ... 90%
+2026-08-25T14:46:46.4290724Z (Reading database ... 95%
+2026-08-25T14:46:46.4291196Z (Reading database ... 100%
+2026-08-25T14:46:46.4291847Z (Reading database ... 6099 files and directories currently installed.)
+2026-08-25T14:46:46.4292710Z #12 3.814 Preparing to unpack .../00-perl-modules-5.36_5.36.0-7+deb12u3_all.deb ...
+2026-08-25T14:46:46.4293496Z #12 3.815 Unpacking perl-modules-5.36 (5.36.0-7+deb12u3) ...
+2026-08-25T14:46:46.6495541Z #12 4.187 Selecting previously unselected package libgdbm6:amd64.
+2026-08-25T14:46:46.7501267Z #12 4.189 Preparing to unpack .../01-libgdbm6_1.23-3_amd64.deb ...
+2026-08-25T14:46:46.7503969Z #12 4.191 Unpacking libgdbm6:amd64 (1.23-3) ...
+2026-08-25T14:46:46.7504795Z #12 4.208 Selecting previously unselected package libgdbm-compat4:amd64.
+2026-08-25T14:46:46.7505694Z #12 4.210 Preparing to unpack .../02-libgdbm-compat4_1.23-3_amd64.deb ...
+2026-08-25T14:46:46.7506266Z #12 4.211 Unpacking libgdbm-compat4:amd64 (1.23-3) ...
+2026-08-25T14:46:46.7508538Z #12 4.230 Selecting previously unselected package libperl5.36:amd64.
+2026-08-25T14:46:46.7509334Z #12 4.232 Preparing to unpack .../03-libperl5.36_5.36.0-7+deb12u3_amd64.deb ...
+2026-08-25T14:46:46.7509978Z #12 4.233 Unpacking libperl5.36:amd64 (5.36.0-7+deb12u3) ...
+2026-08-25T14:46:47.6003018Z #12 5.136 Selecting previously unselected package perl.
+2026-08-25T14:46:47.7110303Z #12 5.140 Preparing to unpack .../04-perl_5.36.0-7+deb12u3_amd64.deb ...
+2026-08-25T14:46:47.7112371Z #12 5.148 Unpacking perl (5.36.0-7+deb12u3) ...
+2026-08-25T14:46:47.7113051Z #12 5.197 Selecting previously unselected package libbrotli1:amd64.
+2026-08-25T14:46:47.7113757Z #12 5.199 Preparing to unpack .../05-libbrotli1_1.0.9-2+b6_amd64.deb ...
+2026-08-25T14:46:47.7114615Z #12 5.200 Unpacking libbrotli1:amd64 (1.0.9-2+b6) ...
+2026-08-25T14:46:47.7115360Z #12 5.249 Selecting previously unselected package libkrb5support0:amd64.
+2026-08-25T14:46:47.7116149Z #12 5.249 Preparing to unpack .../06-libkrb5support0_1.20.1-2+deb12u5_amd64.deb ...
+2026-08-25T14:46:47.8412147Z #12 5.250 Unpacking libkrb5support0:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:47.8415352Z #12 5.271 Selecting previously unselected package libk5crypto3:amd64.
+2026-08-25T14:46:47.8416243Z #12 5.271 Preparing to unpack .../07-libk5crypto3_1.20.1-2+deb12u5_amd64.deb ...
+2026-08-25T14:46:47.8417084Z #12 5.272 Unpacking libk5crypto3:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:47.8417818Z #12 5.313 Selecting previously unselected package libkeyutils1:amd64.
+2026-08-25T14:46:47.8418597Z #12 5.313 Preparing to unpack .../08-libkeyutils1_1.6.3-2_amd64.deb ...
+2026-08-25T14:46:47.8419297Z #12 5.316 Unpacking libkeyutils1:amd64 (1.6.3-2) ...
+2026-08-25T14:46:47.8419955Z #12 5.379 Selecting previously unselected package libssl3:amd64.
+2026-08-25T14:46:48.1785339Z #12 5.380 Preparing to unpack .../09-libssl3_3.0.20-1~deb12u2_amd64.deb ...
+2026-08-25T14:46:48.1786684Z #12 5.382 Unpacking libssl3:amd64 (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:48.2136033Z #12 5.751 Selecting previously unselected package libkrb5-3:amd64.
+2026-08-25T14:46:48.3662464Z #12 5.753 Preparing to unpack .../10-libkrb5-3_1.20.1-2+deb12u5_amd64.deb ...
+2026-08-25T14:46:48.5306608Z #12 6.019 Unpacking libkrb5-3:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:48.5312267Z #12 6.068 Selecting previously unselected package libgssapi-krb5-2:amd64.
+2026-08-25T14:46:48.6432466Z #12 6.069 Preparing to unpack .../11-libgssapi-krb5-2_1.20.1-2+deb12u5_amd64.deb ...
+2026-08-25T14:46:48.6435198Z #12 6.070 Unpacking libgssapi-krb5-2:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:48.6436299Z #12 6.100 Selecting previously unselected package libsasl2-modules-db:amd64.
+2026-08-25T14:46:48.6437201Z #12 6.101 Preparing to unpack .../12-libsasl2-modules-db_2.1.28+dfsg-10_amd64.deb ...
+2026-08-25T14:46:48.6438088Z #12 6.104 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg-10) ...
+2026-08-25T14:46:48.6438968Z #12 6.121 Selecting previously unselected package libsasl2-2:amd64.
+2026-08-25T14:46:48.6439769Z #12 6.123 Preparing to unpack .../13-libsasl2-2_2.1.28+dfsg-10_amd64.deb ...
+2026-08-25T14:46:48.6440568Z #12 6.124 Unpacking libsasl2-2:amd64 (2.1.28+dfsg-10) ...
+2026-08-25T14:46:48.6441411Z #12 6.154 Selecting previously unselected package libldap-2.5-0:amd64.
+2026-08-25T14:46:48.6455758Z #12 6.156 Preparing to unpack .../14-libldap-2.5-0_2.5.13+dfsg-5_amd64.deb ...
+2026-08-25T14:46:48.6456618Z #12 6.157 Unpacking libldap-2.5-0:amd64 (2.5.13+dfsg-5) ...
+2026-08-25T14:46:48.8104185Z #12 6.196 Selecting previously unselected package libnghttp2-14:amd64.
+2026-08-25T14:46:48.8107001Z #12 6.196 Preparing to unpack .../15-libnghttp2-14_1.52.0-1+deb12u3_amd64.deb ...
+2026-08-25T14:46:48.8107752Z #12 6.197 Unpacking libnghttp2-14:amd64 (1.52.0-1+deb12u3) ...
+2026-08-25T14:46:49.0250236Z #12 6.563 Selecting previously unselected package libpsl5:amd64.
+2026-08-25T14:46:49.1627377Z #12 6.565 Preparing to unpack .../16-libpsl5_0.21.2-1_amd64.deb ...
+2026-08-25T14:46:49.1629169Z #12 6.567 Unpacking libpsl5:amd64 (0.21.2-1) ...
+2026-08-25T14:46:49.1629878Z #12 6.610 Selecting previously unselected package librtmp1:amd64.
+2026-08-25T14:46:49.1630702Z #12 6.612 Preparing to unpack .../17-librtmp1_2.4+20151223.gitfa8646d.1-2+b2_amd64.deb ...
+2026-08-25T14:46:49.1631593Z #12 6.624 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b2) ...
+2026-08-25T14:46:49.4074810Z #12 6.945 Selecting previously unselected package libssh2-1:amd64.
+2026-08-25T14:46:49.4075995Z #12 6.945 Preparing to unpack .../18-libssh2-1_1.10.0-3+b1_amd64.deb ...
+2026-08-25T14:46:49.4076723Z #12 6.945 Unpacking libssh2-1:amd64 (1.10.0-3+b1) ...
+2026-08-25T14:46:49.5086408Z #12 6.988 Selecting previously unselected package libcurl3-gnutls:amd64.
+2026-08-25T14:46:49.5087015Z #12 6.990 Preparing to unpack .../19-libcurl3-gnutls_7.88.1-10+deb12u15_amd64.deb ...
+2026-08-25T14:46:49.5087705Z #12 6.991 Unpacking libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) ...
+2026-08-25T14:46:49.5088272Z #12 7.044 Selecting previously unselected package libexpat1:amd64.
+2026-08-25T14:46:49.5088913Z #12 7.044 Preparing to unpack .../20-libexpat1_2.5.0-1+deb12u2_amd64.deb ...
+2026-08-25T14:46:49.5089520Z #12 7.045 Unpacking libexpat1:amd64 (2.5.0-1+deb12u2) ...
+2026-08-25T14:46:49.6429669Z #12 7.069 Selecting previously unselected package liberror-perl.
+2026-08-25T14:46:49.6430611Z #12 7.071 Preparing to unpack .../21-liberror-perl_0.17029-2_all.deb ...
+2026-08-25T14:46:49.6431161Z #12 7.072 Unpacking liberror-perl (0.17029-2) ...
+2026-08-25T14:46:49.6431713Z #12 7.096 Selecting previously unselected package git-man.
+2026-08-25T14:46:49.6432337Z #12 7.096 Preparing to unpack .../22-git-man_1%3a2.39.5-0+deb12u3_all.deb ...
+2026-08-25T14:46:49.6433186Z #12 7.098 Unpacking git-man (1:2.39.5-0+deb12u3) ...
+2026-08-25T14:46:49.9572321Z #12 7.480 Selecting previously unselected package git.
+2026-08-25T14:46:50.1483714Z #12 7.482 Preparing to unpack .../23-git_1%3a2.39.5-0+deb12u3_amd64.deb ...
+2026-08-25T14:46:50.1484683Z #12 7.488 Unpacking git (1:2.39.5-0+deb12u3) ...
+2026-08-25T14:46:50.5616003Z #12 8.099 Selecting previously unselected package openssl.
+2026-08-25T14:46:50.7363544Z #12 8.102 Preparing to unpack .../24-openssl_3.0.20-1~deb12u2_amd64.deb ...
+2026-08-25T14:46:50.7364514Z #12 8.109 Unpacking openssl (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:50.9473125Z #12 8.387 Setting up libexpat1:amd64 (2.5.0-1+deb12u2) ...
+2026-08-25T14:46:50.9478146Z #12 8.450 Setting up libkeyutils1:amd64 (1.6.3-2) ...
+2026-08-25T14:46:50.9478754Z #12 8.457 Setting up libpsl5:amd64 (0.21.2-1) ...
+2026-08-25T14:46:50.9479303Z #12 8.460 Setting up libbrotli1:amd64 (1.0.9-2+b6) ...
+2026-08-25T14:46:50.9480424Z #12 8.472 Setting up libssl3:amd64 (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:50.9481010Z #12 8.477 Setting up libnghttp2-14:amd64 (1.52.0-1+deb12u3) ...
+2026-08-25T14:46:50.9481662Z #12 8.481 Setting up libkrb5support0:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:50.9482445Z #12 8.485 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg-10) ...
+2026-08-25T14:46:51.1634757Z #12 8.490 Setting up perl-modules-5.36 (5.36.0-7+deb12u3) ...
+2026-08-25T14:46:51.1635564Z #12 8.551 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b2) ...
+2026-08-25T14:46:51.2258926Z #12 8.763 Setting up libk5crypto3:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:51.3426530Z #12 8.879 Setting up libsasl2-2:amd64 (2.1.28+dfsg-10) ...
+2026-08-25T14:46:52.0738747Z #12 9.610 Setting up git-man (1:2.39.5-0+deb12u3) ...
+2026-08-25T14:46:52.2935727Z #12 9.831 Setting up libssh2-1:amd64 (1.10.0-3+b1) ...
+2026-08-25T14:46:52.4485787Z #12 9.986 Setting up libkrb5-3:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:52.6107255Z #12 10.15 Setting up openssl (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:52.7497388Z 
+2026-08-25T14:46:52.7497884Z #12 ...
+2026-08-25T14:46:52.7498155Z 
+2026-08-25T14:46:52.7498762Z #16 [linux/amd64 runner  3/15] RUN apt-get update -y &&     apt-get install -y openssl &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:46:52.7500104Z #16 0.592 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+2026-08-25T14:46:52.7500954Z #16 0.637 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+2026-08-25T14:46:52.7501966Z #16 0.654 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+2026-08-25T14:46:52.7502868Z #16 0.699 Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8790 kB]
+2026-08-25T14:46:52.7503677Z #16 0.865 Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+2026-08-25T14:46:52.7505069Z #16 0.865 Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [335 kB]
+2026-08-25T14:46:52.7505790Z #16 1.842 Fetched 9374 kB in 1s (7241 kB/s)
+2026-08-25T14:46:52.7506261Z #16 1.842 Reading package lists...
+2026-08-25T14:46:52.7506807Z #16 2.385 Reading package lists...
+2026-08-25T14:46:52.7507301Z #16 2.957 Building dependency tree...
+2026-08-25T14:46:52.7507828Z #16 3.068 Reading state information...
+2026-08-25T14:46:52.7508366Z #16 3.197 The following additional packages will be installed:
+2026-08-25T14:46:52.7508970Z #16 3.198   libssl3
+2026-08-25T14:46:52.7509366Z #16 3.199 Suggested packages:
+2026-08-25T14:46:52.7509818Z #16 3.199   ca-certificates
+2026-08-25T14:46:52.7510296Z #16 3.340 The following NEW packages will be installed:
+2026-08-25T14:46:52.7510757Z #16 3.340   libssl3 openssl
+2026-08-25T14:46:52.7511274Z #16 3.412 0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+2026-08-25T14:46:52.7511880Z #16 3.412 Need to get 3475 kB of archives.
+2026-08-25T14:46:52.7512508Z #16 3.412 After this operation, 8540 kB of additional disk space will be used.
+2026-08-25T14:46:52.7513196Z #16 3.412 Get:1 http://deb.debian.org/debian bookworm/main amd64 libssl3 amd64 3.0.20-1~deb12u2 [2036 kB]
+2026-08-25T14:46:52.7513924Z #16 3.546 Get:2 http://deb.debian.org/debian bookworm/main amd64 openssl amd64 3.0.20-1~deb12u2 [1439 kB]
+2026-08-25T14:46:52.7515266Z #16 3.911 debconf: delaying package configuration, since apt-utils is not installed
+2026-08-25T14:46:52.7515952Z #16 4.051 Fetched 3475 kB in 0s (8511 kB/s)
+2026-08-25T14:46:52.7516547Z #16 4.198 Selecting previously unselected package libssl3:amd64.
+2026-08-25T14:46:52.7517137Z #16 4.198 (Reading database ... 
+2026-08-25T14:46:52.7517567Z (Reading database ... 5%
+2026-08-25T14:46:52.7517967Z (Reading database ... 10%
+2026-08-25T14:46:52.7518584Z (Reading database ... 15%
+2026-08-25T14:46:52.7519202Z (Reading database ... 20%
+2026-08-25T14:46:52.7519586Z (Reading database ... 25%
+2026-08-25T14:46:52.7519870Z (Reading database ... 30%
+2026-08-25T14:46:52.7520145Z (Reading database ... 35%
+2026-08-25T14:46:52.7520423Z (Reading database ... 40%
+2026-08-25T14:46:52.7520696Z (Reading database ... 45%
+2026-08-25T14:46:52.7520971Z (Reading database ... 50%
+2026-08-25T14:46:52.7521258Z (Reading database ... 55%
+2026-08-25T14:46:52.7521539Z (Reading database ... 60%
+2026-08-25T14:46:52.7521824Z (Reading database ... 65%
+2026-08-25T14:46:52.7522102Z (Reading database ... 70%
+2026-08-25T14:46:52.7522376Z (Reading database ... 75%
+2026-08-25T14:46:52.7522648Z (Reading database ... 80%
+2026-08-25T14:46:52.7522918Z (Reading database ... 85%
+2026-08-25T14:46:52.7523184Z (Reading database ... 90%
+2026-08-25T14:46:52.7523459Z (Reading database ... 95%
+2026-08-25T14:46:52.7523743Z (Reading database ... 100%
+2026-08-25T14:46:52.7524244Z (Reading database ... 6099 files and directories currently installed.)
+2026-08-25T14:46:52.7525214Z #16 4.204 Preparing to unpack .../libssl3_3.0.20-1~deb12u2_amd64.deb ...
+2026-08-25T14:46:52.7525979Z #16 4.206 Unpacking libssl3:amd64 (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:52.7526485Z #16 4.476 Selecting previously unselected package openssl.
+2026-08-25T14:46:52.7527041Z #16 4.478 Preparing to unpack .../openssl_3.0.20-1~deb12u2_amd64.deb ...
+2026-08-25T14:46:52.7527578Z #16 4.483 Unpacking openssl (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:52.7528055Z #16 4.749 Setting up libssl3:amd64 (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:52.7528715Z #16 4.753 Setting up openssl (3.0.20-1~deb12u2) ...
+2026-08-25T14:46:52.7529237Z #16 4.816 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+2026-08-25T14:46:52.7529711Z #16 DONE 6.5s
+2026-08-25T14:46:52.7529887Z 
+2026-08-25T14:46:52.7530449Z #12 [linux/amd64 deps 1/3] RUN apt-get update &&     apt-get install -y --no-install-recommends openssl git &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:46:52.7531285Z #12 10.16 Setting up libgdbm6:amd64 (1.23-3) ...
+2026-08-25T14:46:52.7531764Z #12 10.17 Setting up libldap-2.5-0:amd64 (2.5.13+dfsg-5) ...
+2026-08-25T14:46:52.7532134Z #12 10.18 Setting up libgssapi-krb5-2:amd64 (1.20.1-2+deb12u5) ...
+2026-08-25T14:46:52.7532668Z #12 10.18 Setting up libgdbm-compat4:amd64 (1.23-3) ...
+2026-08-25T14:46:52.7533166Z #12 10.19 Setting up libperl5.36:amd64 (5.36.0-7+deb12u3) ...
+2026-08-25T14:46:52.7533678Z #12 10.19 Setting up libcurl3-gnutls:amd64 (7.88.1-10+deb12u15) ...
+2026-08-25T14:46:52.7534459Z #12 10.21 Setting up perl (5.36.0-7+deb12u3) ...
+2026-08-25T14:46:52.7534948Z #12 10.23 Setting up liberror-perl (0.17029-2) ...
+2026-08-25T14:46:52.7535357Z #12 10.24 Setting up git (1:2.39.5-0+deb12u3) ...
+2026-08-25T14:46:52.7535858Z #12 10.29 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+2026-08-25T14:46:52.7536175Z #12 ...
+2026-08-25T14:46:52.7536292Z 
+2026-08-25T14:46:52.7536582Z #17 [linux/arm64 runner  3/15] RUN apt-get update -y &&     apt-get install -y openssl &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:46:52.7537111Z #17 0.894 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+2026-08-25T14:46:52.7537550Z #17 1.015 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+2026-08-25T14:46:52.7538024Z #17 1.016 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+2026-08-25T14:46:52.7538507Z #17 2.546 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8689 kB]
+2026-08-25T14:46:52.7538982Z #17 4.281 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [6936 B]
+2026-08-25T14:46:52.7539720Z #17 6.235 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [333 kB]
+2026-08-25T14:46:52.9018695Z #17 ...
+2026-08-25T14:46:52.9018936Z 
+2026-08-25T14:46:52.9019573Z #12 [linux/amd64 deps 1/3] RUN apt-get update &&     apt-get install -y --no-install-recommends openssl git &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:46:52.9020503Z #12 10.29 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+2026-08-25T14:46:53.1129332Z #12 DONE 10.7s
+2026-08-25T14:46:53.1138284Z 
+2026-08-25T14:46:53.1138932Z #18 [linux/amd64 prod-deps 2/2] RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+2026-08-25T14:46:53.2645192Z #18 ...
+2026-08-25T14:46:53.2645724Z 
+2026-08-25T14:46:53.2646598Z #19 [linux/amd64 deps 2/3] COPY package.json package-lock.json ./
+2026-08-25T14:46:53.3206726Z #19 DONE 0.2s
+2026-08-25T14:46:53.3216692Z 
+2026-08-25T14:46:53.3217769Z #17 [linux/arm64 runner  3/15] RUN apt-get update -y &&     apt-get install -y openssl &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:46:53.4745248Z #17 ...
+2026-08-25T14:46:53.4745489Z 
+2026-08-25T14:46:53.4745819Z #20 [linux/amd64 deps 3/3] RUN --mount=type=cache,target=/root/.npm npm ci
+2026-08-25T14:47:00.0768850Z #20 ...
+2026-08-25T14:47:00.0769204Z 
+2026-08-25T14:47:00.0769913Z #17 [linux/arm64 runner  3/15] RUN apt-get update -y &&     apt-get install -y openssl &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:47:00.0771153Z #17 9.928 Fetched 9271 kB in 9s (1007 kB/s)
+2026-08-25T14:47:00.9031660Z #17 9.928 Reading package lists...
+2026-08-25T14:47:02.7770292Z #17 15.21 Reading package lists...
+2026-08-25T14:47:02.7775256Z #17 ...
+2026-08-25T14:47:02.7775605Z 
+2026-08-25T14:47:02.7776052Z #20 [linux/amd64 deps 3/3] RUN --mount=type=cache,target=/root/.npm npm ci
+2026-08-25T14:47:02.7776871Z #20 9.455 npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-08-25T14:47:04.4276734Z #20 ...
+2026-08-25T14:47:04.4277254Z 
+2026-08-25T14:47:04.4277654Z #18 [linux/amd64 prod-deps 2/2] RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+2026-08-25T14:47:04.4278456Z #18 8.286 npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-08-25T14:47:04.9739862Z #18 ...
+2026-08-25T14:47:04.9741650Z 
+2026-08-25T14:47:04.9742246Z #20 [linux/amd64 deps 3/3] RUN --mount=type=cache,target=/root/.npm npm ci
+2026-08-25T14:47:04.9743015Z #20 11.65 npm warn deprecated tsconfck@3.1.6: unmaintained
+2026-08-25T14:47:10.4029918Z #20 ...
+2026-08-25T14:47:10.4030135Z 
+2026-08-25T14:47:10.4030538Z #17 [linux/arm64 runner  3/15] RUN apt-get update -y &&     apt-get install -y openssl &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:47:10.4031072Z #17 15.21 Reading package lists...
+2026-08-25T14:47:10.4031379Z #17 19.90 Building dependency tree...
+2026-08-25T14:47:10.4031727Z #17 20.80 Reading state information...
+2026-08-25T14:47:10.4032102Z #17 21.36 The following additional packages will be installed:
+2026-08-25T14:47:10.4032513Z #17 21.36   libssl3
+2026-08-25T14:47:10.4032833Z #17 21.36 Suggested packages:
+2026-08-25T14:47:10.4033126Z #17 21.37   ca-certificates
+2026-08-25T14:47:10.4033437Z #17 22.15 The following NEW packages will be installed:
+2026-08-25T14:47:10.4033734Z #17 22.15   libssl3 openssl
+2026-08-25T14:47:10.4034048Z #17 22.38 0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+2026-08-25T14:47:10.4034723Z #17 22.38 Need to get 3229 kB of archives.
+2026-08-25T14:47:10.4035093Z #17 22.38 After this operation, 8535 kB of additional disk space will be used.
+2026-08-25T14:47:10.4035627Z #17 22.38 Get:1 http://deb.debian.org/debian bookworm/main arm64 libssl3 arm64 3.0.20-1~deb12u2 [1824 kB]
+2026-08-25T14:47:10.4036195Z #17 22.50 Get:2 http://deb.debian.org/debian bookworm/main arm64 openssl arm64 3.0.20-1~deb12u2 [1405 kB]
+2026-08-25T14:47:10.7663161Z #17 24.67 debconf: delaying package configuration, since apt-utils is not installed
+2026-08-25T14:47:11.3947037Z #17 25.30 Fetched 3229 kB in 0s (9157 kB/s)
+2026-08-25T14:47:12.7735899Z #17 26.68 Selecting previously unselected package libssl3:arm64.
+2026-08-25T14:47:12.9472685Z #17 26.68 (Reading database ... 
+2026-08-25T14:47:12.9473461Z (Reading database ... 5%
+2026-08-25T14:47:12.9474223Z (Reading database ... 10%
+2026-08-25T14:47:12.9474720Z (Reading database ... 15%
+2026-08-25T14:47:12.9475031Z (Reading database ... 20%
+2026-08-25T14:47:12.9475309Z (Reading database ... 25%
+2026-08-25T14:47:12.9475569Z (Reading database ... 30%
+2026-08-25T14:47:12.9475812Z (Reading database ... 35%
+2026-08-25T14:47:12.9476049Z (Reading database ... 40%
+2026-08-25T14:47:12.9476286Z (Reading database ... 45%
+2026-08-25T14:47:12.9476523Z (Reading database ... 50%
+2026-08-25T14:47:12.9476758Z (Reading database ... 55%
+2026-08-25T14:47:12.9477001Z (Reading database ... 60%
+2026-08-25T14:47:12.9477240Z (Reading database ... 65%
+2026-08-25T14:47:12.9477486Z (Reading database ... 70%
+2026-08-25T14:47:12.9477725Z (Reading database ... 75%
+2026-08-25T14:47:12.9478008Z (Reading database ... 80%
+2026-08-25T14:47:12.9478263Z (Reading database ... 85%
+2026-08-25T14:47:12.9478495Z (Reading database ... 90%
+2026-08-25T14:47:12.9478725Z (Reading database ... 95%
+2026-08-25T14:47:12.9478954Z (Reading database ... 100%
+2026-08-25T14:47:12.9479298Z (Reading database ... 6093 files and directories currently installed.)
+2026-08-25T14:47:12.9479734Z #17 26.70 Preparing to unpack .../libssl3_3.0.20-1~deb12u2_arm64.deb ...
+2026-08-25T14:47:13.2860827Z #17 27.19 Unpacking libssl3:arm64 (3.0.20-1~deb12u2) ...
+2026-08-25T14:47:14.5001490Z #17 28.40 Selecting previously unselected package openssl.
+2026-08-25T14:47:14.7386173Z #17 28.41 Preparing to unpack .../openssl_3.0.20-1~deb12u2_arm64.deb ...
+2026-08-25T14:47:14.7386972Z #17 28.49 Unpacking openssl (3.0.20-1~deb12u2) ...
+2026-08-25T14:47:15.4784812Z #17 29.38 Setting up libssl3:arm64 (3.0.20-1~deb12u2) ...
+2026-08-25T14:47:15.7203931Z #17 29.62 Setting up openssl (3.0.20-1~deb12u2) ...
+2026-08-25T14:47:16.5231696Z #17 30.42 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+2026-08-25T14:47:31.8161010Z #17 ...
+2026-08-25T14:47:31.8161702Z 
+2026-08-25T14:47:31.8162294Z #18 [linux/amd64 prod-deps 2/2] RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+2026-08-25T14:47:31.8163428Z #18 45.72 
+2026-08-25T14:47:31.8163767Z #18 45.72 > prepare
+2026-08-25T14:47:31.8164085Z #18 45.72 > husky || true
+2026-08-25T14:47:31.8164542Z #18 45.72 
+2026-08-25T14:47:31.9383031Z #18 45.73 sh: 1: husky: not found
+2026-08-25T14:47:31.9383788Z #18 45.84 
+2026-08-25T14:47:31.9384578Z #18 45.84 added 876 packages, and audited 877 packages in 45s
+2026-08-25T14:47:32.0510911Z #18 ...
+2026-08-25T14:47:32.0511699Z 
+2026-08-25T14:47:32.0512460Z #17 [linux/arm64 runner  3/15] RUN apt-get update -y &&     apt-get install -y openssl &&     rm -rf /var/lib/apt/lists/*
+2026-08-25T14:47:32.0513268Z #17 DONE 45.9s
+2026-08-25T14:47:32.0513677Z 
+2026-08-25T14:47:32.0514806Z #18 [linux/amd64 prod-deps 2/2] RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+2026-08-25T14:47:32.0515415Z #18 45.95 
+2026-08-25T14:47:32.0515677Z #18 45.95 5 high severity vulnerabilities
+2026-08-25T14:47:32.0516037Z #18 45.95 
+2026-08-25T14:47:32.0516315Z #18 45.95 To address all issues (including breaking changes), run:
+2026-08-25T14:47:32.0516721Z #18 45.95   npm audit fix --force
+2026-08-25T14:47:32.0516975Z #18 45.95 
+2026-08-25T14:47:32.0517193Z #18 45.95 Run `npm audit` for details.
+2026-08-25T14:47:32.2061908Z #18 45.95 npm warn install-scripts 6 packages have install scripts not yet covered by allowScripts:
+2026-08-25T14:47:32.2062892Z #18 45.95 npm warn install-scripts   @prisma/engines@7.9.1 (postinstall: node scripts/postinstall.js)
+2026-08-25T14:47:32.2063677Z #18 45.95 npm warn install-scripts   @sentry/cli@2.58.6 (postinstall: node ./scripts/install.js)
+2026-08-25T14:47:32.2064497Z #18 45.95 npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+2026-08-25T14:47:32.2065685Z #18 45.95 npm warn install-scripts   msw@2.15.0 (postinstall: node -e "import('./config/scripts/postinstall.js').catch(() => void 0)")
+2026-08-25T14:47:32.2066610Z #18 45.95 npm warn install-scripts   prisma@7.9.1 (preinstall: node scripts/preinstall-entry.js)
+2026-08-25T14:47:32.2067443Z #18 45.95 npm warn install-scripts   prisma-zod-generator@3.1.1 (postinstall: node scripts/postinstall.js)
+2026-08-25T14:47:32.2068086Z #18 45.95 npm warn install-scripts
+2026-08-25T14:47:32.2068765Z #18 45.95 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-08-25T14:47:39.2710228Z #18 DONE 53.2s
+2026-08-25T14:47:39.2710511Z 
+2026-08-25T14:47:39.2710864Z #20 [linux/amd64 deps 3/3] RUN --mount=type=cache,target=/root/.npm npm ci
+2026-08-25T14:47:44.0463226Z #20 ...
+2026-08-25T14:47:44.0463626Z 
+2026-08-25T14:47:44.0464069Z #21 [linux/arm64 runner  4/15] COPY --from=prod-deps /node_modules ./node_modules
+2026-08-25T14:47:54.0969588Z #21 ...
+2026-08-25T14:47:54.0970120Z 
+2026-08-25T14:47:54.0970763Z #22 [linux/amd64 runner  4/15] COPY --from=prod-deps /node_modules ./node_modules
+2026-08-25T14:48:03.6041258Z #22 ...
+2026-08-25T14:48:03.6041697Z 
+2026-08-25T14:48:03.6042349Z #20 [linux/amd64 deps 3/3] RUN --mount=type=cache,target=/root/.npm npm ci
+2026-08-25T14:48:03.6043138Z #20 70.28 
+2026-08-25T14:48:03.6043543Z #20 70.28 > prepare
+2026-08-25T14:48:03.6044013Z #20 70.28 > husky || true
+2026-08-25T14:48:03.6044583Z #20 70.28 
+2026-08-25T14:48:03.7234973Z #20 70.32 .git can't be found
+2026-08-25T14:48:03.7235569Z #20 70.40 added 1406 packages, and audited 1407 packages in 1m
+2026-08-25T14:48:03.9705590Z #20 70.50 
+2026-08-25T14:48:03.9706362Z #20 70.50 8 high severity vulnerabilities
+2026-08-25T14:48:03.9706941Z #20 70.50 
+2026-08-25T14:48:03.9708000Z #20 70.50 To address all issues possible (including breaking changes), run:
+2026-08-25T14:48:03.9708549Z #20 70.50   npm audit fix --force
+2026-08-25T14:48:03.9708922Z #20 70.50 
+2026-08-25T14:48:03.9709311Z #20 70.50 Some issues need review, and may require choosing
+2026-08-25T14:48:03.9710062Z #20 70.50 a different dependency.
+2026-08-25T14:48:03.9710429Z #20 70.50 
+2026-08-25T14:48:03.9710707Z #20 70.50 Run `npm audit` for details.
+2026-08-25T14:48:03.9711250Z #20 70.50 npm warn install-scripts 10 packages have install scripts not yet covered by allowScripts:
+2026-08-25T14:48:03.9711993Z #20 70.50 npm warn install-scripts   @playwright/browser-chromium@1.62.1 (install: node install.js)
+2026-08-25T14:48:03.9712699Z #20 70.50 npm warn install-scripts   @playwright/browser-firefox@1.62.1 (install: node install.js)
+2026-08-25T14:48:03.9713388Z #20 70.50 npm warn install-scripts   @playwright/browser-webkit@1.62.1 (install: node install.js)
+2026-08-25T14:48:03.9714089Z #20 70.50 npm warn install-scripts   @prisma/engines@7.9.1 (postinstall: node scripts/postinstall.js)
+2026-08-25T14:48:03.9714873Z #20 70.50 npm warn install-scripts   @sentry/cli@2.58.6 (postinstall: node ./scripts/install.js)
+2026-08-25T14:48:03.9715506Z #20 70.50 npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+2026-08-25T14:48:03.9716302Z #20 70.50 npm warn install-scripts   msw@2.15.0 (postinstall: node -e "import('./config/scripts/postinstall.js').catch(() => void 0)")
+2026-08-25T14:48:03.9717101Z #20 70.50 npm warn install-scripts   prisma@7.9.1 (preinstall: node scripts/preinstall-entry.js)
+2026-08-25T14:48:03.9717843Z #20 70.50 npm warn install-scripts   prisma-zod-generator@3.1.1 (postinstall: node scripts/postinstall.js)
+2026-08-25T14:48:03.9718565Z #20 70.50 npm warn install-scripts   unrs-resolver@1.12.2 (postinstall: node postinstall.js)
+2026-08-25T14:48:03.9719080Z #20 70.50 npm warn install-scripts
+2026-08-25T14:48:03.9719677Z #20 70.50 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-08-25T14:48:19.9584797Z #20 DONE 86.6s
+2026-08-25T14:48:19.9594991Z 
+2026-08-25T14:48:19.9595530Z #22 [linux/amd64 runner  4/15] COPY --from=prod-deps /node_modules ./node_modules
+2026-08-25T14:48:20.1099380Z #22 ...
+2026-08-25T14:48:20.1099818Z 
+2026-08-25T14:48:20.1100372Z #23 [linux/amd64 builder 1/2] COPY . .
+2026-08-25T14:48:20.2005289Z #23 ...
+2026-08-25T14:48:20.2005612Z 
+2026-08-25T14:48:20.2006108Z #21 [linux/arm64 runner  4/15] COPY --from=prod-deps /node_modules ./node_modules
+2026-08-25T14:48:20.2006663Z #21 DONE 36.2s
+2026-08-25T14:48:20.3511704Z 
+2026-08-25T14:48:20.3512429Z #22 [linux/amd64 runner  4/15] COPY --from=prod-deps /node_modules ./node_modules
+2026-08-25T14:48:20.4871441Z #22 DONE 36.4s
+2026-08-25T14:48:20.4871694Z 
+2026-08-25T14:48:20.4871859Z #23 [linux/amd64 builder 1/2] COPY . .
+2026-08-25T14:48:21.7430374Z #23 DONE 1.8s
+2026-08-25T14:48:21.8947137Z 
+2026-08-25T14:48:21.8947783Z #24 [linux/amd64 builder 2/2] RUN npm run build
+2026-08-25T14:48:22.0527674Z #24 0.308 
+2026-08-25T14:48:22.0528069Z #24 0.308 > build
+2026-08-25T14:48:22.0528574Z #24 0.308 > npm run generate && DEBUG=app:* next build
+2026-08-25T14:48:22.0529077Z #24 0.308 
+2026-08-25T14:48:22.2812573Z #24 0.386 
+2026-08-25T14:48:22.2812998Z #24 0.386 > generate
+2026-08-25T14:48:22.2813379Z #24 0.386 > prisma generate
+2026-08-25T14:48:22.2813719Z #24 0.386 
+2026-08-25T14:48:22.7478880Z #24 1.004 Loaded Prisma config from prisma.config.ts.
+2026-08-25T14:48:22.7479705Z #24 1.004 
+2026-08-25T14:48:22.9920673Z #24 1.097 Prisma schema loaded from prisma/schema.prisma.
+2026-08-25T14:48:24.0179487Z #24 2.273 ✅ Zod schemas generated successfully with filtering applied
+2026-08-25T14:48:24.0179899Z #24 2.273 
+2026-08-25T14:48:24.1712321Z #24 2.276 
+2026-08-25T14:48:24.1713145Z #24 2.276 ✔ Generated Prisma Client (7.9.1) to ./prisma/generated in 146ms
+2026-08-25T14:48:24.1713612Z #24 2.276 
+2026-08-25T14:48:24.1714008Z #24 2.276 ✔ Generated Prisma Zod Generator to ./prisma/zod in 705ms
+2026-08-25T14:48:24.1714574Z #24 2.276 
+2026-08-25T14:48:24.5926118Z #24 2.848 ▲ Next.js 16.3.2 (Turbopack)
+2026-08-25T14:48:24.7679809Z #24 3.024 ✓ Running next.config.mjs took 175ms
+2026-08-25T14:48:24.9614892Z #24 3.041 - Experiments (use with caution):
+2026-08-25T14:48:24.9616134Z #24 3.041   · clientTraceMetadata
+2026-08-25T14:48:24.9616560Z #24 3.041 
+2026-08-25T14:48:24.9616943Z #24 3.067   Creating an optimized production build ...
+2026-08-25T14:48:56.4041474Z #24 34.66 ✓ Compiled successfully in 31.3s
+2026-08-25T14:48:56.5571516Z #24 34.66   Running next.config.js provided runAfterProductionCompile ...
+2026-08-25T14:48:57.6208125Z #24 35.88 ✓ Completed runAfterProductionCompile in 1212ms
+2026-08-25T14:48:57.7727830Z #24 35.88   Running TypeScript ...
+2026-08-25T14:49:16.4421877Z #24 54.70   Finished TypeScript in 18.8s ...
+2026-08-25T14:49:16.5948045Z #24 54.70   Collecting page data using 3 workers ...
+2026-08-25T14:49:21.9638422Z #24 60.22   Generating static pages using 3 workers (0/41) ...
+2026-08-25T14:49:22.5146028Z #24 60.77   Generating static pages using 3 workers (10/41) 
+2026-08-25T14:49:42.3046207Z #24 80.56 prisma:error 
+2026-08-25T14:49:42.3046910Z #24 80.56 Invalid `prisma.countrySupporter.findMany()` invocation:
+2026-08-25T14:49:42.3047430Z #24 80.56 
+2026-08-25T14:49:42.3047766Z #24 80.56 
+2026-08-25T14:49:42.3048368Z #24 80.56 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:42.3049073Z #24 80.56     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:42.5516346Z #24 80.56 prisma:error 
+2026-08-25T14:49:42.5516907Z #24 80.56 Invalid `prisma.player.findMany()` invocation:
+2026-08-25T14:49:42.5517292Z #24 80.56 
+2026-08-25T14:49:42.5517546Z #24 80.56 
+2026-08-25T14:49:42.5518196Z #24 80.56 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10004ms
+2026-08-25T14:49:42.5518786Z #24 80.56     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:42.5519123Z #24 80.57 prisma:error 
+2026-08-25T14:49:42.5519453Z #24 80.57 Invalid `prisma.outcome.findMany()` invocation:
+2026-08-25T14:49:42.5519775Z #24 80.57 
+2026-08-25T14:49:42.5519974Z #24 80.57 
+2026-08-25T14:49:42.5520715Z #24 80.57 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:42.5521212Z #24 80.57     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:42.5521523Z #24 80.57 prisma:error 
+2026-08-25T14:49:42.5521806Z #24 80.57 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:42.5522094Z #24 80.57 
+2026-08-25T14:49:42.5522284Z #24 80.57 
+2026-08-25T14:49:42.5522658Z #24 80.57 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:42.5523140Z #24 80.57     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:42.5523491Z #24 80.66   Generating static pages using 3 workers (20/41) 
+2026-08-25T14:49:42.5909195Z #24 80.85 prisma:error 
+2026-08-25T14:49:42.5909871Z #24 80.85 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:42.5910428Z #24 80.85 
+2026-08-25T14:49:42.5910798Z #24 80.85 
+2026-08-25T14:49:42.5911479Z #24 80.85 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:42.5912323Z #24 80.85     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:42.7451858Z #24 80.85 prisma:error 
+2026-08-25T14:49:42.7452291Z #24 80.85 Invalid `prisma.playerRecord.findMany()` invocation:
+2026-08-25T14:49:42.7452637Z #24 80.85 
+2026-08-25T14:49:42.7452843Z #24 80.85 
+2026-08-25T14:49:42.7453256Z #24 80.85 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10001ms
+2026-08-25T14:49:42.7453775Z #24 80.85     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:42.7454086Z #24 80.85 prisma:error 
+2026-08-25T14:49:42.7454591Z #24 80.85 Invalid `prisma.player.findMany()` invocation:
+2026-08-25T14:49:42.7454900Z #24 80.85 
+2026-08-25T14:49:42.7455111Z #24 80.85 
+2026-08-25T14:49:42.7455510Z #24 80.85 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10002ms
+2026-08-25T14:49:42.7456000Z #24 80.85     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.3855149Z #24 90.64 prisma:error 
+2026-08-25T14:49:52.3855580Z #24 90.64 Invalid `prisma.gameDay.findMany()` invocation:
+2026-08-25T14:49:52.3855914Z #24 90.64 
+2026-08-25T14:49:52.3856127Z #24 90.64 
+2026-08-25T14:49:52.3856543Z #24 90.64 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10001ms
+2026-08-25T14:49:52.3857078Z #24 90.64     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.5696037Z #24 90.64 prisma:error 
+2026-08-25T14:49:52.5696447Z #24 90.64 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:52.5696768Z #24 90.64 
+2026-08-25T14:49:52.5696965Z #24 90.64 
+2026-08-25T14:49:52.5697367Z #24 90.64 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10001ms
+2026-08-25T14:49:52.5698095Z #24 90.64     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.5698487Z #24 90.64 prisma:error 
+2026-08-25T14:49:52.5698842Z #24 90.64 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:52.5699257Z #24 90.64 
+2026-08-25T14:49:52.5699502Z #24 90.64 
+2026-08-25T14:49:52.5699969Z #24 90.64 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10001ms
+2026-08-25T14:49:52.5700464Z #24 90.64     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.5700760Z #24 90.65 prisma:error 
+2026-08-25T14:49:52.5701038Z #24 90.65 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:52.5701327Z #24 90.65 
+2026-08-25T14:49:52.5701768Z #24 90.65 
+2026-08-25T14:49:52.5702257Z #24 90.65 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.5702995Z #24 90.65     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.5703390Z #24 90.65 prisma:error 
+2026-08-25T14:49:52.5703780Z #24 90.65 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:52.5704186Z #24 90.65 
+2026-08-25T14:49:52.5704808Z #24 90.65 
+2026-08-25T14:49:52.5705591Z #24 90.65 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.5706196Z #24 90.65     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.5706632Z #24 90.67   Generating static pages using 3 workers (30/41) 
+2026-08-25T14:49:52.6337786Z #24 90.89 prisma:error 
+2026-08-25T14:49:52.6339106Z #24 90.89 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:52.6340430Z #24 90.89 
+2026-08-25T14:49:52.6341111Z #24 90.89 
+2026-08-25T14:49:52.6342170Z #24 90.89 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.6343196Z #24 90.89     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.8348715Z #24 90.91 prisma:error 
+2026-08-25T14:49:52.8349287Z #24 90.91 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:52.8349888Z #24 90.91 
+2026-08-25T14:49:52.8350281Z #24 90.91 
+2026-08-25T14:49:52.8350897Z #24 90.91 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.8351496Z #24 90.91     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.8351967Z #24 90.91 prisma:error 
+2026-08-25T14:49:52.8352348Z #24 90.91 Invalid `prisma.transaction.findMany()` invocation:
+2026-08-25T14:49:52.8352772Z #24 90.91 
+2026-08-25T14:49:52.8353057Z #24 90.91 
+2026-08-25T14:49:52.8353604Z #24 90.91 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.8354170Z #24 90.91     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.8354778Z #24 90.92 prisma:error 
+2026-08-25T14:49:52.8355174Z #24 90.92 Invalid `prisma.playerRecord.findMany()` invocation:
+2026-08-25T14:49:52.8355613Z #24 90.92 
+2026-08-25T14:49:52.8355901Z #24 90.92 
+2026-08-25T14:49:52.8356391Z #24 90.92 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.8357240Z #24 90.92     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.8357695Z #24 90.92 prisma:error 
+2026-08-25T14:49:52.8358089Z #24 90.92 Invalid `prisma.player.findMany()` invocation:
+2026-08-25T14:49:52.8358491Z #24 90.92 
+2026-08-25T14:49:52.8358823Z #24 90.92 
+2026-08-25T14:49:52.8359295Z #24 90.92 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.8359884Z #24 90.92     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:49:52.8360304Z #24 90.94 prisma:error 
+2026-08-25T14:49:52.8360709Z #24 90.94 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:49:52.8361092Z #24 90.94 
+2026-08-25T14:49:52.8361391Z #24 90.94 
+2026-08-25T14:49:52.8361862Z #24 90.94 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:49:52.8362475Z #24 90.94     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:50:02.4159970Z #24 100.7 prisma:error 
+2026-08-25T14:50:02.4160805Z #24 100.7 Invalid `prisma.outcome.groupBy()` invocation:
+2026-08-25T14:50:02.4161356Z #24 100.7 
+2026-08-25T14:50:02.4161722Z #24 100.7 
+2026-08-25T14:50:02.4162254Z #24 100.7 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:50:02.4162944Z #24 100.7     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:50:02.7079243Z #24 101.0 prisma:error 
+2026-08-25T14:50:02.7079900Z #24 101.0 Invalid `prisma.gameDay.findFirst()` invocation:
+2026-08-25T14:50:02.7080486Z #24 101.0 
+2026-08-25T14:50:02.7080920Z #24 101.0 
+2026-08-25T14:50:02.7081720Z #24 101.0 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10000ms
+2026-08-25T14:50:02.7082589Z #24 101.0     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:50:02.8837471Z #24 101.0 prisma:error 
+2026-08-25T14:50:02.8838932Z #24 101.0 Invalid `prisma.playerRecord.findMany()` invocation:
+2026-08-25T14:50:02.8839829Z #24 101.0 
+2026-08-25T14:50:02.8840303Z #24 101.0 
+2026-08-25T14:50:02.8841088Z #24 101.0 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10002ms
+2026-08-25T14:50:02.8841977Z #24 101.0     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:50:02.8842637Z #24 101.0 prisma:error 
+2026-08-25T14:50:02.8843153Z #24 101.0 Invalid `prisma.player.findMany()` invocation:
+2026-08-25T14:50:02.8843718Z #24 101.0 
+2026-08-25T14:50:02.8844172Z #24 101.0 
+2026-08-25T14:50:02.8845000Z #24 101.0 Database error. Code: `45028`. Message: `pool timeout: failed to retrieve a connection from pool after 10002ms
+2026-08-25T14:50:02.8845785Z #24 101.0     (pool connections: active=0 idle=0 limit=10)`
+2026-08-25T14:50:02.8848604Z #24 101.0 ✓ Generating static pages using 3 workers (41/41) in 41s
+2026-08-25T14:50:02.8849237Z #24 101.0   Finalizing page optimization ...
+2026-08-25T14:50:02.8849664Z #24 101.0 
+2026-08-25T14:50:02.8850045Z #24 101.0 Route (app)
+2026-08-25T14:50:02.8850464Z #24 101.0 ┌ ƒ /
+2026-08-25T14:50:02.8850898Z #24 101.0 ├ ƒ /_not-found
+2026-08-25T14:50:02.8851329Z #24 101.0 ├ ƒ /api/auth/[...all]
+2026-08-25T14:50:02.8851846Z #24 101.0 ├ ƒ /api/events
+2026-08-25T14:50:02.8852320Z #24 101.0 ├ ƒ /api/footy/club/[id]/badge
+2026-08-25T14:50:02.8852834Z #24 101.0 ├ ƒ /api/footy/country/[fifaCode]/flag
+2026-08-25T14:50:02.8853328Z #24 101.0 ├ ƒ /api/footy/invitations
+2026-08-25T14:50:02.8853844Z #24 101.0 ├ ƒ /api/footy/player/[id]/mugshot
+2026-08-25T14:50:02.8854408Z #24 101.0 ├ ƒ /api/health
+2026-08-25T14:50:02.8854845Z #24 101.0 ├ ƒ /footy
+2026-08-25T14:50:02.8856190Z #24 101.0 ├ ƒ /footy/admin
+2026-08-25T14:50:02.8856654Z #24 101.0 ├ ƒ /footy/admin/drinkers
+2026-08-25T14:50:02.8857166Z #24 101.0 ├ ƒ /footy/admin/drinkers/[gameDayId]
+2026-08-25T14:50:02.8857657Z #24 101.0 ├ ƒ /footy/admin/invoice
+2026-08-25T14:50:02.8858324Z #24 101.0 ├ ƒ /footy/admin/money
+2026-08-25T14:50:02.8859029Z #24 101.0 ├ ƒ /footy/admin/moregames
+2026-08-25T14:50:02.8860052Z #24 101.0 ├ ƒ /footy/admin/newgame
+2026-08-25T14:50:02.8860511Z #24 101.0 ├ ƒ /footy/admin/newplayer
+2026-08-25T14:50:02.8861011Z #24 101.0 ├ ƒ /footy/admin/picker
+2026-08-25T14:50:02.8861470Z #24 101.0 ├ ƒ /footy/admin/players
+2026-08-25T14:50:02.8861946Z #24 101.0 ├ ƒ /footy/admin/responses
+2026-08-25T14:50:02.8862401Z #24 101.0 ├ ƒ /footy/admin/user/[email]
+2026-08-25T14:50:02.8863021Z #24 101.0 ├ ƒ /footy/admin/users
+2026-08-25T14:50:02.8863559Z #24 101.0 ├ ƒ /footy/auth/accountdeleted
+2026-08-25T14:50:02.8870854Z #24 101.0 ├ ƒ /footy/auth/claim/[token]
+2026-08-25T14:50:02.8871517Z #24 101.0 ├ ƒ /footy/auth/claim/[token]/finish
+2026-08-25T14:50:02.8872149Z #24 101.0 ├ ƒ /footy/auth/reset-password
+2026-08-25T14:50:02.8872617Z #24 101.0 ├ ƒ /footy/auth/signin
+2026-08-25T14:50:02.8873143Z #24 101.0 ├ ƒ /footy/auth/verify/enquiry/[token]
+2026-08-25T14:50:02.8873768Z #24 101.0 ├ ƒ /footy/auth/verify/extra-email/[token]
+2026-08-25T14:50:02.8874589Z #24 101.0 ├ ƒ /footy/books
+2026-08-25T14:50:02.8875054Z #24 101.0 ├ ƒ /footy/countrymap
+2026-08-25T14:50:02.8875505Z #24 101.0 ├ ƒ /footy/curse
+2026-08-25T14:50:02.8875964Z #24 101.0 ├ ƒ /footy/deleteaccount
+2026-08-25T14:50:02.8876426Z #24 101.0 ├ ƒ /footy/docs/admin
+2026-08-25T14:50:02.8876928Z #24 101.0 ├ ƒ /footy/docs/migration
+2026-08-25T14:50:02.8877398Z #24 101.0 ├ ƒ /footy/downloadmydata
+2026-08-25T14:50:02.8877918Z #24 101.0 ├ ƒ /footy/familytree
+2026-08-25T14:50:02.8878367Z #24 101.0 ├ ƒ /footy/fixtures
+2026-08-25T14:50:02.8878841Z #24 101.0 ├ ƒ /footy/fixtures/[year]
+2026-08-25T14:50:02.8879326Z #24 101.0 ├ ƒ /footy/forgottenpassword
+2026-08-25T14:50:02.8879866Z #24 101.0 ├ ƒ /footy/game
+2026-08-25T14:50:02.8880297Z #24 101.0 ├ ƒ /footy/game/[id]
+2026-08-25T14:50:02.8880751Z #24 101.0 ├ ƒ /footy/games
+2026-08-25T14:50:02.8881193Z #24 101.0 ├ ƒ /footy/info
+2026-08-25T14:50:02.8881652Z #24 101.0 ├ ƒ /footy/password
+2026-08-25T14:50:02.8882124Z #24 101.0 ├ ƒ /footy/player/[id]
+2026-08-25T14:50:02.8882950Z #24 101.0 ├ ƒ /footy/player/[id]/[year]
+2026-08-25T14:50:02.8883448Z #24 101.0 ├ ƒ /footy/players
+2026-08-25T14:50:02.8883846Z #24 101.0 ├ ƒ /footy/profile
+2026-08-25T14:50:02.8884201Z #24 101.0 ├ ƒ /footy/response
+2026-08-25T14:50:02.8884773Z #24 101.0 ├ ƒ /footy/response/[token]
+2026-08-25T14:50:02.8885164Z #24 101.0 ├ ƒ /footy/results
+2026-08-25T14:50:02.8885566Z #24 101.0 ├ ƒ /footy/results/[year]
+2026-08-25T14:50:02.8885982Z #24 101.0 ├ ƒ /footy/rules
+2026-08-25T14:50:02.8886378Z #24 101.0 ├ ƒ /footy/table/[table]
+2026-08-25T14:50:02.8886774Z #24 101.0 ├ ƒ /footy/table/[table]/[year]
+2026-08-25T14:50:02.8887171Z #24 101.0 ├ ƒ /footy/tables
+2026-08-25T14:50:02.8887534Z #24 101.0 ├ ƒ /footy/turnout
+2026-08-25T14:50:02.8887921Z #24 101.0 ├ ƒ /footy/winners
+2026-08-25T14:50:02.8888287Z #24 101.0 └ ƒ /footy/winners/[year]
+2026-08-25T14:50:02.8888672Z #24 101.0 
+2026-08-25T14:50:02.8888978Z #24 101.0 
+2026-08-25T14:50:02.8889390Z #24 101.0 ƒ  (Dynamic)  server-rendered on demand
+2026-08-25T14:50:02.8889788Z #24 101.0 
+2026-08-25T14:50:02.8890103Z #24 DONE 101.1s
+2026-08-25T14:50:04.9864704Z 
+2026-08-25T14:50:04.9868043Z #25 [linux/arm64 runner  5/15] COPY --from=builder /package.json ./package.json
+2026-08-25T14:50:06.0460560Z #25 DONE 1.1s
+2026-08-25T14:50:06.0462312Z 
+2026-08-25T14:50:06.0463891Z #26 [linux/amd64 runner  5/15] COPY --from=builder /package.json ./package.json
+2026-08-25T14:50:06.1844735Z #26 DONE 1.0s
+2026-08-25T14:50:06.1845205Z 
+2026-08-25T14:50:06.1845620Z #27 [linux/arm64 runner  6/15] COPY --from=builder /package-lock.json ./package-lock.json
+2026-08-25T14:50:06.1846520Z #27 DONE 0.0s
+2026-08-25T14:50:06.1846704Z 
+2026-08-25T14:50:06.1846962Z #28 [linux/amd64 runner  6/15] COPY --from=builder /package-lock.json ./package-lock.json
+2026-08-25T14:50:06.1847759Z #28 DONE 0.1s
+2026-08-25T14:50:06.1848048Z 
+2026-08-25T14:50:06.1848405Z #29 [linux/arm64 runner  7/15] COPY --from=builder /next.config.mjs ./next.config.mjs
+2026-08-25T14:50:06.1849328Z #29 DONE 0.1s
+2026-08-25T14:50:06.1849583Z 
+2026-08-25T14:50:06.1849967Z #30 [linux/amd64 runner  7/15] COPY --from=builder /next.config.mjs ./next.config.mjs
+2026-08-25T14:50:06.3060762Z #30 DONE 0.1s
+2026-08-25T14:50:06.3061550Z 
+2026-08-25T14:50:06.3062866Z #31 [linux/amd64 runner  8/15] COPY --from=builder /public ./public
+2026-08-25T14:50:06.3063667Z #31 DONE 0.1s
+2026-08-25T14:50:06.3063893Z 
+2026-08-25T14:50:06.3064270Z #32 [linux/arm64 runner  8/15] COPY --from=builder /public ./public
+2026-08-25T14:50:06.3065148Z #32 DONE 0.1s
+2026-08-25T14:50:06.3065401Z 
+2026-08-25T14:50:06.3065778Z #33 [linux/amd64 runner  9/15] COPY --from=builder /.next ./.next
+2026-08-25T14:50:14.0348345Z #33 ...
+2026-08-25T14:50:14.0349142Z 
+2026-08-25T14:50:14.0350008Z #34 [linux/arm64 runner  9/15] COPY --from=builder /.next ./.next
+2026-08-25T14:50:14.0350793Z #34 DONE 7.7s
+2026-08-25T14:50:14.1882721Z 
+2026-08-25T14:50:14.1883188Z #33 [linux/amd64 runner  9/15] COPY --from=builder /.next ./.next
+2026-08-25T14:50:14.1883694Z #33 DONE 7.8s
+2026-08-25T14:50:14.1883918Z 
+2026-08-25T14:50:14.1884162Z #35 [linux/amd64 runner 10/15] COPY --from=builder /prisma ./prisma
+2026-08-25T14:50:14.6014063Z #35 ...
+2026-08-25T14:50:14.6014961Z 
+2026-08-25T14:50:14.6015675Z #36 [linux/arm64 runner 10/15] COPY --from=builder /prisma ./prisma
+2026-08-25T14:50:14.6016834Z #36 DONE 0.6s
+2026-08-25T14:50:14.8148210Z 
+2026-08-25T14:50:14.8149501Z #35 [linux/amd64 runner 10/15] COPY --from=builder /prisma ./prisma
+2026-08-25T14:50:14.8150446Z #35 DONE 0.6s
+2026-08-25T14:50:14.8150803Z 
+2026-08-25T14:50:14.8151311Z #37 [linux/amd64 runner 11/15] COPY --from=builder /prisma.config.ts ./prisma.config.ts
+2026-08-25T14:50:14.8152173Z #37 DONE 0.0s
+2026-08-25T14:50:14.8152459Z 
+2026-08-25T14:50:14.8152970Z #38 [linux/arm64 runner 11/15] COPY --from=builder /prisma.config.ts ./prisma.config.ts
+2026-08-25T14:50:14.8153775Z #38 DONE 0.0s
+2026-08-25T14:50:14.8154084Z 
+2026-08-25T14:50:14.8154878Z #39 [linux/arm64 runner 12/15] COPY --from=builder /sentry.edge.config.ts ./sentry.edge.config.ts
+2026-08-25T14:50:14.8156162Z #39 DONE 0.0s
+2026-08-25T14:50:14.8156410Z 
+2026-08-25T14:50:14.8156852Z #40 [linux/amd64 runner 12/15] COPY --from=builder /sentry.edge.config.ts ./sentry.edge.config.ts
+2026-08-25T14:50:14.8157669Z #40 DONE 0.0s
+2026-08-25T14:50:14.8157889Z 
+2026-08-25T14:50:14.8158371Z #41 [linux/arm64 runner 13/15] COPY --from=builder /sentry.server.config.ts ./sentry.server.config.ts
+2026-08-25T14:50:14.8159119Z #41 DONE 0.0s
+2026-08-25T14:50:14.8159343Z 
+2026-08-25T14:50:14.8159824Z #42 [linux/amd64 runner 13/15] COPY --from=builder /sentry.server.config.ts ./sentry.server.config.ts
+2026-08-25T14:50:14.8160591Z #42 DONE 0.0s
+2026-08-25T14:50:14.8160813Z 
+2026-08-25T14:50:14.8161289Z #43 [linux/amd64 runner 14/15] RUN npx prisma generate
+2026-08-25T14:50:15.7193445Z #43 1.054 Loaded Prisma config from prisma.config.ts.
+2026-08-25T14:50:15.7194889Z #43 1.054 
+2026-08-25T14:50:16.3227952Z #43 1.658 Prisma schema loaded from prisma/schema.prisma.
+2026-08-25T14:50:17.8914612Z #43 3.226 ✅ Zod schemas generated successfully with filtering applied
+2026-08-25T14:50:17.8919492Z #43 3.226 
+2026-08-25T14:50:18.0473100Z #43 3.232 
+2026-08-25T14:50:18.0474186Z #43 3.232 ✔ Generated Prisma Client (7.9.1) to ./prisma/generated in 244ms
+2026-08-25T14:50:18.0475065Z #43 3.232 
+2026-08-25T14:50:18.0475640Z #43 3.232 ✔ Generated Prisma Zod Generator to ./prisma/zod in 937ms
+2026-08-25T14:50:18.0476103Z #43 3.232 
+2026-08-25T14:50:18.1219284Z #43 3.457 npm notice
+2026-08-25T14:50:18.1219940Z #43 3.457 npm notice New major version of npm available! 11.19.0 -> 12.0.2
+2026-08-25T14:50:18.1220761Z #43 3.457 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+2026-08-25T14:50:18.1221412Z #43 3.457 npm notice To update run: npm install -g npm@12.0.2
+2026-08-25T14:50:18.1221904Z #43 3.457 npm notice
+2026-08-25T14:50:18.3959598Z #43 DONE 3.7s
+2026-08-25T14:50:18.3960006Z 
+2026-08-25T14:50:18.3960377Z #44 [linux/arm64 runner 14/15] RUN npx prisma generate
+2026-08-25T14:50:22.2978579Z #44 ...
+2026-08-25T14:50:22.2978964Z 
+2026-08-25T14:50:22.2979485Z #45 [linux/amd64 runner 15/15] RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs     && chown -R nextjs:nextjs /app
+2026-08-25T14:50:28.1048478Z #45 ...
+2026-08-25T14:50:28.1048738Z 
+2026-08-25T14:50:28.1049161Z #44 [linux/arm64 runner 14/15] RUN npx prisma generate
+2026-08-25T14:50:28.1049837Z #44 13.44 Loaded Prisma config from prisma.config.ts.
+2026-08-25T14:50:28.1050274Z #44 13.44 
+2026-08-25T14:50:32.3838991Z #44 17.72 Prisma schema loaded from prisma/schema.prisma.
+2026-08-25T14:50:34.7558891Z #44 20.09 Error: Unable to parse JSON
+2026-08-25T14:50:34.7559977Z #44 20.09 Details: Unexpected token ',', ...":[{"type":,:,:,:,:,:"... is not valid JSON
+2026-08-25T14:50:34.7560833Z #44 20.09 [Context: getDmmf]
+2026-08-25T14:50:34.7561472Z #44 20.09 
+2026-08-25T14:50:34.7562011Z #44 20.09 Prisma CLI Version : 7.9.1
+2026-08-25T14:50:35.0011137Z #44 20.19 npm notice
+2026-08-25T14:50:35.0011827Z #44 20.19 npm notice New major version of npm available! 11.19.0 -> 12.0.2
+2026-08-25T14:50:35.0012606Z #44 20.19 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+2026-08-25T14:50:35.0013195Z #44 20.19 npm notice To update run: npm install -g npm@12.0.2
+2026-08-25T14:50:35.0013673Z #44 20.19 npm notice
+2026-08-25T14:50:35.0375359Z #44 ERROR: process "/bin/sh -c npx prisma generate" did not complete successfully: exit code: 1
+2026-08-25T14:50:35.0376025Z 
+2026-08-25T14:50:35.0376797Z #45 [linux/amd64 runner 15/15] RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs     && chown -R nextjs:nextjs /app
+2026-08-25T14:50:35.1195217Z #45 CANCELED
+2026-08-25T14:50:35.1195817Z ------
+2026-08-25T14:50:35.1196590Z  > [linux/arm64 runner 14/15] RUN npx prisma generate:
+2026-08-25T14:50:35.1197311Z 20.09 Error: Unable to parse JSON
+2026-08-25T14:50:35.1198090Z 20.09 Details: Unexpected token ',', ...":[{"type":,:,:,:,:,:"... is not valid JSON
+2026-08-25T14:50:35.1199038Z 20.09 [Context: getDmmf]
+2026-08-25T14:50:35.1199638Z 20.09 
+2026-08-25T14:50:35.1200323Z 20.09 Prisma CLI Version : 7.9.1
+2026-08-25T14:50:35.1200806Z 20.19 npm notice
+2026-08-25T14:50:35.1201240Z 20.19 npm notice New major version of npm available! 11.19.0 -> 12.0.2
+2026-08-25T14:50:35.1201950Z 20.19 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+2026-08-25T14:50:35.1202849Z 20.19 npm notice To update run: npm install -g npm@12.0.2
+2026-08-25T14:50:35.1203413Z 20.19 npm notice
+2026-08-25T14:50:35.1203737Z ------
+2026-08-25T14:50:35.1245958Z ERROR: failed to build: failed to solve: process "/bin/sh -c npx prisma generate" did not complete successfully: exit code: 1
+2026-08-25T14:50:35.1395275Z ##[group]Reference
+2026-08-25T14:50:35.3685965Z builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e/builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e0/rnkifmttur77q2w6faptn8s9f
+2026-08-25T14:50:35.3687431Z ##[endgroup]
+2026-08-25T14:50:35.3688266Z ##[group]Check build summary support
+2026-08-25T14:50:35.3688949Z Build summary supported!
+2026-08-25T14:50:35.3689556Z ##[endgroup]
+2026-08-25T14:50:35.3722712Z ##[error]buildx failed with: ERROR: failed to build: failed to solve: process "/bin/sh -c npx prisma generate" did not complete successfully: exit code: 1
+2026-08-25T14:50:35.5042128Z Post job cleanup.
+2026-08-25T14:50:35.7578361Z ##[group]Generating build summary
+2026-08-25T14:50:35.8089000Z exporting build record to /home/runner/work/_temp/docker-actions-toolkit-3b6DrH/export
+2026-08-25T14:50:35.9108402Z [command]/usr/bin/docker buildx history export --builder builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e --output /home/runner/work/_temp/docker-actions-toolkit-3b6DrH/export/toastboy~next-www-toastboy~RNKIFM.dockerbuild rnkifmttur77q2w6faptn8s9f --finalize
+2026-08-25T14:50:36.1310749Z Build record written to /home/runner/work/_temp/docker-actions-toolkit-3b6DrH/export/toastboy~next-www-toastboy~RNKIFM.dockerbuild (45.18 KB)
+2026-08-25T14:50:36.1312074Z Uploading toastboy~next-www-toastboy~RNKIFM.dockerbuild as an artifact
+2026-08-25T14:50:36.1318825Z Artifact name is valid!
+2026-08-25T14:50:36.1319513Z Root directory input is valid!
+2026-08-25T14:50:36.6005428Z Uploading artifact: toastboy~next-www-toastboy~RNKIFM.dockerbuild
+2026-08-25T14:50:36.6038647Z Beginning upload of artifact content to blob storage
+2026-08-25T14:50:36.8276326Z Uploaded bytes 46262
+2026-08-25T14:50:36.8611710Z Finished uploading artifact content to blob storage!
+2026-08-25T14:50:36.8612776Z SHA256 digest of uploaded artifact is 11b3b1a2f58d3ea3f8641a9f847549affedb40ac13cd2a6a5ccfaf1bcb753108
+2026-08-25T14:50:36.8613658Z Finalizing artifact upload
+2026-08-25T14:50:37.1598719Z Artifact toastboy~next-www-toastboy~RNKIFM.dockerbuild successfully finalized. Artifact ID 9568542779
+2026-08-25T14:50:37.1599988Z Artifact download URL: https://github.com/toastboy/next-www-toastboy/actions/runs/32861564648/artifacts/9568542779
+2026-08-25T14:50:37.1637519Z Writing summary
+2026-08-25T14:50:37.1648236Z ##[endgroup]
+2026-08-25T14:50:37.1649689Z ##[group]Removing temp folder /home/runner/work/_temp/docker-actions-toolkit-2KNGuR
+2026-08-25T14:50:37.1652611Z ##[endgroup]
+2026-08-25T14:50:37.1653221Z ##[group]Post cache
+2026-08-25T14:50:37.1653953Z State not set
+2026-08-25T14:50:37.1654710Z ##[endgroup]
+2026-08-25T14:50:37.1798330Z Post job cleanup.
+2026-08-25T14:50:37.3213831Z ##[group]Removing builder
+2026-08-25T14:50:37.4025990Z [command]/usr/bin/docker buildx rm builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e
+2026-08-25T14:50:49.8771988Z builder-43e43625-1eed-4bc8-8280-2ba81c72fc8e removed
+2026-08-25T14:50:49.8838764Z ##[endgroup]
+2026-08-25T14:50:49.8839969Z ##[group]Cleaning up certificates
+2026-08-25T14:50:49.8843943Z ##[endgroup]
+2026-08-25T14:50:49.8845784Z ##[group]Post cache
+2026-08-25T14:50:49.8846283Z State not set
+2026-08-25T14:50:49.8847019Z ##[endgroup]
+2026-08-25T14:50:49.8976382Z Post job cleanup.
+2026-08-25T14:50:50.0133645Z ##[group]Post cache
+2026-08-25T14:50:50.0135672Z Caching docker.io--tonistiigi--binfmt-latest-linux-x64 to GitHub Actions cache
+2026-08-25T14:50:50.0281957Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/next-www-toastboy/next-www-toastboy --files-from manifest.txt --use-compress-program zstdmt
+2026-08-25T14:50:50.6334711Z Failed to save: Unable to reserve cache with key docker.io--tonistiigi--binfmt-latest-linux-x64, another job may be creating this cache.
+2026-08-25T14:50:50.6360852Z ##[endgroup]
+2026-08-25T14:50:50.6453213Z Post job cleanup.
+2026-08-25T14:50:50.8176016Z ##[group]Logout from ghcr.io
+2026-08-25T14:50:50.8208225Z [command]/usr/bin/docker logout ghcr.io
+2026-08-25T14:50:50.8331722Z Removing login credentials for ghcr.io
+2026-08-25T14:50:50.8354444Z ##[endgroup]
+2026-08-25T14:50:50.8355348Z ##[group]Post cache
+2026-08-25T14:50:50.8355754Z State not set
+2026-08-25T14:50:50.8365718Z ##[endgroup]
+2026-08-25T14:50:50.8488289Z Post job cleanup.
+2026-08-25T14:50:50.9619913Z [command]/usr/bin/git version
+2026-08-25T14:50:50.9648959Z git version 2.55.0
+2026-08-25T14:50:50.9682711Z Temporarily overriding HOME='/home/runner/work/_temp/0aba3117-e27e-4030-8386-859c59bfe497' before making global git config changes
+2026-08-25T14:50:50.9684261Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-25T14:50:50.9688914Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-25T14:50:50.9714129Z Removing SSH command configuration
+2026-08-25T14:50:50.9718488Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-25T14:50:50.9746386Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-25T14:50:50.9926229Z Removing HTTP extra header
+2026-08-25T14:50:50.9929938Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-25T14:50:50.9956385Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-25T14:50:51.0127598Z Removing includeIf entries pointing to credentials config files
+2026-08-25T14:50:51.0131952Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-25T14:50:51.0151911Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-08-25T14:50:51.0152615Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-08-25T14:50:51.0153275Z includeif.gitdir:/github/workspace/.git.path
+2026-08-25T14:50:51.0153944Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-25T14:50:51.0158843Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-08-25T14:50:51.0175426Z /home/runner/work/_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:50:51.0182476Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-c844828e\-5930\-422a\-abf6\-56f1ab062477\.config
+2026-08-25T14:50:51.0207715Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-08-25T14:50:51.0232172Z /home/runner/work/_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:50:51.0239022Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-c844828e\-5930\-422a\-abf6\-56f1ab062477\.config
+2026-08-25T14:50:51.0263608Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-08-25T14:50:51.0280288Z /github/runner_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:50:51.0285620Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-c844828e\-5930\-422a\-abf6\-56f1ab062477\.config
+2026-08-25T14:50:51.0308343Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-25T14:50:51.0325167Z /github/runner_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config
+2026-08-25T14:50:51.0331062Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-c844828e\-5930\-422a\-abf6\-56f1ab062477\.config
+2026-08-25T14:50:51.0356329Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-25T14:50:51.0552369Z Removing credentials config '/home/runner/work/_temp/git-credentials-c844828e-5930-422a-abf6-56f1ab062477.config'
+2026-08-25T14:50:51.0667198Z Cleaning up orphan processes
+2026-08-25T14:50:51.1158859Z Terminate orphan process: pid (2151) (op)
+2026-08-25T14:50:51.1182841Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: docker/metadata-action@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
+---
+
+<task-notification>
+<task-id>bw4q94r7n</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/f47f3428-2ca5-4a08-98aa-07533d879cf3/tasks/bw4q94r7n.output</output-file>
+<status>completed</status>
+<summary>Background command "docker buildx build --target runner \
+  --build-arg DATABASE_URL="REDACTED" \
+  --build-arg STORAGE_CLIENT_ID=x --build-arg AZURE_TENANT_ID=x --build-arg STORAGE_CLIENT_SECRET=x \
+  --build-arg BETTER_AUTH_SECRET=x --build-arg BETTER_AUTH_URL=http://localhost:3000 \
+  --build-arg AUTH_GOOGLE_CLIENT_ID=x --build-arg AUTH_GOOGLE_CLIENT_SECRET=x \
+  --build-arg AUTH_MICROSOFT_CLIENT_ID=x --build-arg AUTH_MICROSOFT_CLIENT_SECRET=x \
+  --build-arg SENTRY_AUTH_TOKEN=x --build-arg MAIL_FROM_ADDRESS=footy@toastboy.co.uk \
+  --build-arg MAIL_FROM_NAME=Test --build-arg MAIL_GRAPH_CLIENT_ID=x --build-arg MAIL_GRAPH_CLIENT_SECRET=x \
+  -t next-www-toastboy:test-nogenerate . 2&gt;&amp;1 | tail -60" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/download-artifact@v4, docker/metadata-action@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
+---
+
+Now the image is built and pushed, update docker-compose.prod.yml to pull from there
+
+---
+
+Now the stack will start, but the database connection fails. 
+
+When I run `op run --env-file ./.env -- docker compose -f docker-compose.prod.yml up -d`
+
+I see this in the logs:
+
+db-test-1  | 2026-08-23 13:14:45 0 [Note] mariadbd (initiated by: unknown): Normal shutdown
+db-test-1  | 2026-08-23 13:14:45 0 [Note] InnoDB: FTS optimize thread exiting.
+db-test-1  | 2026-08-23 13:14:45 0 [Note] InnoDB: Starting shutdown...
+db-test-1  | 2026-08-23 13:14:45 0 [Note] InnoDB: Dumping buffer pool(s) to /var/lib/mysql/ib_buffer_pool
+db-test-1  | 2026-08-23 13:14:45 0 [Note] InnoDB: Buffer pool(s) dump completed at 260823 13:14:45
+db-test-1  | 2026-08-23 13:14:45 0 [Note] InnoDB: Removed temporary tablespace data file: "./ibtmp1"
+db-test-1  | 2026-08-23 13:14:45 0 [Note] InnoDB: Shutdown completed; log sequence number 765962006; transaction id 1593593
+db-test-1  | 2026-08-23 13:14:45 0 [Note] mariadbd: Shutdown complete
+db-test-1  | 2026-08-23 13:14:50+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:11.8.5+maria~ubu2404 started.
+db-test-1  | 2026-08-23 13:14:50+00:00 [Warn] [Entrypoint]: /sys/fs/cgroup///memory.pressure not writable, functionality unavailable to MariaDB
+db-test-1  | 2026-08-23 13:14:50+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+db-test-1  | 2026-08-23 13:14:50+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:11.8.5+maria~ubu2404 started.
+db-test-1  | 2026-08-23 13:14:50+00:00 [Note] [Entrypoint]: MariaDB upgrade not required
+db-test-1  | 2026-08-23 13:14:50 0 [Note] Starting MariaDB 11.8.5-MariaDB-ubu2404 source revision a74edc42d080a73e20d5d94e1dd5beea400b507c server_uid REDACTED as process 1
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Compressed tables use zlib 1.3
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Number of transaction pools: 1
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Using ARMv8 crc32 + pmull instructions
+db-test-1  | 2026-08-23 13:14:50 0 [Warning] mariadbd: io_uring_queue_init() failed with EPERM: sysctl kernel.io_uring_disabled has the value 2, or 1 and the user of the process is not a member of sysctl kernel.io_uring_group. (see man 2 io_uring_setup).
+db-test-1  | create_uring failed: falling back to libaio
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Using Linux native AIO
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: innodb_buffer_pool_size_max=128m, innodb_buffer_pool_size=128m
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Completed initialization of buffer pool
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: File system buffers for log disabled (block size=512 bytes)
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: End of log at LSN=765962006
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Opened 3 undo tablespaces
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: 128 rollback segments in 3 undo tablespaces are active.
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: log sequence number 765962006; transaction id 1593594
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
+db-test-1  | 2026-08-23 13:14:50 0 [Note] Plugin 'FEEDBACK' is disabled.
+db-test-1  | 2026-08-23 13:14:50 0 [Note] Plugin 'wsrep-provider' is disabled.
+db-test-1  | 2026-08-23 13:14:50 0 [Note] InnoDB: Buffer pool(s) load completed at 260823 13:14:50
+db-test-1  | 2026-08-23 13:14:54 0 [Note] Server socket created on IP: '0.0.0.0', port: '3306'.
+db-test-1  | 2026-08-23 13:14:54 0 [Note] Server socket created on IP: '::', port: '3306'.
+db-test-1  | 2026-08-23 13:14:54 0 [Note] mariadbd: Event Scheduler: Loaded 0 events
+db-test-1  | 2026-08-23 13:14:54 0 [Note] mariadbd: ready for connections.
+db-test-1  | Version: '11.8.5-MariaDB-ubu2404'  socket: '/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
+db-test-1  | 2026-08-23 17:48:32 18 [Warning] Aborted connection 18 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 13 [Warning] Aborted connection 13 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 20 [Warning] Aborted connection 20 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 3 [Warning] Aborted connection 3 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 8 [Warning] Aborted connection 8 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 12 [Warning] Aborted connection 12 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 11 [Warning] Aborted connection 11 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 22 [Warning] Aborted connection 22 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 10 [Warning] Aborted connection 10 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 16 [Warning] Aborted connection 16 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 7 [Warning] Aborted connection 7 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 14 [Warning] Aborted connection 14 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 15 [Warning] Aborted connection 15 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 17 [Warning] Aborted connection 17 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 6 [Warning] Aborted connection 6 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 5 [Warning] Aborted connection 5 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 9 [Warning] Aborted connection 9 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 19 [Warning] Aborted connection 19 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 21 [Warning] Aborted connection 21 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+db-test-1  | 2026-08-23 17:48:32 4 [Warning] Aborted connection 4 to db: 'footy' user: 'root' host: '172.18.0.1' (Got an error reading communication packets)
+
+---
+
+❯  docker compose -f docker-compose.prod.yml logs -f                         
+nodeapp-1  | ▲ Next.js 16.3.2
+db-1       | 2026-08-25 15:25:20+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:11.8.5+maria~ubu2404 started.
+db-1       | 2026-08-25 15:25:21+00:00 [Warn] [Entrypoint]: /sys/fs/cgroup///memory.pressure not writable, functionality unavailable to MariaDB
+db-1       | 2026-08-25 15:25:21+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+db-1       | 2026-08-25 15:25:21+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:11.8.5+maria~ubu2404 started.
+db-1       | 2026-08-25 15:25:21+00:00 [Note] [Entrypoint]: MariaDB upgrade not required
+db-1       | 2026-08-25 15:25:21 0 [Note] Starting MariaDB 11.8.5-MariaDB-ubu2404 source revision a74edc42d080a73e20d5d94e1dd5beea400b507c server_uid BwJpj4GS55Fcww7QdAy/MHvEh10= as process 1
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Compressed tables use zlib 1.3
+nodeapp-1  | - Local:         http://localhost:3000
+nodeapp-1  | - Network:       http://172.18.0.5:3000
+nodeapp-1  | ✓ Ready in 138ms
+nodeapp-1  | ✓ Running next.config.mjs took 295ms
+nodeapp-1  | ⨯ f: Missing required secrets.
+nodeapp-1  |     at jg (.next/server/chunks/ssr/_0pez5f4._.js:235:54910)
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Number of transaction pools: 1
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Using ARMv8 crc32 + pmull instructions
+db-1       | 2026-08-25 15:25:21 0 [Warning] mariadbd: io_uring_queue_init() failed with EPERM: sysctl kernel.io_uring_disabled has the value 2, or 1 and the user of the process is not a member of sysctl kernel.io_uring_group. (see man 2 io_uring_setup).
+db-1       | create_uring failed: falling back to libaio
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Using Linux native AIO
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: innodb_buffer_pool_size_max=128m, innodb_buffer_pool_size=128m
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Completed initialization of buffer pool
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: File system buffers for log disabled (block size=512 bytes)
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: End of log at LSN=6924593047
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Opened 3 undo tablespaces
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: 128 rollback segments in 3 undo tablespaces are active.
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/_0ea6im4._.js:465:11870)
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:7781)
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: log sequence number 6924593047; transaction id 13511626
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
+db-1       | 2026-08-25 15:25:21 0 [Note] Plugin 'FEEDBACK' is disabled.
+db-1       | 2026-08-25 15:25:21 0 [Note] Plugin 'wsrep-provider' is disabled.
+db-1       | 2026-08-25 15:25:21 0 [Note] InnoDB: Buffer pool(s) load completed at 260825 15:25:21
+db-1       | 2026-08-25 15:25:22 0 [Note] Server socket created on IP: '0.0.0.0', port: '3306'.
+db-1       | 2026-08-25 15:25:22 0 [Note] Server socket created on IP: '::', port: '3306'.
+db-1       | 2026-08-25 15:25:22 0 [Note] mariadbd: Event Scheduler: Loaded 0 events
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:6406) {
+nodeapp-1  |   code: 'INTERNAL_ERROR',
+nodeapp-1  |   expected: false,
+nodeapp-1  |   details: { missingSecrets: [ 'CRON_SECRET' ] },
+nodeapp-1  |   publicMessage: 'Something went wrong.'
+nodeapp-1  | }
+nodeapp-1  | ⨯ f: Missing required secrets.
+nodeapp-1  |     at jg (.next/server/chunks/ssr/_0pez5f4._.js:235:54910)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/_0ea6im4._.js:465:11870)
+db-1       | 2026-08-25 15:25:22 0 [Note] mariadbd: ready for connections.
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+db-1       | Version: '11.8.5-MariaDB-ubu2404'  socket: '/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:7781)
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:6406) {
+nodeapp-1  |   code: 'INTERNAL_ERROR',
+nodeapp-1  |   expected: false,
+nodeapp-1  |   details: { missingSecrets: [ 'CRON_SECRET' ] },
+nodeapp-1  |   publicMessage: 'Something went wrong.'
+nodeapp-1  | }
+nodeapp-1  | ⨯ f: Missing required secrets.
+nodeapp-1  |     at jg (.next/server/chunks/ssr/_0pez5f4._.js:235:54910)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/_0ea6im4._.js:465:11870)
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:7781)
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:6406) {
+nodeapp-1  |   code: 'INTERNAL_ERROR',
+nodeapp-1  |   expected: false,
+nodeapp-1  |   details: { missingSecrets: [ 'CRON_SECRET' ] },
+nodeapp-1  |   publicMessage: 'Something went wrong.'
+nodeapp-1  | }
+nodeapp-1  | ⨯ f: Missing required secrets.
+nodeapp-1  |     at jg (.next/server/chunks/ssr/_0pez5f4._.js:235:54910)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/_0ea6im4._.js:465:11870)
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:7781)
+nodeapp-1  |     at instantiateModule (.next/server/chunks/ssr/[turbopack]_runtime.js:889:9)
+nodeapp-1  |     at getOrInstantiateModuleFromParent (.next/server/chunks/ssr/[turbopack]_runtime.js:913:12)
+nodeapp-1  |     at Context.esmImport [as i] (.next/server/chunks/ssr/[turbopack]_runtime.js:352:20)
+nodeapp-1  |     at module evaluation (.next/server/chunks/ssr/[root-of-the-server]__0-bij8k._.js:2:6406) {
+nodeapp-1  |   code: 'INTERNAL_ERROR',
+nodeapp-1  |   expected: false,
+nodeapp-1  |   details: { missingSecrets: [ 'CRON_SECRET' ] },
+nodeapp-1  |   publicMessage: 'Something went wrong.'
+nodeapp-1  | }

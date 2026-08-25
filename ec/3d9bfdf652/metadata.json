@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "ec3d9bfdf652",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/workflows/docker-publish.yml",
+    "docker-compose.prod.yml",
+    "src/lib/auth.nosocial.vitest.spec.ts",
+    "src/lib/auth.ts",
+    "src/lib/auth.vitest.spec.ts",
+    "src/lib/urls.ts",
+    "src/lib/urls.vitest.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/ec/3d9bfdf652/0/metadata.json",
+      "transcript": "/ec/3d9bfdf652/0/full.jsonl",
+      "compact_transcript": "/ec/3d9bfdf652/0/transcript.jsonl",
+      "content_hash": "/ec/3d9bfdf652/0/content_hash.txt",
+      "prompt": "/ec/3d9bfdf652/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 310,
+    "cache_creation_tokens": 617863,
+    "cache_read_tokens": 26410603,
+    "output_tokens": 122210,
+    "api_call_count": 155
+  }
+}

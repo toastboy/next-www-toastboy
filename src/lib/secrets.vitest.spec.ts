@@ -34,8 +34,6 @@ const applyBaselineEnv = () => {
     vi.stubEnv('STORAGE_CLIENT_SECRET', 'storage-secret');
     vi.stubEnv('AZURE_TENANT_ID', 'tenant-id');
     vi.stubEnv('BETTER_AUTH_SECRET', 'auth-secret');
-    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://toastboy.co.uk');
-    vi.stubEnv('BETTER_AUTH_URL', 'https://auth.toastboy.co.uk');
     vi.stubEnv('AUTH_GOOGLE_CLIENT_ID', 'google-id');
     vi.stubEnv('AUTH_GOOGLE_CLIENT_SECRET', 'google-secret');
     vi.stubEnv('AUTH_MICROSOFT_CLIENT_ID', 'ms-id');
@@ -63,7 +61,6 @@ describe('getSecrets', () => {
         const result = getSecrets();
 
         expect(result.STORAGE_CLIENT_ID).toBe('storage-id');
-        expect(result.BETTER_AUTH_URL).toBe('https://auth.toastboy.co.uk');
         expect(mockReadFileSync).not.toHaveBeenCalled();
     });
 
@@ -74,23 +71,6 @@ describe('getSecrets', () => {
         const second = getSecrets();
 
         expect(second).toBe(first);
-    });
-
-    it('defaults BETTER_AUTH_URL to NEXT_PUBLIC_SITE_URL when unset', async () => {
-        vi.stubEnv('BETTER_AUTH_URL', undefined);
-
-        const { getSecrets } = await import('@/lib/secrets');
-
-        expect(getSecrets().BETTER_AUTH_URL).toBe('https://toastboy.co.uk');
-    });
-
-    it('defaults BETTER_AUTH_URL to localhost when neither BETTER_AUTH_URL nor NEXT_PUBLIC_SITE_URL are set', async () => {
-        vi.stubEnv('BETTER_AUTH_URL', undefined);
-        vi.stubEnv('NEXT_PUBLIC_SITE_URL', undefined);
-
-        const { getSecrets } = await import('@/lib/secrets');
-
-        expect(getSecrets().BETTER_AUTH_URL).toBe('http://localhost:3000');
     });
 
     it('defaults MAIL_FROM_ADDRESS and MAIL_FROM_NAME when unset', async () => {

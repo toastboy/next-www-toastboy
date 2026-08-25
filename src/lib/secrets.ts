@@ -6,17 +6,19 @@ import * as path from 'path';
 
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 
+// The app's public base URL and trusted origins are resolved at request/
+// module-init time via getPublicBaseUrl()/getTrustedOrigins() in
+// @/lib/urls (from SITE_URL and TRUSTED_ORIGINS), not tracked here. A
+// NEXT_PUBLIC_* var would also be the wrong mechanism for either: Next.js
+// inlines it as a build-time literal into every bundle, including this
+// server-only one, so it could never reflect a value set later at
+// container runtime.
 const secrets = {
     STORAGE_CLIENT_ID: process.env.STORAGE_CLIENT_ID,
     STORAGE_CLIENT_SECRET: process.env.STORAGE_CLIENT_SECRET,
     AZURE_TENANT_ID: process.env.AZURE_TENANT_ID,
 
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-    BETTER_AUTH_URL:
-        process.env.BETTER_AUTH_URL ??
-        process.env.NEXT_PUBLIC_SITE_URL ??
-        'http://localhost:3000',
 
     AUTH_GOOGLE_CLIENT_ID: process.env.AUTH_GOOGLE_CLIENT_ID,
     AUTH_GOOGLE_CLIENT_SECRET: process.env.AUTH_GOOGLE_CLIENT_SECRET,

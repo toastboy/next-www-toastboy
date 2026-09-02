@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "ee3d6d772595",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/docker-publish.yml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/ee/3d6d772595/0/metadata.json",
+      "transcript": "/ee/3d6d772595/0/full.jsonl",
+      "compact_transcript": "/ee/3d6d772595/0/transcript.jsonl",
+      "content_hash": "/ee/3d6d772595/0/content_hash.txt",
+      "prompt": "/ee/3d6d772595/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 36,
+    "cache_creation_tokens": 57742,
+    "cache_read_tokens": 1180857,
+    "output_tokens": 7850,
+    "api_call_count": 18
+  }
+}

@@ -80,6 +80,8 @@ jobs:
                   labels: ${{ steps.meta-app.outputs.labels }}
                   platforms: ${{ matrix.platform }}
                   outputs: type=image,name=${{ env.RUNNER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+                  cache-from: type=gha,scope=app-${{ env.PLATFORM_PAIR }}
+                  cache-to: type=gha,mode=max,scope=app-${{ env.PLATFORM_PAIR }}
                   build-args: |
                       DATABASE_URL=${{ env.DATABASE_URL }}
                       AZURE_TENANT_ID=${{ env.AZURE_TENANT_ID }}
@@ -155,6 +157,8 @@ jobs:
                   labels: ${{ steps.meta-seeder.outputs.labels }}
                   platforms: ${{ matrix.platform }}
                   outputs: type=image,name=${{ env.SEEDER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+                  cache-from: type=gha,scope=seeder-${{ env.PLATFORM_PAIR }}
+                  cache-to: type=gha,mode=max,scope=seeder-${{ env.PLATFORM_PAIR }}
 
             - name: Export digest
               run: |

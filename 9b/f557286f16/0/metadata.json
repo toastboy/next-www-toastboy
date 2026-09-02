@@ -1,0 +1,84 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "9bf557286f16",
+  "session_id": "fbc87e3a-93c8-4da3-a68b-9a81f2dc245f",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-02T19:11:59.752346Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "Dockerfile"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "bf24376f058b",
+  "checkpoint_transcript_start": 120,
+  "transcript_lines_at_start": 120,
+  "compact_transcript_start": 27,
+  "token_usage": {
+    "input_tokens": 26,
+    "cache_creation_tokens": 17257,
+    "cache_read_tokens": 1167264,
+    "output_tokens": 9740,
+    "api_call_count": 13
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01XVcdreyPBasShLZiT3VgfY",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "bf24376f058b",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 98,
+        "end": 99,
+        "entry_ids": [
+          "7381d77e-3358-4103-8b92-7eb76a619608"
+        ],
+        "tool_use_id": "toolu_01XVcdreyPBasShLZiT3VgfY"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01XVcdreyPBasShLZiT3VgfY"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-02T19:11:59.72648Z",
+    "agent_lines": 16,
+    "agent_removed": 12,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 16,
+    "total_lines_changed": 28,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

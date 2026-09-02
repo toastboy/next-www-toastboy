@@ -78,19 +78,23 @@ RUN apt-get update -y && \
     apt-get install -y openssl && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=prod-deps /node_modules ./node_modules
-COPY --from=builder /package.json ./package.json
-COPY --from=builder /package-lock.json ./package-lock.json
-COPY --from=builder /next.config.mjs ./next.config.mjs
-COPY --from=builder /public ./public
-COPY --from=builder /.next ./.next
-COPY --from=builder /prisma ./prisma
-COPY --from=builder /prisma.config.ts ./prisma.config.ts
-COPY --from=builder /sentry.edge.config.ts ./sentry.edge.config.ts
-COPY --from=builder /sentry.server.config.ts ./sentry.server.config.ts
+# User created before the COPY layers below, with --chown on each COPY,
+# rather than a trailing `chown -R /app`: on overlayfs, chown-ing already-
+# copied files forces a full copy-up of their content into a new layer even
+# though the bytes are unchanged, roughly doubling the size of everything
+# copied above it. Owning the files correctly as they're written avoids that.
+RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs
 
-RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs \
-    && chown -R nextjs:nextjs /app
+COPY --from=prod-deps --chown=nextjs:nextjs /node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nextjs /package.json ./package.json
+COPY --from=builder --chown=nextjs:nextjs /package-lock.json ./package-lock.json
+COPY --from=builder --chown=nextjs:nextjs /next.config.mjs ./next.config.mjs
+COPY --from=builder --chown=nextjs:nextjs /public ./public
+COPY --from=builder --chown=nextjs:nextjs /.next ./.next
+COPY --from=builder --chown=nextjs:nextjs /prisma ./prisma
+COPY --from=builder --chown=nextjs:nextjs /prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=nextjs:nextjs /sentry.edge.config.ts ./sentry.edge.config.ts
+COPY --from=builder --chown=nextjs:nextjs /sentry.server.config.ts ./sentry.server.config.ts
 
 USER nextjs
 EXPOSE 3000

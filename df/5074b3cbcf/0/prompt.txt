@@ -1,0 +1,23 @@
+Is there a ChainGuard base image or similar which would reduce the vulnerability surface of my image compared to debian bookworm?
+
+---
+
+I don't think I'd be too constrained by using :latest all the time - what is your advice when comparing the free tier Chainguard versus the Google solution?
+
+---
+
+Ah, so I couldn't constrain Chainguard to node LTS versions without paying?
+
+---
+
+Let's try gcr.io/distroless/nodejs26-debian13 as a new base
+
+---
+
+<task-notification>
+<task-id>b12m5twz1</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/f47f3428-2ca5-4a08-98aa-07533d879cf3/tasks/b12m5twz1.output</output-file>
+<status>completed</status>
+<summary>Background command "Retry building runner target against distroless nodejs26-debian13 base" completed (exit code 0)</summary>
+</task-notification>

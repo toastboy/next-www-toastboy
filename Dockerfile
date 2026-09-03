@@ -68,38 +68,35 @@ RUN chmod +x /usr/local/seeder.sh
 ENV NODE_ENV=development
 CMD ["/usr/local/seeder.sh"]
 
-FROM --platform=$TARGETPLATFORM node:26.8.1-bookworm-slim AS runner
+# distroless/nodejs is built on the "cc" image, which already bundles glibc,
+# libstdc++ and libssl - no apt, no shell, no package manager, and no way to
+# create a user, so unlike the previous debian-slim runner: no `apt-get
+# install openssl` (already present), no `groupadd`/`useradd` (the :nonroot
+# tag ships a built-in uid/gid 65532 - COPY --chown must reference it
+# numerically, since that name only resolves via this stage's own
+# /etc/passwd, which doesn't define it), and CMD/HEALTHCHECK must use exec
+# form (no shell to interpret a string). ENTRYPOINT is preset to `node`, so
+# CMD is arguments to node, not the "node" command itself.
+FROM --platform=$TARGETPLATFORM gcr.io/distroless/nodejs26-debian13:nonroot AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000
 
-RUN apt-get update -y && \
-    apt-get install -y openssl && \
-    rm -rf /var/lib/apt/lists/*
+COPY --from=prod-deps --chown=65532:65532 /node_modules ./node_modules
+COPY --from=builder --chown=65532:65532 /package.json ./package.json
+COPY --from=builder --chown=65532:65532 /package-lock.json ./package-lock.json
+COPY --from=builder --chown=65532:65532 /next.config.mjs ./next.config.mjs
+COPY --from=builder --chown=65532:65532 /public ./public
+COPY --from=builder --chown=65532:65532 /.next ./.next
+COPY --from=builder --chown=65532:65532 /prisma ./prisma
+COPY --from=builder --chown=65532:65532 /prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=65532:65532 /sentry.edge.config.ts ./sentry.edge.config.ts
+COPY --from=builder --chown=65532:65532 /sentry.server.config.ts ./sentry.server.config.ts
 
-# User created before the COPY layers below, with --chown on each COPY,
-# rather than a trailing `chown -R /app`: on overlayfs, chown-ing already-
-# copied files forces a full copy-up of their content into a new layer even
-# though the bytes are unchanged, roughly doubling the size of everything
-# copied above it. Owning the files correctly as they're written avoids that.
-RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs
-
-COPY --from=prod-deps --chown=nextjs:nextjs /node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nextjs /package.json ./package.json
-COPY --from=builder --chown=nextjs:nextjs /package-lock.json ./package-lock.json
-COPY --from=builder --chown=nextjs:nextjs /next.config.mjs ./next.config.mjs
-COPY --from=builder --chown=nextjs:nextjs /public ./public
-COPY --from=builder --chown=nextjs:nextjs /.next ./.next
-COPY --from=builder --chown=nextjs:nextjs /prisma ./prisma
-COPY --from=builder --chown=nextjs:nextjs /prisma.config.ts ./prisma.config.ts
-COPY --from=builder --chown=nextjs:nextjs /sentry.edge.config.ts ./sentry.edge.config.ts
-COPY --from=builder --chown=nextjs:nextjs /sentry.server.config.ts ./sentry.server.config.ts
-
-USER nextjs
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"
+    CMD ["node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
 
-CMD ["node", "node_modules/next/dist/bin/next", "start"]
+CMD ["node_modules/next/dist/bin/next", "start"]

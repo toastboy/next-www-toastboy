@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "c477464e0e68",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 24,
+  "files_touched": [
+    "prisma/schema.prisma",
+    "src/app/footy/docs/admin/admin.mdx",
+    "src/app/footy/docs/migration/migration.mdx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c4/77464e0e68/0/metadata.json",
+      "transcript": "/c4/77464e0e68/0/full.jsonl",
+      "compact_transcript": "/c4/77464e0e68/0/transcript.jsonl",
+      "content_hash": "/c4/77464e0e68/0/content_hash.txt",
+      "prompt": "/c4/77464e0e68/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 294,
+    "cache_creation_tokens": 480170,
+    "cache_read_tokens": 24158655,
+    "output_tokens": 149721,
+    "api_call_count": 147
+  }
+}

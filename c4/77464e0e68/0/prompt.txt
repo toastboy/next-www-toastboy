@@ -1,0 +1,119 @@
+nodeapp-1  | ▲ Next.js 16.3.3
+nodeapp-1  | - Local:         http://localhost:3000
+nodeapp-1  | - Network:       http://172.18.0.5:3000
+nodeapp-1  | ✓ Ready in 216ms
+nodeapp-1  | ✓ Running next.config.mjs took 442ms
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | ⨯ Error: error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  |     at <unknown> (.next/server/chunks/ssr/_09h_c2c._.js:18:12807)
+nodeapp-1  |     at ab.connect (.next/server/chunks/ssr/_09h_c2c._.js:18:12966) {
+nodeapp-1  |   clientVersion: '7.10.0',
+nodeapp-1  |   digest: '733293228'
+nodeapp-1  | }
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | (Use `node --trace-warnings ...` to show where the warning was created)
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | prisma:error error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  | ⨯ Error: error parsing connection string, format must be 'mariadb://[<user>[:<password>]@]<host>[:<port>]/[<db>[?<opt1>=<value1>[&<opt2>=<value2>]]]'
+nodeapp-1  |     at <unknown> (.next/server/chunks/ssr/_09h_c2c._.js:18:12807)
+nodeapp-1  |     at ab.connect (.next/server/chunks/ssr/_09h_c2c._.js:18:12966) {
+nodeapp-1  |   clientVersion: '7.10.0',
+nodeapp-1  |   digest: '733293228'
+nodeapp-1  | }
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+nodeapp-1  | (node:1) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+
+---
+
+One problem with running the new image now: logging in with Better Auth (using Microsoft) fails with this in the logs
+
+nodeapp-1  | Unknown argument `issuer`. Did you mean `user`? Available options are marked with ?.
+nodeapp-1  | 2026-09-03T07:11:32.211Z ERROR [Better Auth]: Better auth was unable to query your database.
+nodeapp-1  | Error:  Error [PrismaClientValidationError]:
+nodeapp-1  | Invalid `prisma.account.findFirst()` invocation:
+nodeapp-1  |
+nodeapp-1  | {
+nodeapp-1  |   where: {
+nodeapp-1  |     AND: [
+nodeapp-1  |       {
+nodeapp-1  |         issuer: {
+nodeapp-1  |           equals: "https://login.microsoftonline.com/6a192374-f4a3-4ab8-bcaf-7053c1f64ce9/v2.0"
+nodeapp-1  |         }
+nodeapp-1  |       },
+nodeapp-1  |       {
+nodeapp-1  |         accountId: {
+nodeapp-1  |           equals: "0880111d-a115-4828-b165-5469557a50d5"
+nodeapp-1  |         }
+nodeapp-1  |       }
+nodeapp-1  |     ]
+nodeapp-1  |   },
+nodeapp-1  |   select: undefined
+nodeapp-1  | }
+nodeapp-1  |
+nodeapp-1  | Unknown argument `issuer`. Did you mean `user`? Available options are marked with ?.
+nodeapp-1  |     at async Object.findOne (.next/server/chunks/_08-lo2t._.js:361:10597)
+nodeapp-1  |     at async Object.findAccountOwnerByKey (.next/server/chunks/_08-lo2t._.js:466:90023)
+nodeapp-1  |     at async e5 (.next/server/chunks/_08-lo2t._.js:5:40816) {
+nodeapp-1  |   clientVersion: '7.10.0'
+nodeapp-1  | }
+
+---
+
+OK, so apart from anything else, I'm missing some tests to detect failures like this in the future. It's annoying that Better Auth chose to add a breaking change to a point release, isn't it?
+
+---
+
+File a ticket under SYS-504
+
+---
+
+Now let's fix the immediate problem - is this a job for a database migration? Really I don't want Prisma touching Better Auth tables.
+
+---
+
+There must be Better Auth issues complaining about this - what do they say? Have they blogged or mentioned this change in release notes?
+
+---
+
+Given that I am yet to migrate to this new site, would the simplest thing be to start again adding test users, including myself? Presumably new users would be created correctly. Maybe I also need to reinitialise the Better Auth schema as well, so that it's like I'm starting from scratch. Also I need to start writing the admin documentation which would include user migration for existing users of the old site.
+
+---
+
+No, I don't think I want a migration, I want to re-run the Better Auth init and start afresh
+
+---
+
+Have you run `npx auth@latest generate` as any part of this work?
+
+---
+
+Yes
+
+---
+
+No, I want the schema to match the official output exactly
+
+---
+
+Yes, let's use the npx auth create-admin
+
+---
+
+Oh, so this method only works for username/password not for OAuth?
+
+---
+
+Use toastboy@toastboy.co.uk

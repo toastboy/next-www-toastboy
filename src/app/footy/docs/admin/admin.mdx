@@ -1,5 +1,142 @@
 # Administration of Toastboy FC
 
-If you're granted admin access, here's how you can manage games on the site.
+If you're granted admin access, here's how you can manage games, players and
+money on the site. The admin section lives at `/footy/admin` and its pages
+also appear as an **Admin** group at the bottom of the navigation menu once
+you're signed in with admin access.
 
-TODO: complete this documentation
+## Getting admin access
+
+Every admin page requires you to be signed in with the `admin` role. If
+you're not, you'll be redirected to sign in and sent back to the page you
+asked for once you've authenticated.
+
+Existing admins can promote or demote other users from the **Users** page
+(see below). There's no self-service way to become the _first_ admin on a
+fresh database — that has to be done directly against the database, by
+setting `role` to `'admin'` on the relevant row in the `user` table. This is
+a one-off, manual exception to the normal rule that Better Auth's tables are
+only ever touched through its own APIs — treat it as a last resort for
+bootstrapping, not a pattern to repeat.
+
+## Dashboard
+
+`/footy/admin` is a landing page with two housekeeping tools, not a
+day-to-day admin task:
+
+- **Update player records** — recomputes the `PlayerRecord` aggregates and
+  every table's ranks. Normally happens automatically whenever a result is
+  recorded, so you'd only run this by hand to repair a table after a manual
+  data fix.
+- **Export auth data** — downloads the current Better Auth user data.
+
+## Players
+
+### Adding a new player
+
+**New Player** (`/footy/admin/newplayer`) creates a `Player` row — a person
+who takes part in games — and optionally, if you give an email address,
+generates a claim link and emails it to them straight away.
+
+A `Player` is a squad member with a game history; it is deliberately
+separate from a website login (a Better Auth `User`). A player can exist —
+and appear in results, tables and stats — for years before they ever create
+a login, and plenty of historic players never will.
+
+### Inviting a player to claim their login
+
+**Players Admin** (`/footy/admin/players`) lists every player and shows
+whether each one already has a linked login. For any player who doesn't, you
+can generate a fresh claim link (and optionally email it) from here — this
+is the same invite mechanism as New Player, just for a player who already
+exists.
+
+The player follows the link to `/footy/auth/claim/[token]`, where they set
+up their own login (Google, Microsoft, or email/password) and it gets linked
+to their existing `Player` record — history, stats and all. The link is
+single-use and time-limited; if it expires unused, just generate a new one.
+
+### Migrating players from the old site
+
+This is the mechanism to use for bringing over people who played under the
+old toastboy.co.uk site and don't have a login here yet. Their `Player` rows
+already exist — historic player, game and result data is seeded from the
+same source the old site used — so there's no separate "import a user"
+step. Migrating someone is just: find them on **Players Admin**, generate a
+claim link, and get it to them (by email if you have one on file, otherwise
+by hand). They pick up exactly where their history left off the moment they
+claim it.
+
+There's no need to pre-create or backfill anything in the Better Auth
+tables for this. Every claimed login is created fresh, through Better
+Auth's normal sign-up flow, at the moment the player claims it — so it
+always matches whatever the current Better Auth schema expects, with
+nothing to keep in sync by hand. See `docs/migration/migration.mdx` for the
+player-facing version of this explanation.
+
+## Game days
+
+### Scheduling games
+
+- **New Game** (`/footy/admin/newgame`) sends out invitations for the next
+  scheduled game day — it emails every active player a direct RSVP link and
+  starts the response window.
+- **More Games** (`/footy/admin/moregames`) bulk-creates future weekly game
+  day rows (Tuesdays, running to the end of the current booking year — 1st
+  August to 31st July) so there's always a run of fixtures ahead to invite
+  players to. It pre-fills cost and hall cost from the most recent game day.
+
+### Managing responses
+
+**Responses** (`/footy/admin/responses`) shows and lets you edit how each
+player has responded to the current game day's invitation (Yes / No / Dunno
+/ Excused / Flaked / Injured) — useful for recording a response that came in
+outside the normal RSVP link, or correcting one.
+
+### Picking teams
+
+**Picker** (`/footy/admin/picker`) balances the two teams for the current
+game day from everyone who's responded "Yes". It isn't skill-rating based —
+it balances on each candidate's recent match points (win/draw/loss over
+their last few games), goalkeeper count, and age, in that priority order.
+Re-running it always clears the existing team assignments first, so it's
+always safe to re-pick after a late withdrawal or addition — nothing is left
+stale from the previous run.
+
+### Recording who's drinking after the game
+
+**Drinkers** (`/footy/admin/drinkers`) records who stayed for a drink
+afterwards — used for the pub/social stats, not for the match result itself.
+
+### Recording the result
+
+There's no separate admin page for this — go to the game day's own page
+(`/footy/game/[id]`) and, if you're an admin, a result form is shown there.
+Recording a result sets the game day's outcome (A win / B win / draw),
+charges every selected player for that game's cost, and triggers the
+player-record and table recalculation described above.
+
+## Money
+
+- **Invoice** (`/footy/admin/invoice`) checks a given month's games against
+  the hall-hire invoice, showing which game days still need a hall-hire
+  payment recorded and which have already been accounted for.
+- **Money** (`/footy/admin/money`) lists players with an outstanding balance
+  from game charges and lets you record manual payments against them.
+
+Every charge and payment is a `Transaction`; a player's balance is always
+just the signed sum of their transactions.
+
+## Users & roles
+
+- **Users** (`/footy/admin/users`) lists every Better Auth login and is
+  where you grant or revoke the `admin` role.
+- Clicking through to a user (`/footy/admin/user/[email]`) shows that
+  login's details.
+
+## Why pages update themselves
+
+Admin pages don't need a manual refresh after a change — every mutating
+action here broadcasts on a channel that the page is subscribed to, so
+anyone else with the page open (including you, in another tab) sees the
+update land automatically.

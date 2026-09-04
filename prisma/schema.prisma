@@ -318,45 +318,43 @@ model User {
     id            String    @id
     name          String    @db.Text
     email         String
-    emailVerified Boolean
+    emailVerified Boolean   @default(false)
     image         String?   @db.Text
-    createdAt     DateTime
-    updatedAt     DateTime
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    role          String?   @db.Text
+    banned        Boolean?  @default(false)
+    banReason     String?   @db.Text
+    banExpires    DateTime?
+    playerId      Int?
     sessions      Session[]
     accounts      Account[]
-
-    role       String?   @db.Text
-    banned     Boolean?
-    banReason  String?   @db.Text
-    banExpires DateTime?
-
-    playerId Int?
 
     @@unique([email])
     @@map("user")
 }
 
 model Session {
-    id        String   @id
-    expiresAt DateTime
-    token     String
-    createdAt DateTime
-    updatedAt DateTime
-    ipAddress String?  @db.Text
-    userAgent String?  @db.Text
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    impersonatedBy String? @db.Text
+    id             String   @id
+    expiresAt      DateTime
+    token          String
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    ipAddress      String?  @db.Text
+    userAgent      String?  @db.Text
+    userId         String
+    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    impersonatedBy String?  @db.Text
 
     @@unique([token])
-    @@index([userId])
+    @@index([userId(length: 191)])
     @@map("session")
 }
 
 model Account {
     id                    String    @id
-    accountId             String    @db.Text
+    issuer                String    @db.VarChar(191)
+    accountId             String    @db.VarChar(191)
     providerId            String    @db.Text
     userId                String
     user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -367,20 +365,21 @@ model Account {
     refreshTokenExpiresAt DateTime?
     scope                 String?   @db.Text
     password              String?   @db.Text
-    createdAt             DateTime
-    updatedAt             DateTime
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
 
-    @@index([userId])
+    @@unique([issuer, accountId], map: "account_issuer_accountId_uidx")
+    @@index([userId(length: 191)])
     @@map("account")
 }
 
 model Verification {
-    id         String    @id
-    identifier String    @db.Text
-    value      String    @db.Text
+    id         String   @id
+    identifier String   @db.Text
+    value      String   @db.Text
     expiresAt  DateTime
-    createdAt  DateTime?
-    updatedAt  DateTime?
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 
     @@index([identifier(length: 191)])
     @@map("verification")

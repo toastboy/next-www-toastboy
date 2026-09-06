@@ -1,0 +1,5 @@
+A simple refactor now: Refactor so core routines have 'core' as a prefix, not 'Core' as a suffix. e.g. claimPlayerInvitationCore becomes coreClaimPlayerInvitation
+
+---
+
+While we're at it, let's remove the barrel exports for the lib/core modules. I don't think they serve any purpose. Before making changes, do you agree?

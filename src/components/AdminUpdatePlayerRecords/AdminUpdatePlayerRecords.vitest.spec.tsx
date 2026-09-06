@@ -25,7 +25,20 @@ describe('AdminUpdatePlayerRecords', () => {
     });
 
     afterEach(() => {
-        vi.runOnlyPendingTimers();
+        // Mantine's Button loading Transition chains two requestAnimationFrame
+        // calls before its 150ms setTimeout (see Button's loaderTransition).
+        // vi.runOnlyPendingTimers() only drains timers pending at the moment
+        // it's called, so it stops after the first rAF and leaves the
+        // follow-up rAF/setTimeout pending; vi.useRealTimers() then discards
+        // the fake clock, and — depending on scheduling — that abandoned
+        // setTimeout can end up firing for real, after the test file (and its
+        // jsdom/happy-dom window) has already been torn down, crashing a
+        // later, unrelated test with "window is not defined". Advancing well
+        // past 150ms (but short of the 1000ms poll interval) drains the whole
+        // chain under fake time before switching back.
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
         vi.useRealTimers();
         vi.clearAllMocks();
     });

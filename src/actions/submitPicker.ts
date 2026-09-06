@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { SubmitPickerCore } from '@/lib/core/submitPicker';
+import { coreSubmitPicker } from '@/lib/core/submitPicker';
 import { broadcast } from '@/lib/events';
 import { SubmitPickerInputSchema } from '@/types/actions/SubmitPicker';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -18,7 +18,7 @@ export async function SubmitPicker(rawData: unknown) {
     await requireAdmin();
 
     const data = SubmitPickerInputSchema.parse(rawData);
-    await SubmitPickerCore(data);
+    await coreSubmitPicker(data);
 
     revalidatePath('/footy/game');
     broadcast(FootyChannel.Games);

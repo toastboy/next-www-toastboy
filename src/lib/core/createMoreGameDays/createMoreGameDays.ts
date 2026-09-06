@@ -49,7 +49,7 @@ const parseDateString = (value: string) => {
  * to `defaultDeps`.
  * @returns A promise that resolves to an array of created game day results.
  */
-export async function createMoreGameDaysCore(
+export async function coreCreateMoreGameDays(
     data: CreateMoreGameDaysInput,
     deps: CreateMoreGameDaysDeps = defaultDeps,
 ) {

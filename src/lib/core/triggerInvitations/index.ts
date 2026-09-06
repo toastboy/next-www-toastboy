@@ -1,1 +1,1 @@
-export { triggerInvitationsCore } from './triggerInvitations';
+export { coreTriggerInvitations } from './triggerInvitations';

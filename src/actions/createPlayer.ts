@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { addPlayerInviteCore, createPlayerCore } from '@/lib/core/createPlayer';
+import { coreAddPlayerInvite, coreCreatePlayer } from '@/lib/core/createPlayer';
 import { broadcast } from '@/lib/events';
 import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -29,7 +29,7 @@ export async function createPlayer(rawData: unknown) {
     await requireAdmin();
 
     const data = CreatePlayerSchema.parse(rawData);
-    const result = await createPlayerCore(data);
+    const result = await coreCreatePlayer(data);
 
     revalidatePath('/footy/admin/newplayer');
     revalidatePath('/footy/players');
@@ -52,7 +52,7 @@ export async function createPlayer(rawData: unknown) {
 export async function addPlayerInvite(playerId: number, email?: string) {
     await requireAdmin();
 
-    const inviteLink = await addPlayerInviteCore(playerId, email);
+    const inviteLink = await coreAddPlayerInvite(playerId, email);
 
     revalidatePath('/footy/admin/newplayer');
     revalidatePath('/footy/players');

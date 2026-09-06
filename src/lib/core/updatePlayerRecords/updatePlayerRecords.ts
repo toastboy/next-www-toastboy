@@ -21,7 +21,7 @@ const defaultDeps: UpdatePlayerRecordsDeps = {
  * to `defaultDeps` if not provided.
  * @returns A promise that resolves when the player records have been updated.
  */
-export async function updatePlayerRecordsCore(
+export async function coreUpdatePlayerRecords(
     deps: UpdatePlayerRecordsDeps = defaultDeps,
 ) {
     await deps.playerRecordService.deleteAll();

@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, setDrinkersCoreMock, requireAdminMock } =
+const { revalidatePathMock, coreSetDrinkersMock, requireAdminMock } =
     vi.hoisted(() => ({
         revalidatePathMock: vi.fn(),
-        setDrinkersCoreMock: vi.fn(),
+        coreSetDrinkersMock: vi.fn(),
         requireAdminMock: vi.fn().mockResolvedValue(undefined),
     }));
 
@@ -16,7 +16,7 @@ vi.mock('@/lib/auth.server', () => ({
 }));
 
 vi.mock('@/lib/core/setDrinkers', () => ({
-    setDrinkersCore: setDrinkersCoreMock,
+    coreSetDrinkers: coreSetDrinkersMock,
 }));
 
 import { setDrinkers } from '@/actions/setDrinkers';
@@ -32,7 +32,7 @@ describe('setDrinkers action wrapper', () => {
             updated: 4,
             drinkers: 2,
         };
-        setDrinkersCoreMock.mockResolvedValue(coreResult);
+        coreSetDrinkersMock.mockResolvedValue(coreResult);
 
         const result = await setDrinkers({
             gameDayId: 1249,
@@ -42,7 +42,7 @@ describe('setDrinkers action wrapper', () => {
             ],
         });
 
-        expect(setDrinkersCoreMock).toHaveBeenCalledWith({
+        expect(coreSetDrinkersMock).toHaveBeenCalledWith({
             gameDayId: 1249,
             players: [
                 { playerId: 1, drinker: true },
@@ -64,7 +64,7 @@ describe('setDrinkers action wrapper', () => {
 
     it('propagates errors thrown by the core without calling revalidatePath', async () => {
         const coreError = new Error('core failed');
-        setDrinkersCoreMock.mockRejectedValue(coreError);
+        coreSetDrinkersMock.mockRejectedValue(coreError);
 
         await expect(
             setDrinkers({

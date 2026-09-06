@@ -102,7 +102,7 @@ const chargeTeamOutcomes = async (
  * 3. Charges both teams' players (A and B) in parallel
  * 4. Recomputes player records for the game day
  */
-export async function setGameResultCore(
+export async function coreSetGameResult(
     data: SetGameResultInput,
     deps: SetGameResultDeps = defaultDeps,
 ): Promise<GameDayType> {

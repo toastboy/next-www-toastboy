@@ -1,1 +1,1 @@
-export { updatePlayerCore } from './updatePlayer';
+export { coreUpdatePlayer } from './updatePlayer';

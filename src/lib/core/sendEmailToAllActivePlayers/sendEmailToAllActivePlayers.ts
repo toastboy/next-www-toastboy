@@ -2,7 +2,7 @@ import 'server-only';
 
 import type { SendMailOptions } from 'nodemailer';
 
-import { sendEmailCore } from '@/lib/core/sendEmail';
+import { coreSendEmail } from '@/lib/core/sendEmail';
 import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import playerService from '@/services/Player';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
@@ -15,7 +15,7 @@ interface SendEmailToAllActivePlayersDeps {
 
 const defaultDeps: SendEmailToAllActivePlayersDeps = {
     playerService,
-    sendEmail: sendEmailCore,
+    sendEmail: coreSendEmail,
 };
 
 /**
@@ -28,7 +28,7 @@ const defaultDeps: SendEmailToAllActivePlayersDeps = {
  * @param deps - Optional service and email dependencies.
  * @returns The number of unique recipients emailed.
  */
-export async function sendEmailToAllActivePlayersCore(
+export async function coreSendEmailToAllActivePlayers(
     mailOptions: Omit<SendMailOptions, 'bcc'>,
     deps: SendEmailToAllActivePlayersDeps = defaultDeps,
 ): Promise<SendEmailToAllActivePlayersResult> {

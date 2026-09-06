@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { payDebtCore } from '@/lib/core/payDebt';
+import { corePayDebt } from '@/lib/core/payDebt';
 import { broadcast } from '@/lib/events';
 import { PayDebtInputSchema } from '@/types/actions/PayDebt';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -20,14 +20,14 @@ import { FootyChannel } from '@/types/FootyChannel';
  *
  * @remarks
  * This function validates the input data, processes the payment through
- * payDebtCore, and triggers revalidation of the admin money page and game page
+ * corePayDebt, and triggers revalidation of the admin money page and game page
  * to reflect the updated state.
  */
 export async function payDebt(rawData: unknown) {
     await requireAdmin();
 
     const data = PayDebtInputSchema.parse(rawData);
-    const result = await payDebtCore(data);
+    const result = await corePayDebt(data);
 
     revalidatePath('/footy/admin/money');
     revalidatePath('/footy/game');

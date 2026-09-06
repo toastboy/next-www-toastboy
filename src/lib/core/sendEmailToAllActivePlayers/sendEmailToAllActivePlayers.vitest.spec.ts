@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { sendEmailToAllActivePlayersCore } from '@/lib/core/sendEmailToAllActivePlayers';
+import { coreSendEmailToAllActivePlayers } from '@/lib/core/sendEmailToAllActivePlayers';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
 
-describe('sendEmailToAllActivePlayersCore', () => {
+describe('coreSendEmailToAllActivePlayers', () => {
     it('emails unique addresses for active players only', async () => {
         const playerService = {
             getAll: vi.fn().mockResolvedValue([
@@ -34,7 +34,7 @@ describe('sendEmailToAllActivePlayersCore', () => {
         };
         const sendEmail = vi.fn().mockResolvedValue(undefined);
 
-        const result = await sendEmailToAllActivePlayersCore(
+        const result = await coreSendEmailToAllActivePlayers(
             {
                 cc: 'captain@example.com',
                 subject: 'Game Cancelled',
@@ -69,7 +69,7 @@ describe('sendEmailToAllActivePlayersCore', () => {
         };
         const sendEmail = vi.fn();
 
-        const result = await sendEmailToAllActivePlayersCore(
+        const result = await coreSendEmailToAllActivePlayers(
             { subject: 'Test', html: '<p>Hi</p>' },
             { playerService, sendEmail },
         );
@@ -91,7 +91,7 @@ describe('sendEmailToAllActivePlayersCore', () => {
         };
         const sendEmail = vi.fn();
 
-        const result = await sendEmailToAllActivePlayersCore(
+        const result = await coreSendEmailToAllActivePlayers(
             { subject: 'Test', html: '<p>Hi</p>' },
             { playerService, sendEmail },
         );
@@ -119,7 +119,7 @@ describe('sendEmailToAllActivePlayersCore', () => {
         };
         const sendEmail = vi.fn();
 
-        const result = await sendEmailToAllActivePlayersCore(
+        const result = await coreSendEmailToAllActivePlayers(
             {
                 subject: 'Subject',
                 html: '<p>Body</p>',

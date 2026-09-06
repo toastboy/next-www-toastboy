@@ -69,7 +69,7 @@ async function createDefaultDeleteDeps(): Promise<DeletePlayerDeps> {
  * @returns A promise that resolves when all pre-deletion operations are
  * complete.
  */
-export async function beforeDeletePlayerCore(
+export async function coreBeforeDeletePlayer(
     user: AuthUserSummary,
     deps: BeforeDeleteDeps = defaultBeforeDeleteDeps,
 ) {
@@ -93,7 +93,7 @@ export async function beforeDeletePlayerCore(
  * @throws {AuthError} If there is no authenticated user to delete.
  * @returns {Promise<void>} Resolves when the user has been deleted.
  */
-export async function deletePlayerCore(deps?: DeletePlayerDeps) {
+export async function coreDeletePlayer(deps?: DeletePlayerDeps) {
     const resolvedDeps = deps ?? (await createDefaultDeleteDeps());
     const user = await resolvedDeps.getCurrentUser();
 

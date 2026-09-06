@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';
+import { coreTriggerInvitations } from '@/lib/core/triggerInvitations';
 import { broadcast } from '@/lib/events';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -19,7 +19,7 @@ export async function triggerInvitations(rawData: unknown) {
     await requireAdmin();
 
     const data = NewGameInputSchema.parse(rawData);
-    const decision = await triggerInvitationsCore(data);
+    const decision = await coreTriggerInvitations(data);
 
     revalidatePath('/footy/admin/newgame');
     revalidatePath('/footy/admin/responses');

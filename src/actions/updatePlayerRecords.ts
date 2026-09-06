@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { updatePlayerRecordsCore } from '@/lib/core/updatePlayerRecords';
+import { coreUpdatePlayerRecords } from '@/lib/core/updatePlayerRecords';
 import { broadcast } from '@/lib/events';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -15,7 +15,7 @@ import { FootyChannel } from '@/types/FootyChannel';
 export async function updatePlayerRecords() {
     await requireAdmin();
 
-    await updatePlayerRecordsCore();
+    await coreUpdatePlayerRecords();
 
     revalidatePath('/footy/admin');
     broadcast([FootyChannel.Players, FootyChannel.Results]);

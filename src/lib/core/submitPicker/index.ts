@@ -1,1 +1,1 @@
-export { SubmitPickerCore } from './submitPicker';
+export { coreSubmitPicker } from './submitPicker';

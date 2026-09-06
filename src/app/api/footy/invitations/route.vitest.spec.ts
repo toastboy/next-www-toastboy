@@ -3,7 +3,7 @@ import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/core/triggerInvitations', () => ({
-    triggerInvitationsCore: vi.fn(),
+    coreTriggerInvitations: vi.fn(),
 }));
 
 vi.mock('@/lib/secrets', () => ({
@@ -21,7 +21,7 @@ vi.mock('@/lib/events', () => ({
 import { revalidatePath } from 'next/cache';
 
 import { POST } from '@/app/api/footy/invitations/route';
-import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';
+import { coreTriggerInvitations } from '@/lib/core/triggerInvitations';
 import { broadcast } from '@/lib/events';
 import { getSecrets } from '@/lib/secrets';
 
@@ -57,7 +57,7 @@ describe('POST /api/footy/invitations', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         (getSecrets as Mock).mockReturnValue({ CRON_SECRET: VALID_SECRET });
-        (triggerInvitationsCore as Mock).mockResolvedValue({
+        (coreTriggerInvitations as Mock).mockResolvedValue({
             sent: true,
             gameDayId: 42,
         });
@@ -69,7 +69,7 @@ describe('POST /api/footy/invitations', () => {
             expect(response.status).toBe(401);
             const body = (await response.json()) as { message: string };
             expect(body.message).toBe('Unauthorized');
-            expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(coreTriggerInvitations).not.toHaveBeenCalled();
             expect(revalidatePath).not.toHaveBeenCalled();
             expect(broadcast).not.toHaveBeenCalled();
         });
@@ -81,7 +81,7 @@ describe('POST /api/footy/invitations', () => {
             expect(response.status).toBe(401);
             const body = (await response.json()) as { message: string };
             expect(body.message).toBe('Unauthorized');
-            expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(coreTriggerInvitations).not.toHaveBeenCalled();
             expect(revalidatePath).not.toHaveBeenCalled();
             expect(broadcast).not.toHaveBeenCalled();
         });
@@ -90,7 +90,7 @@ describe('POST /api/footy/invitations', () => {
             (getSecrets as Mock).mockReturnValue({ CRON_SECRET: '' });
             const response = await POST(makeRequest({ secret: '' }));
             expect(response.status).toBe(401);
-            expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(coreTriggerInvitations).not.toHaveBeenCalled();
             expect(revalidatePath).not.toHaveBeenCalled();
             expect(broadcast).not.toHaveBeenCalled();
         });
@@ -99,18 +99,18 @@ describe('POST /api/footy/invitations', () => {
             (getSecrets as Mock).mockReturnValue({});
             const response = await POST(makeRequest({ secret: VALID_SECRET }));
             expect(response.status).toBe(401);
-            expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(coreTriggerInvitations).not.toHaveBeenCalled();
             expect(revalidatePath).not.toHaveBeenCalled();
             expect(broadcast).not.toHaveBeenCalled();
         });
     });
 
     describe('authorized requests', () => {
-        it('calls triggerInvitationsCore with defaults when body is absent', async () => {
+        it('calls coreTriggerInvitations with defaults when body is absent', async () => {
             const response = await POST(makeRequest({ secret: VALID_SECRET }));
 
             expect(response.status).toBe(200);
-            expect(triggerInvitationsCore).toHaveBeenCalledWith({
+            expect(coreTriggerInvitations).toHaveBeenCalledWith({
                 overrideTimeCheck: false,
                 customMessage: '',
             });
@@ -129,7 +129,7 @@ describe('POST /api/footy/invitations', () => {
             expect(body).toEqual({ sent: true, gameDayId: 42 });
         });
 
-        it('calls triggerInvitationsCore with defaults when body is invalid JSON', async () => {
+        it('calls coreTriggerInvitations with defaults when body is invalid JSON', async () => {
             const request = new NextRequest(
                 'http://localhost/api/footy/invitations',
                 {
@@ -141,7 +141,7 @@ describe('POST /api/footy/invitations', () => {
             const response = await POST(request);
 
             expect(response.status).toBe(200);
-            expect(triggerInvitationsCore).toHaveBeenCalledWith({
+            expect(coreTriggerInvitations).toHaveBeenCalledWith({
                 overrideTimeCheck: false,
                 customMessage: '',
             });
@@ -156,7 +156,7 @@ describe('POST /api/footy/invitations', () => {
             );
 
             expect(response.status).toBe(200);
-            expect(triggerInvitationsCore).toHaveBeenCalledWith(
+            expect(coreTriggerInvitations).toHaveBeenCalledWith(
                 expect.objectContaining({ overrideTimeCheck: true }),
             );
         });
@@ -170,7 +170,7 @@ describe('POST /api/footy/invitations', () => {
             );
 
             expect(response.status).toBe(200);
-            expect(triggerInvitationsCore).toHaveBeenCalledWith(
+            expect(coreTriggerInvitations).toHaveBeenCalledWith(
                 expect.objectContaining({ customMessage: 'Hello!' }),
             );
         });
@@ -184,7 +184,7 @@ describe('POST /api/footy/invitations', () => {
             );
 
             expect(response.status).toBe(200);
-            expect(triggerInvitationsCore).toHaveBeenCalledWith({
+            expect(coreTriggerInvitations).toHaveBeenCalledWith({
                 overrideTimeCheck: false,
                 customMessage: '',
             });
@@ -199,14 +199,14 @@ describe('POST /api/footy/invitations', () => {
             );
 
             expect(response.status).toBe(200);
-            expect(triggerInvitationsCore).toHaveBeenCalledWith({
+            expect(coreTriggerInvitations).toHaveBeenCalledWith({
                 overrideTimeCheck: false,
                 customMessage: '',
             });
         });
 
-        it('returns a JSON error response when triggerInvitationsCore throws', async () => {
-            (triggerInvitationsCore as Mock).mockRejectedValue(
+        it('returns a JSON error response when coreTriggerInvitations throws', async () => {
+            (coreTriggerInvitations as Mock).mockRejectedValue(
                 new Error('Database error'),
             );
             const response = await POST(makeRequest({ secret: VALID_SECRET }));

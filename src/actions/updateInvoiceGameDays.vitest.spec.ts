@@ -4,19 +4,19 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    updateInvoiceGameDaysCoreMock,
+    coreUpdateInvoiceGameDaysMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    updateInvoiceGameDaysCoreMock: vi.fn().mockResolvedValue(undefined),
+    coreUpdateInvoiceGameDaysMock: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/updateInvoiceGameDays', () => ({
-    updateInvoiceGameDaysCore: updateInvoiceGameDaysCoreMock,
+    coreUpdateInvoiceGameDays: coreUpdateInvoiceGameDaysMock,
 }));
 
 import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
@@ -35,7 +35,7 @@ describe('updateInvoiceGameDays action wrapper', () => {
             ],
         });
 
-        expect(updateInvoiceGameDaysCoreMock).toHaveBeenCalledWith({
+        expect(coreUpdateInvoiceGameDaysMock).toHaveBeenCalledWith({
             gameDays: [
                 { id: 1, gameScheduled: true },
                 { id: 2, gameScheduled: false },
@@ -51,7 +51,7 @@ describe('updateInvoiceGameDays action wrapper', () => {
 
     it('propagates errors thrown by the core without revalidating', async () => {
         const coreError = new Error('core failed');
-        updateInvoiceGameDaysCoreMock.mockRejectedValue(coreError);
+        coreUpdateInvoiceGameDaysMock.mockRejectedValue(coreError);
 
         await expect(
             updateInvoiceGameDays({

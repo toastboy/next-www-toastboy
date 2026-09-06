@@ -1,1 +1,1 @@
-export { sendEmailCore } from './sendEmail';
+export { coreSendEmail } from './sendEmail';

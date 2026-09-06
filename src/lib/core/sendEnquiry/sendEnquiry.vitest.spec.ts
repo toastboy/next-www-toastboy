@@ -21,11 +21,11 @@ vi.mock('@/lib/urls', () => ({
 }));
 
 import {
-    deliverContactEnquiryCore,
-    sendEnquiryCore,
+    coreDeliverContactEnquiry,
+    coreSendEnquiry,
 } from '@/lib/core/sendEnquiry';
 
-describe('sendEnquiryCore', () => {
+describe('coreSendEnquiry', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -41,10 +41,10 @@ describe('sendEnquiryCore', () => {
                 create: vi.fn().mockResolvedValue(undefined),
                 markUsed: vi.fn(),
             },
-            sendEmailCore: vi.fn().mockResolvedValue(undefined),
+            coreSendEmail: vi.fn().mockResolvedValue(undefined),
         };
 
-        await sendEnquiryCore(
+        await coreSendEnquiry(
             {
                 name: 'Alex',
                 email: 'alex@example.com',
@@ -65,7 +65,7 @@ describe('sendEnquiryCore', () => {
             message: 'Need details',
             token: 'enquiry-token',
         });
-        const [verificationEmailPayload] = vi.mocked(deps.sendEmailCore).mock
+        const [verificationEmailPayload] = vi.mocked(deps.coreSendEmail).mock
             .calls[0] as [
             {
                 to: string;
@@ -81,7 +81,7 @@ describe('sendEnquiryCore', () => {
     });
 });
 
-describe('deliverContactEnquiryCore', () => {
+describe('coreDeliverContactEnquiry', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -103,13 +103,13 @@ describe('deliverContactEnquiryCore', () => {
                 create: vi.fn(),
                 markUsed: vi.fn().mockResolvedValue(undefined),
             },
-            sendEmailCore: vi.fn().mockResolvedValue(undefined),
+            coreSendEmail: vi.fn().mockResolvedValue(undefined),
         };
 
-        const result = await deliverContactEnquiryCore('enquiry-token', deps);
+        const result = await coreDeliverContactEnquiry('enquiry-token', deps);
 
         expect(result).toEqual({ enquiry: 'verified' });
-        const [deliveryEmailPayload] = vi.mocked(deps.sendEmailCore).mock
+        const [deliveryEmailPayload] = vi.mocked(deps.coreSendEmail).mock
             .calls[0] as [
             {
                 to: string;
@@ -145,12 +145,12 @@ describe('deliverContactEnquiryCore', () => {
                 create: vi.fn(),
                 markUsed: vi.fn().mockResolvedValue(undefined),
             },
-            sendEmailCore: vi.fn().mockResolvedValue(undefined),
+            coreSendEmail: vi.fn().mockResolvedValue(undefined),
         };
 
-        await deliverContactEnquiryCore('enquiry-token', deps);
+        await coreDeliverContactEnquiry('enquiry-token', deps);
 
-        const [deliveryEmailPayload] = vi.mocked(deps.sendEmailCore).mock
+        const [deliveryEmailPayload] = vi.mocked(deps.coreSendEmail).mock
             .calls[0] as [
             {
                 to: string;
@@ -183,13 +183,13 @@ describe('deliverContactEnquiryCore', () => {
                 create: vi.fn(),
                 markUsed: vi.fn(),
             },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
-        const result = await deliverContactEnquiryCore('enquiry-token', deps);
+        const result = await coreDeliverContactEnquiry('enquiry-token', deps);
 
         expect(result).toEqual({ enquiry: 'already-delivered' });
-        expect(deps.sendEmailCore).not.toHaveBeenCalled();
+        expect(deps.coreSendEmail).not.toHaveBeenCalled();
         expect(deps.emailVerificationService.markUsed).not.toHaveBeenCalled();
         expect(deps.contactEnquiryService.markDelivered).not.toHaveBeenCalled();
     });
@@ -205,13 +205,13 @@ describe('deliverContactEnquiryCore', () => {
                 create: vi.fn(),
                 markUsed: vi.fn(),
             },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            deliverContactEnquiryCore('enquiry-token', deps),
+            coreDeliverContactEnquiry('enquiry-token', deps),
         ).rejects.toBeInstanceOf(NotFoundError);
-        expect(deps.sendEmailCore).not.toHaveBeenCalled();
+        expect(deps.coreSendEmail).not.toHaveBeenCalled();
         expect(deps.emailVerificationService.markUsed).not.toHaveBeenCalled();
         expect(deps.contactEnquiryService.markDelivered).not.toHaveBeenCalled();
     });

@@ -1,1 +1,1 @@
-export { setGameResultCore } from './setGameResult';
+export { coreSetGameResult } from './setGameResult';

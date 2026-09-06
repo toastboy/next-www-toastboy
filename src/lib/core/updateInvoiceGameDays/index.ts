@@ -1,1 +1,1 @@
-export { updateInvoiceGameDaysCore } from './updateInvoiceGameDays';
+export { coreUpdateInvoiceGameDays } from './updateInvoiceGameDays';

@@ -4,19 +4,19 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    submitPickerCoreMock,
+    coreSubmitPickerMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    submitPickerCoreMock: vi.fn().mockResolvedValue(undefined),
+    coreSubmitPickerMock: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/submitPicker', () => ({
-    SubmitPickerCore: submitPickerCoreMock,
+    coreSubmitPicker: coreSubmitPickerMock,
 }));
 
 import { SubmitPicker } from '@/actions/submitPicker';
@@ -29,11 +29,11 @@ describe('SubmitPicker action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('calls requireAdmin, validates input, delegates to SubmitPickerCore, revalidates the game path, and broadcasts Games channel', async () => {
+    it('calls requireAdmin, validates input, delegates to coreSubmitPicker, revalidates the game path, and broadcasts Games channel', async () => {
         await SubmitPicker(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(submitPickerCoreMock).toHaveBeenCalledWith(validInput);
+        expect(coreSubmitPickerMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/game');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Games);
     });
@@ -43,13 +43,13 @@ describe('SubmitPicker action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(SubmitPicker(validInput)).rejects.toBe(authError);
-        expect(submitPickerCoreMock).not.toHaveBeenCalled();
+        expect(coreSubmitPickerMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
 
     it('propagates ZodError when input validation fails', async () => {
         await expect(SubmitPicker([{ playerId: 0 }])).rejects.toThrow();
-        expect(submitPickerCoreMock).not.toHaveBeenCalled();
+        expect(coreSubmitPickerMock).not.toHaveBeenCalled();
     });
 });

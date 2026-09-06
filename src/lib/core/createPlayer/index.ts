@@ -1,1 +1,1 @@
-export { addPlayerInviteCore, createPlayerCore } from './createPlayer';
+export { coreAddPlayerInvite, coreCreatePlayer } from './createPlayer';

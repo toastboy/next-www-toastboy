@@ -21,11 +21,11 @@ vi.mock('@/lib/urls', () => ({
 }));
 
 import {
-    sendEmailVerificationCore,
-    verifyEmailCore,
+    coreSendEmailVerification,
+    coreVerifyEmail,
 } from '@/lib/core/verifyEmail';
 
-describe('verifyEmailCore', () => {
+describe('coreVerifyEmail', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -47,10 +47,10 @@ describe('verifyEmailCore', () => {
                 getByEmail: vi.fn().mockResolvedValue(null),
                 upsert: vi.fn().mockResolvedValue(undefined),
             },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
-        const result = await verifyEmailCore('verify-token', deps);
+        const result = await coreVerifyEmail('verify-token', deps);
 
         expect(deps.playerExtraEmailService.upsert).toHaveBeenCalledWith(
             7,
@@ -75,10 +75,10 @@ describe('verifyEmailCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
-        await expect(verifyEmailCore('', deps)).rejects.toBeInstanceOf(
+        await expect(coreVerifyEmail('', deps)).rejects.toBeInstanceOf(
             ValidationError,
         );
         expect(deps.emailVerificationService.getByToken).not.toHaveBeenCalled();
@@ -92,11 +92,11 @@ describe('verifyEmailCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            verifyEmailCore('unknown-token', deps),
+            coreVerifyEmail('unknown-token', deps),
         ).rejects.toBeInstanceOf(NotFoundError);
     });
 
@@ -114,11 +114,11 @@ describe('verifyEmailCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            verifyEmailCore('used-token', deps),
+            coreVerifyEmail('used-token', deps),
         ).rejects.toBeInstanceOf(ConflictError);
     });
 
@@ -136,11 +136,11 @@ describe('verifyEmailCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            verifyEmailCore('expired-token', deps),
+            coreVerifyEmail('expired-token', deps),
         ).rejects.toBeInstanceOf(ConflictError);
     });
 
@@ -158,11 +158,11 @@ describe('verifyEmailCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            verifyEmailCore('no-player-token', deps),
+            coreVerifyEmail('no-player-token', deps),
         ).rejects.toBeInstanceOf(ValidationError);
     });
 
@@ -183,10 +183,10 @@ describe('verifyEmailCore', () => {
                 getByEmail: vi.fn().mockResolvedValue({ playerId: 7 }),
                 upsert: vi.fn().mockResolvedValue(undefined),
             },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
-        const result = await verifyEmailCore('verify-token', deps);
+        const result = await coreVerifyEmail('verify-token', deps);
 
         expect(deps.playerExtraEmailService.upsert).toHaveBeenCalledWith(
             7,
@@ -215,18 +215,18 @@ describe('verifyEmailCore', () => {
                 }),
                 upsert: vi.fn(),
             },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            verifyEmailCore('verify-token', deps),
+            coreVerifyEmail('verify-token', deps),
         ).rejects.toBeInstanceOf(ConflictError);
         expect(deps.playerExtraEmailService.upsert).not.toHaveBeenCalled();
         expect(deps.emailVerificationService.markUsed).not.toHaveBeenCalled();
     });
 });
 
-describe('sendEmailVerificationCore', () => {
+describe('coreSendEmailVerification', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -245,10 +245,10 @@ describe('sendEmailVerificationCore', () => {
                 }),
                 upsert: vi.fn(),
             },
-            sendEmailCore: vi.fn().mockResolvedValue(undefined),
+            coreSendEmail: vi.fn().mockResolvedValue(undefined),
         };
 
-        await sendEmailVerificationCore(
+        await coreSendEmailVerification(
             'player@example.com',
             { id: 7, name: 'Alex' },
             deps,
@@ -261,7 +261,7 @@ describe('sendEmailVerificationCore', () => {
             token: 'verify-token',
             expiresAt: new Date('2030-01-01T00:00:00.000Z'),
         });
-        const [verificationEmailPayload] = vi.mocked(deps.sendEmailCore).mock
+        const [verificationEmailPayload] = vi.mocked(deps.coreSendEmail).mock
             .calls[0] as [
             {
                 to: string;
@@ -286,12 +286,12 @@ describe('sendEmailVerificationCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
-        await sendEmailVerificationCore('', undefined, deps);
+        await coreSendEmailVerification('', undefined, deps);
 
-        expect(deps.sendEmailCore).not.toHaveBeenCalled();
+        expect(deps.coreSendEmail).not.toHaveBeenCalled();
         expect(deps.emailVerificationService.create).not.toHaveBeenCalled();
     });
 
@@ -303,12 +303,12 @@ describe('sendEmailVerificationCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
-        await sendEmailVerificationCore('   ', undefined, deps);
+        await coreSendEmailVerification('   ', undefined, deps);
 
-        expect(deps.sendEmailCore).not.toHaveBeenCalled();
+        expect(deps.coreSendEmail).not.toHaveBeenCalled();
     });
 
     it('sends email without player name when no player is provided', async () => {
@@ -319,13 +319,13 @@ describe('sendEmailVerificationCore', () => {
                 markUsed: vi.fn(),
             },
             playerExtraEmailService: { getByEmail: vi.fn(), upsert: vi.fn() },
-            sendEmailCore: vi.fn().mockResolvedValue(undefined),
+            coreSendEmail: vi.fn().mockResolvedValue(undefined),
         };
 
-        await sendEmailVerificationCore('user@example.com', undefined, deps);
+        await coreSendEmailVerification('user@example.com', undefined, deps);
 
         expect(deps.playerExtraEmailService.getByEmail).not.toHaveBeenCalled();
-        const [emailPayload] = vi.mocked(deps.sendEmailCore).mock.calls[0] as [
+        const [emailPayload] = vi.mocked(deps.coreSendEmail).mock.calls[0] as [
             { to: string; subject: string; html: string },
         ];
         expect(emailPayload.html).toContain('<p>Hello,</p>');
@@ -344,17 +344,17 @@ describe('sendEmailVerificationCore', () => {
                     .mockResolvedValue({ playerId: 7, verifiedAt: new Date() }),
                 upsert: vi.fn(),
             },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            sendEmailVerificationCore(
+            coreSendEmailVerification(
                 'player@example.com',
                 { id: 7, name: 'Alex' },
                 deps,
             ),
         ).rejects.toBeInstanceOf(ConflictError);
-        expect(deps.sendEmailCore).not.toHaveBeenCalled();
+        expect(deps.coreSendEmail).not.toHaveBeenCalled();
     });
 
     it('throws ValidationError when email does not belong to player', async () => {
@@ -371,17 +371,17 @@ describe('sendEmailVerificationCore', () => {
                 }),
                 upsert: vi.fn(),
             },
-            sendEmailCore: vi.fn(),
+            coreSendEmail: vi.fn(),
         };
 
         await expect(
-            sendEmailVerificationCore(
+            coreSendEmailVerification(
                 'player@example.com',
                 { id: 7, name: 'Alex' },
                 deps,
             ),
         ).rejects.toBeInstanceOf(ValidationError);
         expect(deps.emailVerificationService.create).not.toHaveBeenCalled();
-        expect(deps.sendEmailCore).not.toHaveBeenCalled();
+        expect(deps.coreSendEmail).not.toHaveBeenCalled();
     });
 });

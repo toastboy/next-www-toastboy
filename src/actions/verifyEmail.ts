@@ -3,8 +3,8 @@
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 import {
-    sendEmailVerificationCore,
-    verifyEmailCore,
+    coreSendEmailVerification,
+    coreVerifyEmail,
 } from '@/lib/core/verifyEmail';
 
 /**
@@ -19,7 +19,7 @@ import {
  * player.
  */
 export async function verifyEmail(token: string) {
-    return await verifyEmailCore(token);
+    return await coreVerifyEmail(token);
 }
 
 /**
@@ -39,5 +39,5 @@ export async function sendEmailVerification(
     email: string,
     player?: PlayerType,
 ) {
-    await sendEmailVerificationCore(email, player);
+    await coreSendEmailVerification(email, player);
 }

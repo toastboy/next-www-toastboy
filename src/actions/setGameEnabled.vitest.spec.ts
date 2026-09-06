@@ -4,13 +4,13 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    setGameEnabledCoreMock,
+    coreSetGameEnabledMock,
     sendEmailToAllActivePlayersMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    setGameEnabledCoreMock: vi.fn(),
+    coreSetGameEnabledMock: vi.fn(),
     sendEmailToAllActivePlayersMock: vi.fn(),
 }));
 
@@ -18,7 +18,7 @@ vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/setGameEnabled', () => ({
-    setGameEnabledCore: setGameEnabledCoreMock,
+    coreSetGameEnabled: coreSetGameEnabledMock,
 }));
 vi.mock('@/actions/sendEmailToAllActivePlayers', () => ({
     sendEmailToAllActivePlayers: sendEmailToAllActivePlayersMock,
@@ -42,7 +42,7 @@ describe('setGameEnabled action wrapper', () => {
         await setGameEnabled(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(setGameEnabledCoreMock).toHaveBeenCalledWith(
+        expect(coreSetGameEnabledMock).toHaveBeenCalledWith(
             validInput,
             sendEmailToAllActivePlayersMock,
         );
@@ -57,7 +57,7 @@ describe('setGameEnabled action wrapper', () => {
 
     it('returns the updated gameDay from core', async () => {
         const gameDay = { id: 1249, status: 'NoGame' };
-        setGameEnabledCoreMock.mockResolvedValueOnce(gameDay);
+        coreSetGameEnabledMock.mockResolvedValueOnce(gameDay);
 
         const result = await setGameEnabled(validInput);
 
@@ -69,7 +69,7 @@ describe('setGameEnabled action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(setGameEnabled(validInput)).rejects.toBe(authError);
-        expect(setGameEnabledCoreMock).not.toHaveBeenCalled();
+        expect(coreSetGameEnabledMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
@@ -78,6 +78,6 @@ describe('setGameEnabled action wrapper', () => {
         await expect(
             setGameEnabled({ ...validInput, gameDayId: 0 }),
         ).rejects.toThrow();
-        expect(setGameEnabledCoreMock).not.toHaveBeenCalled();
+        expect(coreSetGameEnabledMock).not.toHaveBeenCalled();
     });
 });

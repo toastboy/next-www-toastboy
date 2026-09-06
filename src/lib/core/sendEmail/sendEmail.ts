@@ -64,7 +64,7 @@ function recipientToString(value: SendMailOptions['to']): string | undefined {
  * @param mailOptions - Nodemailer mail options payload.
  * @throws {ExternalServiceError} If email delivery fails.
  */
-export async function sendEmailCore(mailOptions: SendMailOptions) {
+export async function coreSendEmail(mailOptions: SendMailOptions) {
     const secrets = getSecrets();
 
     const sanitizedHtml =
@@ -134,7 +134,7 @@ export async function sendEmailCore(mailOptions: SendMailOptions) {
         });
         captureUnexpectedError(normalizedError, {
             layer: 'server-action',
-            action: 'sendEmailCore',
+            action: 'coreSendEmail',
             extra: {
                 to: mailOptions.to,
                 subject: mailOptions.subject,

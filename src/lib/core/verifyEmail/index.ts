@@ -1,1 +1,1 @@
-export { sendEmailVerificationCore, verifyEmailCore } from './verifyEmail';
+export { coreSendEmailVerification, coreVerifyEmail } from './verifyEmail';

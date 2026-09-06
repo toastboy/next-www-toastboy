@@ -70,11 +70,11 @@ async function writeTableToJSONBlob<T>(
  *
  * @example
  * ```typescript
- * await authExportCore();
+ * await coreAuthExport();
  * // Exports account, user, and verification tables to Azure Blob Storage
  * ```
  */
-export async function authExportCore(
+export async function coreAuthExport(
     deps: AuthExportDeps = defaultDeps,
 ): Promise<void> {
     const secrets = getSecrets();
@@ -132,7 +132,7 @@ export async function authExportCore(
         });
         captureUnexpectedError(normalizedError, {
             layer: 'server-action',
-            action: 'authExportCore',
+            action: 'coreAuthExport',
             extra: {
                 storageAccountName: STORAGE_ACCOUNT_NAME,
                 containerName: CONTAINER_DB_SEED,

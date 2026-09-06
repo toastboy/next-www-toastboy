@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { config } from '@/lib/config';
-import { sendEmailCore } from '@/lib/core/sendEmail';
+import { coreSendEmail } from '@/lib/core/sendEmail';
 import { NotFoundError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
@@ -18,13 +18,13 @@ interface SendEnquiryDeps {
         typeof emailVerificationService,
         'create' | 'markUsed'
     >;
-    sendEmailCore: typeof sendEmailCore;
+    coreSendEmail: typeof coreSendEmail;
 }
 
 const defaultDeps: SendEnquiryDeps = {
     contactEnquiryService,
     emailVerificationService,
-    sendEmailCore,
+    coreSendEmail,
 };
 
 const formatMessage = (message: string) => {
@@ -50,7 +50,7 @@ const formatMessage = (message: string) => {
  *
  * @returns A promise that resolves when all operations are complete.
  */
-export async function sendEnquiryCore(
+export async function coreSendEnquiry(
     data: EnquiryInput,
     deps: SendEnquiryDeps = defaultDeps,
 ) {
@@ -82,7 +82,7 @@ export async function sendEnquiryCore(
         '<p>If you did not request this, you can ignore this message.</p>',
     ].join('');
 
-    await deps.sendEmailCore({
+    await deps.coreSendEmail({
         to: data.email,
         subject: 'Confirm your enquiry',
         html,
@@ -103,7 +103,7 @@ export async function sendEnquiryCore(
  *     verified.
  * @throws {NotFoundError} If the enquiry cannot be found for the provided token.
  */
-export async function deliverContactEnquiryCore(
+export async function coreDeliverContactEnquiry(
     token: string,
     deps: SendEnquiryDeps = defaultDeps,
 ) {
@@ -127,7 +127,7 @@ export async function deliverContactEnquiryCore(
         `<p><strong>Message:</strong><br />${formattedMessage || '-'}</p>`,
     ].join('');
 
-    await deps.sendEmailCore({
+    await deps.coreSendEmail({
         to: config.contactEmailDestination,
         subject,
         html,

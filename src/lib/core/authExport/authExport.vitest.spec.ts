@@ -42,9 +42,9 @@ vi.mock('@/lib/observability/sentry', () => ({
     captureUnexpectedError: captureUnexpectedErrorMock,
 }));
 
-import { authExportCore } from '@/lib/core/authExport';
+import { coreAuthExport } from '@/lib/core/authExport';
 
-describe('authExportCore', () => {
+describe('coreAuthExport', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
@@ -88,10 +88,10 @@ describe('authExportCore', () => {
             },
         };
         const deps = depsCandidate as unknown as Parameters<
-            typeof authExportCore
+            typeof coreAuthExport
         >[0];
 
-        await authExportCore(deps);
+        await coreAuthExport(deps);
 
         expect(clientSecretCredentialCtorMock).toHaveBeenCalledWith(
             'tenant-id',
@@ -164,10 +164,10 @@ describe('authExportCore', () => {
                 },
             };
             const deps = depsCandidate as unknown as Parameters<
-                typeof authExportCore
+                typeof coreAuthExport
             >[0];
 
-            await expect(authExportCore(deps)).rejects.toThrow(
+            await expect(coreAuthExport(deps)).rejects.toThrow(
                 'Missing Azure credentials in secrets',
             );
             expect(clientSecretCredentialCtorMock).not.toHaveBeenCalled();
@@ -177,7 +177,7 @@ describe('authExportCore', () => {
             expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
                 expect.any(Error),
                 expect.objectContaining({
-                    action: 'authExportCore',
+                    action: 'coreAuthExport',
                     layer: 'server-action',
                 }),
             );
@@ -204,10 +204,10 @@ describe('authExportCore', () => {
             },
         };
         const deps = depsCandidate as unknown as Parameters<
-            typeof authExportCore
+            typeof coreAuthExport
         >[0];
 
-        await expect(authExportCore(deps)).rejects.toThrow('db unavailable');
+        await expect(coreAuthExport(deps)).rejects.toThrow('db unavailable');
         expect(accountFindMany).toHaveBeenCalledTimes(1);
         expect(userFindMany).not.toHaveBeenCalled();
         expect(verificationFindMany).not.toHaveBeenCalled();
@@ -217,7 +217,7 @@ describe('authExportCore', () => {
         expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
             expect.any(Error),
             expect.objectContaining({
-                action: 'authExportCore',
+                action: 'coreAuthExport',
                 layer: 'server-action',
             }),
         );

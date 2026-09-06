@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { listUsersActionCore, setAdminRoleActionCore } from '@/lib/core/auth';
+import { coreListUsersAction, coreSetAdminRoleAction } from '@/lib/core/auth';
 import { broadcast } from '@/lib/events';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -18,7 +18,7 @@ import { FootyChannel } from '@/types/FootyChannel';
 export async function listUsersAction(email?: string, limit?: number) {
     await requireAdmin();
 
-    return await listUsersActionCore(email, limit);
+    return await coreListUsersAction(email, limit);
 }
 
 /**
@@ -31,7 +31,7 @@ export async function listUsersAction(email?: string, limit?: number) {
 export async function setAdminRoleAction(userId: string, isAdmin: boolean) {
     await requireAdmin();
 
-    await setAdminRoleActionCore(userId, isAdmin);
+    await coreSetAdminRoleAction(userId, isAdmin);
 
     revalidatePath('/footy/admin/users');
     revalidatePath('/footy/admin/user', 'layout');

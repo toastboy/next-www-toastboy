@@ -74,7 +74,7 @@ const serializeUserDates = (user: UserWithRole): UserWithRolePayload => ({
  * handlers
  * @returns Promise resolving to an array of users with serialized dates
  */
-export async function listUsersActionCore(
+export async function coreListUsersAction(
     email?: string,
     limit = 10,
     deps: AuthDeps = defaultDeps,
@@ -129,7 +129,7 @@ export async function listUsersActionCore(
  * - If state is 'none', the operation proceeds
  * - Any other state results in a Forbidden error
  */
-export async function setAdminRoleActionCore(
+export async function coreSetAdminRoleAction(
     userId: string,
     isAdmin: boolean,
     deps: AuthDeps = defaultDeps,

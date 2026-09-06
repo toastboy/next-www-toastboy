@@ -1,1 +1,1 @@
-export { updatePlayerRecordsCore } from './updatePlayerRecords';
+export { coreUpdatePlayerRecords } from './updatePlayerRecords';

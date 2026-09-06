@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { submitResponseCore } from '@/lib/core/submitResponse';
+import { coreSubmitResponse } from '@/lib/core/submitResponse';
 import { NotFoundError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
@@ -30,11 +30,11 @@ const defaultDeps: SubmitGameInvitationResponseDeps = {
  * @throws {NotFoundError} If the invitation cannot be found.
  *
  * @example
- * const outcome = await submitGameInvitationResponseCore(
+ * const outcome = await coreSubmitGameInvitationResponse(
  *   { token: 'abc123', response: 'yes', goalie: false, comment: 'See you there!' }
  * );
  */
-export async function submitGameInvitationResponseCore(
+export async function coreSubmitGameInvitationResponse(
     data: InvitationResponseInput,
     deps: SubmitGameInvitationResponseDeps = defaultDeps,
 ) {
@@ -43,7 +43,7 @@ export async function submitGameInvitationResponseCore(
         throw new NotFoundError('Invitation not found.');
     }
 
-    return await submitResponseCore(
+    return await coreSubmitResponse(
         {
             gameDayId: invitation.gameDayId,
             playerId: invitation.playerId,

@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, updatePlayerCoreMock } = vi.hoisted(
+const { revalidatePathMock, broadcastMock, coreUpdatePlayerMock } = vi.hoisted(
     () => ({
         revalidatePathMock: vi.fn(),
         broadcastMock: vi.fn(),
-        updatePlayerCoreMock: vi.fn(),
+        coreUpdatePlayerMock: vi.fn(),
     }),
 );
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/updatePlayer', () => ({
-    updatePlayerCore: updatePlayerCoreMock,
+    coreUpdatePlayer: coreUpdatePlayerMock,
 }));
 
 import { updatePlayer } from '@/actions/updatePlayer';
@@ -36,7 +36,7 @@ describe('updatePlayer action wrapper', () => {
     it('validates input, delegates to core with playerId, revalidates players/profile/player-detail paths, and broadcasts Players channel', async () => {
         await updatePlayer(7, validInput);
 
-        expect(updatePlayerCoreMock).toHaveBeenCalledWith(7, validInput);
+        expect(coreUpdatePlayerMock).toHaveBeenCalledWith(7, validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/players');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/profile');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/player/7');
@@ -45,7 +45,7 @@ describe('updatePlayer action wrapper', () => {
 
     it('returns the updated player from core', async () => {
         const player = { id: 7, name: 'Alice' };
-        updatePlayerCoreMock.mockResolvedValueOnce(player);
+        coreUpdatePlayerMock.mockResolvedValueOnce(player);
 
         const result = await updatePlayer(7, validInput);
 
@@ -56,7 +56,7 @@ describe('updatePlayer action wrapper', () => {
         await expect(
             updatePlayer(7, { ...validInput, name: '' }),
         ).rejects.toThrow();
-        expect(updatePlayerCoreMock).not.toHaveBeenCalled();
+        expect(coreUpdatePlayerMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-    beforeDeletePlayerCore,
-    deletePlayerCore,
+    coreBeforeDeletePlayer,
+    coreDeletePlayer,
 } from '@/lib/core/deletePlayer';
 import { AuthError } from '@/lib/errors';
 import type { AuthUserSummary } from '@/types/AuthUser';
@@ -29,7 +29,7 @@ vi.mock('next/headers', () => ({
     headers: headersMock,
 }));
 
-describe('beforeDeletePlayerCore', () => {
+describe('coreBeforeDeletePlayer', () => {
     it('cleans up player data before deletion', async () => {
         const deps = {
             playerService: {
@@ -50,7 +50,7 @@ describe('beforeDeletePlayerCore', () => {
             },
         };
 
-        await beforeDeletePlayerCore(
+        await coreBeforeDeletePlayer(
             {
                 name: 'Alex',
                 email: 'alex@example.com',
@@ -71,8 +71,8 @@ describe('beforeDeletePlayerCore', () => {
     });
 });
 
-describe('deletePlayerCore', () => {
-    type DeleteDeps = NonNullable<Parameters<typeof deletePlayerCore>[0]>;
+describe('coreDeletePlayer', () => {
+    type DeleteDeps = NonNullable<Parameters<typeof coreDeletePlayer>[0]>;
 
     const createDeps = (user: AuthUserSummary | null) => {
         const deps = {
@@ -111,7 +111,7 @@ describe('deletePlayerCore', () => {
     it('throws AuthError when no authenticated user is available', async () => {
         const deps = createDeps(null);
 
-        await expect(deletePlayerCore(deps)).rejects.toBeInstanceOf(AuthError);
+        await expect(coreDeletePlayer(deps)).rejects.toBeInstanceOf(AuthError);
         expect(deps.auth.api.deleteUser).not.toHaveBeenCalled();
     });
 
@@ -123,7 +123,7 @@ describe('deletePlayerCore', () => {
             role: 'user',
         });
 
-        await deletePlayerCore();
+        await coreDeletePlayer();
 
         expect(getCurrentUserMock).toHaveBeenCalled();
         expect(deleteUserMock).toHaveBeenCalledWith({
@@ -140,7 +140,7 @@ describe('deletePlayerCore', () => {
             role: 'user',
         });
 
-        await deletePlayerCore(deps);
+        await coreDeletePlayer(deps);
 
         expect(deps.headers).toHaveBeenCalledTimes(1);
         const [deleteUserPayload] = vi.mocked(deps.auth.api.deleteUser).mock

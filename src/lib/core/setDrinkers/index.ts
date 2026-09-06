@@ -1,1 +1,1 @@
-export { setDrinkersCore } from './setDrinkers';
+export { coreSetDrinkers } from './setDrinkers';

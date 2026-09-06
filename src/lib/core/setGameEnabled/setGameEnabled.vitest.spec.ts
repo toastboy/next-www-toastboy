@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { setGameEnabledCore } from '@/lib/core/setGameEnabled';
+import { coreSetGameEnabled } from '@/lib/core/setGameEnabled';
 import { ConflictError, NotFoundError } from '@/lib/errors';
 import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
 
-describe('setGameEnabledCore', () => {
+describe('coreSetGameEnabled', () => {
     const mockSendEmailToAllActivePlayers = vi.fn();
 
     beforeEach(() => {
@@ -40,7 +40,7 @@ describe('setGameEnabledCore', () => {
             reason: '  Not enough players  ',
         });
 
-        const result = await setGameEnabledCore(
+        const result = await coreSetGameEnabled(
             data,
             mockSendEmailToAllActivePlayers,
             { gameDayService },
@@ -92,7 +92,7 @@ describe('setGameEnabledCore', () => {
             reason: '   ',
         });
 
-        await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, {
+        await coreSetGameEnabled(data, mockSendEmailToAllActivePlayers, {
             gameDayService,
         });
 
@@ -139,7 +139,7 @@ describe('setGameEnabledCore', () => {
             reason: '',
         });
 
-        const result = await setGameEnabledCore(
+        const result = await coreSetGameEnabled(
             data,
             mockSendEmailToAllActivePlayers,
             { gameDayService },
@@ -184,7 +184,7 @@ describe('setGameEnabledCore', () => {
         });
 
         await expect(
-            setGameEnabledCore(data, mockSendEmailToAllActivePlayers, {
+            coreSetGameEnabled(data, mockSendEmailToAllActivePlayers, {
                 gameDayService,
             }),
         ).rejects.toBeInstanceOf(ConflictError);
@@ -200,7 +200,7 @@ describe('setGameEnabledCore', () => {
         };
 
         await expect(
-            setGameEnabledCore(
+            coreSetGameEnabled(
                 {
                     gameDayId: 9999,
                     game: false,

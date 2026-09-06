@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { beforeDeletePlayerCoreMock, deletePlayerCoreMock } = vi.hoisted(() => ({
-    beforeDeletePlayerCoreMock: vi.fn().mockResolvedValue(undefined),
-    deletePlayerCoreMock: vi.fn().mockResolvedValue(undefined),
+const { coreBeforeDeletePlayerMock, coreDeletePlayerMock } = vi.hoisted(() => ({
+    coreBeforeDeletePlayerMock: vi.fn().mockResolvedValue(undefined),
+    coreDeletePlayerMock: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@/lib/core/deletePlayer', () => ({
-    beforeDeletePlayerCore: beforeDeletePlayerCoreMock,
-    deletePlayerCore: deletePlayerCoreMock,
+    coreBeforeDeletePlayer: coreBeforeDeletePlayerMock,
+    coreDeletePlayer: coreDeletePlayerMock,
 }));
 
 import { beforeDeletePlayer, deletePlayer } from '@/actions/deletePlayer';
@@ -25,15 +25,15 @@ describe('beforeDeletePlayer action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('delegates to beforeDeletePlayerCore with the provided user summary', async () => {
+    it('delegates to coreBeforeDeletePlayer with the provided user summary', async () => {
         await beforeDeletePlayer(user);
 
-        expect(beforeDeletePlayerCoreMock).toHaveBeenCalledWith(user);
+        expect(coreBeforeDeletePlayerMock).toHaveBeenCalledWith(user);
     });
 
-    it('propagates errors from beforeDeletePlayerCore', async () => {
+    it('propagates errors from coreBeforeDeletePlayer', async () => {
         const coreError = new Error('cleanup failed');
-        beforeDeletePlayerCoreMock.mockRejectedValueOnce(coreError);
+        coreBeforeDeletePlayerMock.mockRejectedValueOnce(coreError);
 
         await expect(beforeDeletePlayer(user)).rejects.toBe(coreError);
     });
@@ -44,15 +44,15 @@ describe('deletePlayer action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('delegates to deletePlayerCore', async () => {
+    it('delegates to coreDeletePlayer', async () => {
         await deletePlayer();
 
-        expect(deletePlayerCoreMock).toHaveBeenCalledTimes(1);
+        expect(coreDeletePlayerMock).toHaveBeenCalledTimes(1);
     });
 
-    it('propagates errors from deletePlayerCore', async () => {
+    it('propagates errors from coreDeletePlayer', async () => {
         const coreError = new Error('delete failed');
-        deletePlayerCoreMock.mockRejectedValueOnce(coreError);
+        coreDeletePlayerMock.mockRejectedValueOnce(coreError);
 
         await expect(deletePlayer()).rejects.toBe(coreError);
     });

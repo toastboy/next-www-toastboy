@@ -4,19 +4,19 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    updatePlayerRecordsCoreMock,
+    coreUpdatePlayerRecordsMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    updatePlayerRecordsCoreMock: vi.fn().mockResolvedValue(undefined),
+    coreUpdatePlayerRecordsMock: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/updatePlayerRecords', () => ({
-    updatePlayerRecordsCore: updatePlayerRecordsCoreMock,
+    coreUpdatePlayerRecords: coreUpdatePlayerRecordsMock,
 }));
 
 import { updatePlayerRecords } from '@/actions/updatePlayerRecords';
@@ -31,7 +31,7 @@ describe('updatePlayerRecords action wrapper', () => {
         await updatePlayerRecords();
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(updatePlayerRecordsCoreMock).toHaveBeenCalledTimes(1);
+        expect(coreUpdatePlayerRecordsMock).toHaveBeenCalledTimes(1);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin');
         expect(broadcastMock).toHaveBeenCalledWith([
             FootyChannel.Players,
@@ -44,7 +44,7 @@ describe('updatePlayerRecords action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(updatePlayerRecords()).rejects.toBe(authError);
-        expect(updatePlayerRecordsCoreMock).not.toHaveBeenCalled();
+        expect(coreUpdatePlayerRecordsMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });

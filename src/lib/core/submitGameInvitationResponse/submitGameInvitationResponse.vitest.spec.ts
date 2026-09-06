@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { submitGameInvitationResponseCore } from '@/lib/core/submitGameInvitationResponse';
+import { coreSubmitGameInvitationResponse } from '@/lib/core/submitGameInvitationResponse';
 import { NotFoundError } from '@/lib/errors';
 
-describe('submitGameInvitationResponseCore', () => {
+describe('coreSubmitGameInvitationResponse', () => {
     it('upserts the response and preserves a trimmed comment', async () => {
         const gameInvitationService = {
             get: vi.fn().mockResolvedValue({
@@ -29,7 +29,7 @@ describe('submitGameInvitationResponseCore', () => {
             upsert: vi.fn().mockResolvedValue(null),
         };
 
-        await submitGameInvitationResponseCore(
+        await coreSubmitGameInvitationResponse(
             {
                 token: '123e4567-e89b-12d3-a456-426614174000',
                 response: 'Yes',
@@ -75,7 +75,7 @@ describe('submitGameInvitationResponseCore', () => {
             upsert: vi.fn().mockResolvedValue(null),
         };
 
-        await submitGameInvitationResponseCore(
+        await coreSubmitGameInvitationResponse(
             {
                 token: '123e4567-e89b-12d3-a456-426614174000',
                 response: 'Yes',
@@ -133,7 +133,7 @@ describe('submitGameInvitationResponseCore', () => {
             upsert: vi.fn().mockResolvedValue(null),
         };
 
-        await submitGameInvitationResponseCore(
+        await coreSubmitGameInvitationResponse(
             {
                 token: '123e4567-e89b-12d3-a456-426614174000',
                 response: 'No',
@@ -163,7 +163,7 @@ describe('submitGameInvitationResponseCore', () => {
         };
 
         await expect(
-            submitGameInvitationResponseCore(
+            coreSubmitGameInvitationResponse(
                 {
                     token: 'missing-token',
                     response: 'No',

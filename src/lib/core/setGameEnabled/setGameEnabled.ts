@@ -46,7 +46,7 @@ const defaultDeps: SetGameEnabledDeps = {
  * The email subject and content will reflect whether the game was reinstated or
  * cancelled.
  */
-export async function setGameEnabledCore(
+export async function coreSetGameEnabled(
     data: SetGameEnabledInput,
     sendEmailToAllActivePlayers: SendEmailToAllActivePlayersProxy,
     deps: SetGameEnabledDeps = defaultDeps,

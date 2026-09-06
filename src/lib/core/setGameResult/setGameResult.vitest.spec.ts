@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { setGameResultCore } from '@/lib/core/setGameResult';
+import { coreSetGameResult } from '@/lib/core/setGameResult';
 import {
     APP_ERROR_CODE,
     InternalError,
@@ -9,7 +9,7 @@ import {
 } from '@/lib/errors';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 
-describe('setGameResultCore', () => {
+describe('coreSetGameResult', () => {
     const gameDay = {
         id: 1249,
         year: 2026,
@@ -67,7 +67,7 @@ describe('setGameResultCore', () => {
             winner: 'A',
         });
 
-        await setGameResultCore(data, deps());
+        await coreSetGameResult(data, deps());
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -83,7 +83,7 @@ describe('setGameResultCore', () => {
             winner: 'draw',
         });
 
-        await setGameResultCore(data, deps());
+        await coreSetGameResult(data, deps());
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -99,7 +99,7 @@ describe('setGameResultCore', () => {
             winner: 'B',
         });
 
-        await setGameResultCore(data, deps());
+        await coreSetGameResult(data, deps());
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -115,7 +115,7 @@ describe('setGameResultCore', () => {
             winner: null,
         });
 
-        await setGameResultCore(data, deps());
+        await coreSetGameResult(data, deps());
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -131,7 +131,7 @@ describe('setGameResultCore', () => {
             winner: 'A',
         });
 
-        await setGameResultCore(data, deps());
+        await coreSetGameResult(data, deps());
 
         expect(transactionService.charge).toHaveBeenCalledTimes(4);
         expect(transactionService.charge).toHaveBeenCalledWith(
@@ -160,7 +160,7 @@ describe('setGameResultCore', () => {
         gameDayService.get.mockResolvedValue(null);
 
         await expect(
-            setGameResultCore(
+            coreSetGameResult(
                 {
                     gameDayId: 9999,
                     bibs: null,
@@ -175,7 +175,7 @@ describe('setGameResultCore', () => {
     });
 
     it('calls upsertFromGameDay with the gameDayId after updating outcomes', async () => {
-        await setGameResultCore(
+        await coreSetGameResult(
             SetGameResultInputSchema.parse({
                 gameDayId: 1249,
                 bibs: 'A',
@@ -196,7 +196,7 @@ describe('setGameResultCore', () => {
 
         let thrown: unknown;
         try {
-            await setGameResultCore(
+            await coreSetGameResult(
                 SetGameResultInputSchema.parse({
                     gameDayId: 1249,
                     bibs: 'A',
@@ -230,7 +230,7 @@ describe('setGameResultCore', () => {
 
         let thrown: unknown;
         try {
-            await setGameResultCore(
+            await coreSetGameResult(
                 SetGameResultInputSchema.parse({
                     gameDayId: 1249,
                     bibs: 'A',

@@ -4,19 +4,19 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    recordHallHireCoreMock,
+    coreRecordHallHireMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    recordHallHireCoreMock: vi.fn().mockResolvedValue(undefined),
+    coreRecordHallHireMock: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/recordHallHire', () => ({
-    recordHallHireCore: recordHallHireCoreMock,
+    coreRecordHallHire: coreRecordHallHireMock,
 }));
 
 import { recordHallHire } from '@/actions/recordHallHire';
@@ -37,7 +37,7 @@ describe('recordHallHire action wrapper', () => {
         await recordHallHire(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(recordHallHireCoreMock).toHaveBeenCalledWith(validInput);
+        expect(coreRecordHallHireMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/money');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/invoice');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Money);
@@ -48,7 +48,7 @@ describe('recordHallHire action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(recordHallHire(validInput)).rejects.toBe(authError);
-        expect(recordHallHireCoreMock).not.toHaveBeenCalled();
+        expect(coreRecordHallHireMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
@@ -57,6 +57,6 @@ describe('recordHallHire action wrapper', () => {
         await expect(
             recordHallHire({ ...validInput, amountPence: -1 }),
         ).rejects.toThrow();
-        expect(recordHallHireCoreMock).not.toHaveBeenCalled();
+        expect(coreRecordHallHireMock).not.toHaveBeenCalled();
     });
 });

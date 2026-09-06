@@ -48,7 +48,7 @@ vi.mock('@/actions/deletePlayer', () => ({
 }));
 
 vi.mock('@/lib/core/sendEmail', () => ({
-    sendEmailCore: vi.fn(),
+    coreSendEmail: vi.fn(),
 }));
 
 vi.mock('@/lib/secrets', () => ({

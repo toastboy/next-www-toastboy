@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { requireAdminMock, sendEmailToAllActivePlayersCoreMock } = vi.hoisted(
+const { requireAdminMock, coreSendEmailToAllActivePlayersMock } = vi.hoisted(
     () => ({
         requireAdminMock: vi.fn().mockResolvedValue(undefined),
-        sendEmailToAllActivePlayersCoreMock: vi.fn(),
+        coreSendEmailToAllActivePlayersMock: vi.fn(),
     }),
 );
 
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/core/sendEmailToAllActivePlayers', () => ({
-    sendEmailToAllActivePlayersCore: sendEmailToAllActivePlayersCoreMock,
+    coreSendEmailToAllActivePlayers: coreSendEmailToAllActivePlayersMock,
 }));
 
 import { sendEmailToAllActivePlayers } from '@/actions/sendEmailToAllActivePlayers';
@@ -24,18 +24,18 @@ describe('sendEmailToAllActivePlayers action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('calls requireAdmin then delegates to sendEmailToAllActivePlayersCore with the mail options', async () => {
+    it('calls requireAdmin then delegates to coreSendEmailToAllActivePlayers with the mail options', async () => {
         await sendEmailToAllActivePlayers(mailOptions);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailToAllActivePlayersCoreMock).toHaveBeenCalledWith(
+        expect(coreSendEmailToAllActivePlayersMock).toHaveBeenCalledWith(
             mailOptions,
         );
     });
 
     it('returns the recipient summary from core', async () => {
         const summary = { recipientCount: 12 };
-        sendEmailToAllActivePlayersCoreMock.mockResolvedValueOnce(summary);
+        coreSendEmailToAllActivePlayersMock.mockResolvedValueOnce(summary);
 
         const result = await sendEmailToAllActivePlayers(mailOptions);
 
@@ -49,6 +49,6 @@ describe('sendEmailToAllActivePlayers action wrapper', () => {
         await expect(sendEmailToAllActivePlayers(mailOptions)).rejects.toBe(
             authError,
         );
-        expect(sendEmailToAllActivePlayersCoreMock).not.toHaveBeenCalled();
+        expect(coreSendEmailToAllActivePlayersMock).not.toHaveBeenCalled();
     });
 });

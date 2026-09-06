@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createMoreGameDaysCore } from '@/lib/core/createMoreGameDays';
+import { coreCreateMoreGameDays } from '@/lib/core/createMoreGameDays';
 import { ValidationError } from '@/lib/errors';
 
-describe('createMoreGameDaysCore', () => {
+describe('coreCreateMoreGameDays', () => {
     it('creates game days with parsed local-evening dates and trimmed comments', async () => {
         const gameDayService = {
             create: vi
@@ -12,7 +12,7 @@ describe('createMoreGameDaysCore', () => {
                 .mockResolvedValueOnce({ id: 2 }),
         };
 
-        const result = await createMoreGameDaysCore(
+        const result = await coreCreateMoreGameDays(
             {
                 cost: 450,
                 hallCost: 4500,
@@ -56,7 +56,7 @@ describe('createMoreGameDaysCore', () => {
         const gameDayService = { create: vi.fn() };
 
         await expect(
-            createMoreGameDaysCore(
+            coreCreateMoreGameDays(
                 {
                     cost: 450,
                     hallCost: 4500,
@@ -73,7 +73,7 @@ describe('createMoreGameDaysCore', () => {
         const gameDayService = { create: vi.fn() };
 
         await expect(
-            createMoreGameDaysCore(
+            coreCreateMoreGameDays(
                 {
                     cost: 450,
                     hallCost: 4500,

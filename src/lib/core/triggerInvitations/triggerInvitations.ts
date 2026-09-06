@@ -25,7 +25,7 @@ const defaultDeps: TriggerInvitationsDeps = {
  * @returns A promise that resolves to the invitation decision, indicating the
  * status and associated game day ID if applicable.
  */
-export async function triggerInvitationsCore(
+export async function coreTriggerInvitations(
     data: NewGameInput,
     deps: TriggerInvitationsDeps = defaultDeps,
 ) {

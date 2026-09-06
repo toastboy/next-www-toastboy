@@ -1,1 +1,1 @@
-export { submitGameInvitationResponseCore } from './submitGameInvitationResponse';
+export { coreSubmitGameInvitationResponse } from './submitGameInvitationResponse';

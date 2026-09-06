@@ -4,22 +4,22 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    createPlayerCoreMock,
-    addPlayerInviteCoreMock,
+    coreCreatePlayerMock,
+    coreAddPlayerInviteMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    createPlayerCoreMock: vi.fn(),
-    addPlayerInviteCoreMock: vi.fn(),
+    coreCreatePlayerMock: vi.fn(),
+    coreAddPlayerInviteMock: vi.fn(),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/createPlayer', () => ({
-    createPlayerCore: createPlayerCoreMock,
-    addPlayerInviteCore: addPlayerInviteCoreMock,
+    coreCreatePlayer: coreCreatePlayerMock,
+    coreAddPlayerInvite: coreAddPlayerInviteMock,
 }));
 
 import { addPlayerInvite, createPlayer } from '@/actions/createPlayer';
@@ -40,7 +40,7 @@ describe('createPlayer action wrapper', () => {
         await createPlayer(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(createPlayerCoreMock).toHaveBeenCalledWith(validInput);
+        expect(coreCreatePlayerMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith(
             '/footy/admin/newplayer',
         );
@@ -53,7 +53,7 @@ describe('createPlayer action wrapper', () => {
             player: { id: 1 },
             inviteLink: 'https://example.com/invite',
         };
-        createPlayerCoreMock.mockResolvedValueOnce(result);
+        coreCreatePlayerMock.mockResolvedValueOnce(result);
 
         const returned = await createPlayer(validInput);
 
@@ -65,7 +65,7 @@ describe('createPlayer action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(createPlayer(validInput)).rejects.toBe(authError);
-        expect(createPlayerCoreMock).not.toHaveBeenCalled();
+        expect(coreCreatePlayerMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
@@ -74,7 +74,7 @@ describe('createPlayer action wrapper', () => {
         await expect(
             createPlayer({ ...validInput, name: '' }),
         ).rejects.toThrow();
-        expect(createPlayerCoreMock).not.toHaveBeenCalled();
+        expect(coreCreatePlayerMock).not.toHaveBeenCalled();
     });
 });
 
@@ -83,11 +83,11 @@ describe('addPlayerInvite action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('calls requireAdmin, delegates to addPlayerInviteCore, revalidates affected paths, and broadcasts Players channel', async () => {
+    it('calls requireAdmin, delegates to coreAddPlayerInvite, revalidates affected paths, and broadcasts Players channel', async () => {
         await addPlayerInvite(7, 'bob@example.com');
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(addPlayerInviteCoreMock).toHaveBeenCalledWith(
+        expect(coreAddPlayerInviteMock).toHaveBeenCalledWith(
             7,
             'bob@example.com',
         );
@@ -99,7 +99,7 @@ describe('addPlayerInvite action wrapper', () => {
     });
 
     it('returns the invite link from core', async () => {
-        addPlayerInviteCoreMock.mockResolvedValueOnce(
+        coreAddPlayerInviteMock.mockResolvedValueOnce(
             'https://example.com/invite/abc',
         );
 
@@ -113,6 +113,6 @@ describe('addPlayerInvite action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(addPlayerInvite(7)).rejects.toBe(authError);
-        expect(addPlayerInviteCoreMock).not.toHaveBeenCalled();
+        expect(coreAddPlayerInviteMock).not.toHaveBeenCalled();
     });
 });

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { sendEmailToAllActivePlayers } from '@/actions/sendEmailToAllActivePlayers';
 import { requireAdmin } from '@/lib/auth.server';
-import { setGameEnabledCore } from '@/lib/core/setGameEnabled';
+import { coreSetGameEnabled } from '@/lib/core/setGameEnabled';
 import { broadcast } from '@/lib/events';
 import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -23,7 +23,7 @@ export async function setGameEnabled(rawData: unknown) {
     await requireAdmin();
 
     const data = SetGameEnabledInputSchema.parse(rawData);
-    const gameDay = await setGameEnabledCore(data, sendEmailToAllActivePlayers);
+    const gameDay = await coreSetGameEnabled(data, sendEmailToAllActivePlayers);
 
     revalidatePath('/footy/admin/responses');
     revalidatePath('/footy/fixtures');

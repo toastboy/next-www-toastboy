@@ -1,2 +1,2 @@
 export type { UserWithRolePayload } from './auth';
-export { listUsersActionCore, setAdminRoleActionCore } from './auth';
+export { coreListUsersAction, coreSetAdminRoleAction } from './auth';

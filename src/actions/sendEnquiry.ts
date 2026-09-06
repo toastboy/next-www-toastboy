@@ -1,8 +1,8 @@
 'use server';
 
 import {
-    deliverContactEnquiryCore,
-    sendEnquiryCore,
+    coreDeliverContactEnquiry,
+    coreSendEnquiry,
 } from '@/lib/core/sendEnquiry';
 import { EnquirySchema } from '@/types/actions/SendEnquiry';
 
@@ -29,7 +29,7 @@ import { EnquirySchema } from '@/types/actions/SendEnquiry';
  */
 export async function sendEnquiry(rawData: unknown) {
     const data = EnquirySchema.parse(rawData);
-    await sendEnquiryCore(data);
+    await coreSendEnquiry(data);
 }
 
 /**
@@ -49,5 +49,5 @@ export async function sendEnquiry(rawData: unknown) {
  * @throws {Error} If no enquiry is found for the provided token.
  */
 export async function deliverContactEnquiry(token: string) {
-    return await deliverContactEnquiryCore(token);
+    return await coreDeliverContactEnquiry(token);
 }

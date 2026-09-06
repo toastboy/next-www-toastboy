@@ -124,7 +124,7 @@ async function getValidInvitation(
  * @throws {Error} Propagates errors from invitation validation (e.g., invalid
  * or expired token).
  */
-export async function claimPlayerInvitationCore(
+export async function coreClaimPlayerInvitation(
     token: string,
     deps: ClaimPlayerInvitationDeps = defaultDeps,
 ) {
@@ -174,7 +174,7 @@ export async function claimPlayerInvitationCore(
  * @returns A promise that resolves when the invitation claim process is
  * complete
  */
-export async function finalizePlayerInvitationClaimCore(
+export async function coreFinalizePlayerInvitationClaim(
     token: string,
     deps: ClaimPlayerInvitationDeps = defaultDeps,
 ) {

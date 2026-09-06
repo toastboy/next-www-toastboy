@@ -1,1 +1,1 @@
-export { setGameEnabledCore } from './setGameEnabled';
+export { coreSetGameEnabled } from './setGameEnabled';

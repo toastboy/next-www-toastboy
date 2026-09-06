@@ -17,13 +17,13 @@ vi.mock('@/lib/urls', () => ({
     getPublicBaseUrl: vi.fn(() => 'https://example.test'),
 }));
 
-import { addPlayerInviteCore, createPlayerCore } from '@/lib/core/createPlayer';
+import { coreAddPlayerInvite, coreCreatePlayer } from '@/lib/core/createPlayer';
 
 beforeEach(() => {
     vi.clearAllMocks();
 });
 
-describe('createPlayerCore', () => {
+describe('coreCreatePlayer', () => {
     it('creates a player and returns an invite link', async () => {
         const playerService = {
             create: vi.fn().mockResolvedValue({
@@ -35,7 +35,7 @@ describe('createPlayerCore', () => {
             create: vi.fn().mockResolvedValue(undefined),
         };
 
-        const result = await createPlayerCore(
+        const result = await coreCreatePlayer(
             {
                 name: '  Alex Example  ',
                 email: 'alex@example.com',
@@ -81,7 +81,7 @@ describe('createPlayerCore', () => {
             create: vi.fn(),
         };
 
-        const result = await createPlayerCore(
+        const result = await coreCreatePlayer(
             { name: 'New Player', email: '', introducedBy: '' },
             { playerService, emailVerificationService },
         );
@@ -105,7 +105,7 @@ describe('createPlayerCore', () => {
         };
 
         await expect(
-            createPlayerCore(
+            coreCreatePlayer(
                 {
                     name: 'Alex Example',
                     email: 'alex@example.com',
@@ -120,7 +120,7 @@ describe('createPlayerCore', () => {
     });
 });
 
-describe('addPlayerInviteCore', () => {
+describe('coreAddPlayerInvite', () => {
     it('creates an email verification and returns a claim URL', async () => {
         const playerService = {
             create: vi.fn(),
@@ -129,7 +129,7 @@ describe('addPlayerInviteCore', () => {
             create: vi.fn().mockResolvedValue(undefined),
         };
 
-        const inviteLink = await addPlayerInviteCore(
+        const inviteLink = await coreAddPlayerInvite(
             99,
             'invitee@example.com',
             { playerService, emailVerificationService },
@@ -155,7 +155,7 @@ describe('addPlayerInviteCore', () => {
             create: vi.fn(),
         };
 
-        const inviteLink = await addPlayerInviteCore(100, '', {
+        const inviteLink = await coreAddPlayerInvite(100, '', {
             playerService,
             emailVerificationService,
         });
@@ -178,7 +178,7 @@ describe('addPlayerInviteCore', () => {
             create: vi.fn().mockResolvedValue(undefined),
         };
 
-        const inviteLink = await addPlayerInviteCore(
+        const inviteLink = await coreAddPlayerInvite(
             101,
             'invitee@example.com',
             { playerService, emailVerificationService },

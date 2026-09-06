@@ -1,1 +1,1 @@
-export { deliverContactEnquiryCore, sendEnquiryCore } from './sendEnquiry';
+export { coreDeliverContactEnquiry, coreSendEnquiry } from './sendEnquiry';

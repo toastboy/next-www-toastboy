@@ -1,1 +1,1 @@
-export { beforeDeletePlayerCore, deletePlayerCore } from './deletePlayer';
+export { coreBeforeDeletePlayer, coreDeletePlayer } from './deletePlayer';

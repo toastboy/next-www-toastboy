@@ -1,8 +1,8 @@
 'use server';
 
 import {
-    claimPlayerInvitationCore,
-    finalizePlayerInvitationClaimCore,
+    coreClaimPlayerInvitation,
+    coreFinalizePlayerInvitationClaim,
 } from '@/lib/core/claimPlayerInvitation';
 
 /**
@@ -15,7 +15,7 @@ import {
  * ID, or if the player cannot be found.
  */
 export async function claimPlayerInvitation(token: string) {
-    return await claimPlayerInvitationCore(token);
+    return await coreClaimPlayerInvitation(token);
 }
 
 /**
@@ -27,5 +27,5 @@ export async function claimPlayerInvitation(token: string) {
  * @throws Error if the invitation lacks a player ID or if the login account cannot be found.
  */
 export async function finalizePlayerInvitationClaim(token: string) {
-    await finalizePlayerInvitationClaimCore(token);
+    await coreFinalizePlayerInvitationClaim(token);
 }

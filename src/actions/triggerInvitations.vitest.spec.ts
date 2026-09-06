@@ -4,19 +4,19 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    triggerInvitationsCoreMock,
+    coreTriggerInvitationsMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    triggerInvitationsCoreMock: vi.fn(),
+    coreTriggerInvitationsMock: vi.fn(),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/triggerInvitations', () => ({
-    triggerInvitationsCore: triggerInvitationsCoreMock,
+    coreTriggerInvitations: coreTriggerInvitationsMock,
 }));
 
 import { triggerInvitations } from '@/actions/triggerInvitations';
@@ -36,7 +36,7 @@ describe('triggerInvitations action wrapper', () => {
         await triggerInvitations(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(triggerInvitationsCoreMock).toHaveBeenCalledWith(validInput);
+        expect(coreTriggerInvitationsMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledTimes(4);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/newgame');
         expect(revalidatePathMock).toHaveBeenCalledWith(
@@ -52,7 +52,7 @@ describe('triggerInvitations action wrapper', () => {
 
     it('returns the invitation decision from core', async () => {
         const decision = { status: 'sent', gameDayId: 1249 };
-        triggerInvitationsCoreMock.mockResolvedValueOnce(decision);
+        coreTriggerInvitationsMock.mockResolvedValueOnce(decision);
 
         const result = await triggerInvitations(validInput);
 
@@ -64,7 +64,7 @@ describe('triggerInvitations action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(triggerInvitations(validInput)).rejects.toBe(authError);
-        expect(triggerInvitationsCoreMock).not.toHaveBeenCalled();
+        expect(coreTriggerInvitationsMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
@@ -73,6 +73,6 @@ describe('triggerInvitations action wrapper', () => {
         await expect(
             triggerInvitations({ overrideTimeCheck: 'nope' }),
         ).rejects.toThrow();
-        expect(triggerInvitationsCoreMock).not.toHaveBeenCalled();
+        expect(coreTriggerInvitationsMock).not.toHaveBeenCalled();
     });
 });

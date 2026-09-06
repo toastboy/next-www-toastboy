@@ -3,17 +3,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const {
     revalidatePathMock,
     broadcastMock,
-    submitGameInvitationResponseCoreMock,
+    coreSubmitGameInvitationResponseMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
-    submitGameInvitationResponseCoreMock: vi.fn(),
+    coreSubmitGameInvitationResponseMock: vi.fn(),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/submitGameInvitationResponse', () => ({
-    submitGameInvitationResponseCore: submitGameInvitationResponseCoreMock,
+    coreSubmitGameInvitationResponse: coreSubmitGameInvitationResponseMock,
 }));
 
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
@@ -34,7 +34,7 @@ describe('submitGameInvitationResponse action wrapper', () => {
     it('validates input, delegates to core, revalidates picker/responses/response paths, and broadcasts Responses channel', async () => {
         await submitGameInvitationResponse(validInput);
 
-        expect(submitGameInvitationResponseCoreMock).toHaveBeenCalledWith(
+        expect(coreSubmitGameInvitationResponseMock).toHaveBeenCalledWith(
             validInput,
         );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/picker');
@@ -50,7 +50,7 @@ describe('submitGameInvitationResponse action wrapper', () => {
 
     it('returns the result from core', async () => {
         const outcome = { id: 1, response: 'Yes' };
-        submitGameInvitationResponseCoreMock.mockResolvedValueOnce(outcome);
+        coreSubmitGameInvitationResponseMock.mockResolvedValueOnce(outcome);
 
         const result = await submitGameInvitationResponse(validInput);
 
@@ -61,7 +61,7 @@ describe('submitGameInvitationResponse action wrapper', () => {
         await expect(
             submitGameInvitationResponse({ ...validInput, token: '' }),
         ).rejects.toThrow();
-        expect(submitGameInvitationResponseCoreMock).not.toHaveBeenCalled();
+        expect(coreSubmitGameInvitationResponseMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });

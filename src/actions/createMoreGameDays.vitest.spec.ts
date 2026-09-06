@@ -4,19 +4,19 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    createMoreGameDaysCoreMock,
+    coreCreateMoreGameDaysMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    createMoreGameDaysCoreMock: vi.fn().mockResolvedValue([]),
+    coreCreateMoreGameDaysMock: vi.fn().mockResolvedValue([]),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/createMoreGameDays', () => ({
-    createMoreGameDaysCore: createMoreGameDaysCoreMock,
+    coreCreateMoreGameDays: coreCreateMoreGameDaysMock,
 }));
 
 import { createMoreGameDays } from '@/actions/createMoreGameDays';
@@ -37,7 +37,7 @@ describe('createMoreGameDays action wrapper', () => {
         await createMoreGameDays(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(createMoreGameDaysCoreMock).toHaveBeenCalledWith(validInput);
+        expect(coreCreateMoreGameDaysMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith(
             '/footy/admin/moregames',
         );
@@ -47,7 +47,7 @@ describe('createMoreGameDays action wrapper', () => {
 
     it('returns the created game days from core', async () => {
         const created = [{ id: 1 }];
-        createMoreGameDaysCoreMock.mockResolvedValueOnce(created);
+        coreCreateMoreGameDaysMock.mockResolvedValueOnce(created);
 
         const result = await createMoreGameDays(validInput);
 
@@ -59,7 +59,7 @@ describe('createMoreGameDays action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(createMoreGameDays(validInput)).rejects.toBe(authError);
-        expect(createMoreGameDaysCoreMock).not.toHaveBeenCalled();
+        expect(coreCreateMoreGameDaysMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
@@ -68,6 +68,6 @@ describe('createMoreGameDays action wrapper', () => {
         await expect(
             createMoreGameDays({ ...validInput, rows: [] }),
         ).rejects.toThrow();
-        expect(createMoreGameDaysCoreMock).not.toHaveBeenCalled();
+        expect(coreCreateMoreGameDaysMock).not.toHaveBeenCalled();
     });
 });

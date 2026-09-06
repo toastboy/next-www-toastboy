@@ -1,7 +1,7 @@
 'use server';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { authExportCore } from '@/lib/core/authExport';
+import { coreAuthExport } from '@/lib/core/authExport';
 
 /**
  * Export Better Auth tables to Azure Blob Storage.
@@ -11,5 +11,5 @@ import { authExportCore } from '@/lib/core/authExport';
 export async function authExport(): Promise<void> {
     await requireAdmin();
 
-    await authExportCore();
+    await coreAuthExport();
 }

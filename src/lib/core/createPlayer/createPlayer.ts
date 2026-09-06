@@ -27,7 +27,7 @@ const defaultDeps: CreatePlayerDeps = {
  * to `defaultDeps`.
  * @returns A URL string for the player to verify and claim their invite.
  */
-export async function addPlayerInviteCore(
+export async function coreAddPlayerInvite(
     playerId: number,
     email?: string,
     deps: CreatePlayerDeps = defaultDeps,
@@ -64,7 +64,7 @@ export async function addPlayerInviteCore(
  * @throws {ValidationError} If the introducer is provided but is not a valid
  * number.
  */
-export async function createPlayerCore(
+export async function coreCreatePlayer(
     data: CreatePlayerInput,
     deps: CreatePlayerDeps = defaultDeps,
 ) {
@@ -88,6 +88,6 @@ export async function createPlayerCore(
 
     return {
         player,
-        inviteLink: await addPlayerInviteCore(player.id, data.email, deps),
+        inviteLink: await coreAddPlayerInvite(player.id, data.email, deps),
     };
 }

@@ -1,8 +1,8 @@
 'use server';
 
 import {
-    beforeDeletePlayerCore,
-    deletePlayerCore,
+    coreBeforeDeletePlayer,
+    coreDeletePlayer,
 } from '@/lib/core/deletePlayer';
 import type { AuthUserSummary } from '@/types/AuthUser';
 
@@ -25,7 +25,7 @@ import type { AuthUserSummary } from '@/types/AuthUser';
  * @throws Propagates errors thrown by any underlying service calls.
  */
 export async function beforeDeletePlayer(user: AuthUserSummary) {
-    await beforeDeletePlayerCore(user);
+    await coreBeforeDeletePlayer(user);
 }
 
 /**
@@ -41,5 +41,5 @@ export async function beforeDeletePlayer(user: AuthUserSummary) {
  * @remarks TODO: Delete the user's mugshot from storage if present.
  */
 export async function deletePlayer() {
-    await deletePlayerCore();
+    await coreDeletePlayer();
 }

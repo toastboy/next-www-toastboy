@@ -5,13 +5,13 @@ const capturedConfigRef = vi.hoisted(() => ({
 }));
 
 const {
-    sendEmailCoreMock,
+    coreSendEmailMock,
     beforeDeletePlayerMock,
     getSecretsMock,
     getPublicBaseUrlMock,
     getTrustedOriginsMock,
 } = vi.hoisted(() => ({
-    sendEmailCoreMock: vi.fn().mockResolvedValue(undefined),
+    coreSendEmailMock: vi.fn().mockResolvedValue(undefined),
     beforeDeletePlayerMock: vi.fn().mockResolvedValue(undefined),
     getSecretsMock: vi.fn().mockReturnValue({
         BETTER_AUTH_SECRET: 'test-secret',
@@ -57,7 +57,7 @@ vi.mock('@/actions/deletePlayer', () => ({
 }));
 
 vi.mock('@/lib/core/sendEmail', () => ({
-    sendEmailCore: sendEmailCoreMock,
+    coreSendEmail: coreSendEmailMock,
 }));
 
 vi.mock('@/lib/secrets', () => ({
@@ -102,7 +102,7 @@ describe('auth config callbacks', () => {
                 url: 'https://example.test/confirm',
             });
 
-            expect(sendEmailCoreMock).toHaveBeenCalledWith(
+            expect(coreSendEmailMock).toHaveBeenCalledWith(
                 expect.objectContaining({
                     to: 'old@example.com',
                     subject: 'Confirm your Toastboy FC email change',
@@ -118,7 +118,7 @@ describe('auth config callbacks', () => {
                 url: 'https://example.test/confirm',
             });
 
-            expect(sendEmailCoreMock).not.toHaveBeenCalled();
+            expect(coreSendEmailMock).not.toHaveBeenCalled();
         });
     });
 
@@ -137,7 +137,7 @@ describe('auth config callbacks', () => {
                 token: 'tok',
             });
 
-            expect(sendEmailCoreMock).toHaveBeenCalledWith(
+            expect(coreSendEmailMock).toHaveBeenCalledWith(
                 expect.objectContaining({
                     to: 'user@example.com',
                     subject: 'Delete your Toastboy FC account',
@@ -164,7 +164,7 @@ describe('auth config callbacks', () => {
     });
 
     describe('emailAndPassword.sendResetPassword', () => {
-        it('fires sendEmailCore (void, not awaited) with password reset email', async () => {
+        it('fires coreSendEmail (void, not awaited) with password reset email', async () => {
             const cb = getCallback<AnyFn>(
                 'emailAndPassword',
                 'sendResetPassword',
@@ -175,7 +175,7 @@ describe('auth config callbacks', () => {
                 url: 'https://example.test/reset',
             });
 
-            expect(sendEmailCoreMock).toHaveBeenCalledWith(
+            expect(coreSendEmailMock).toHaveBeenCalledWith(
                 expect.objectContaining({
                     to: 'user@example.com',
                     subject: 'Reset your Toastboy FC password',
@@ -193,7 +193,7 @@ describe('auth config callbacks', () => {
             );
 
             await expect(cb()).resolves.toBeUndefined();
-            expect(sendEmailCoreMock).not.toHaveBeenCalled();
+            expect(coreSendEmailMock).not.toHaveBeenCalled();
         });
     });
 
@@ -208,7 +208,7 @@ describe('auth config callbacks', () => {
                 token: 'tok',
             });
 
-            expect(sendEmailCoreMock).toHaveBeenCalledWith(
+            expect(coreSendEmailMock).toHaveBeenCalledWith(
                 expect.objectContaining({
                     to: 'user@example.com',
                     subject: 'Verify your Toastboy FC email address',
@@ -224,7 +224,7 @@ describe('auth config callbacks', () => {
                 token: 'tok',
             });
 
-            expect(sendEmailCoreMock).not.toHaveBeenCalled();
+            expect(coreSendEmailMock).not.toHaveBeenCalled();
         });
     });
 
@@ -232,14 +232,14 @@ describe('auth config callbacks', () => {
         const getCallback_ = () =>
             getCallback<AnyFn>('deleteUser', 'sendDeleteAccountVerification');
 
-        it('fires sendEmailCore when user.email is set', async () => {
+        it('fires coreSendEmail when user.email is set', async () => {
             await getCallback_()({
                 user: { email: 'user@example.com' },
                 url: 'https://example.test/delete',
                 token: 'tok',
             });
 
-            expect(sendEmailCoreMock).toHaveBeenCalled();
+            expect(coreSendEmailMock).toHaveBeenCalled();
         });
 
         it('skips sending when user.email is absent', async () => {
@@ -249,7 +249,7 @@ describe('auth config callbacks', () => {
                 token: 'tok',
             });
 
-            expect(sendEmailCoreMock).not.toHaveBeenCalled();
+            expect(coreSendEmailMock).not.toHaveBeenCalled();
         });
     });
 });

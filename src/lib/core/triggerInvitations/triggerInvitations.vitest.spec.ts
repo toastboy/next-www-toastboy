@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';
+import { coreTriggerInvitations } from '@/lib/core/triggerInvitations';
 import { createMockInvitationDecision } from '@/tests/mocks/data/newGame';
 
-describe('triggerInvitationsCore', () => {
+describe('coreTriggerInvitations', () => {
     it('sends invitations when the decision is ready', async () => {
         const getInvitationDecision = vi.fn().mockResolvedValue(
             createMockInvitationDecision({
@@ -14,7 +14,7 @@ describe('triggerInvitationsCore', () => {
         );
         const sendGameInvitations = vi.fn();
 
-        const decision = await triggerInvitationsCore(
+        const decision = await coreTriggerInvitations(
             { overrideTimeCheck: true, customMessage: 'Heads up!' },
             { getInvitationDecision, sendGameInvitations },
         );
@@ -32,7 +32,7 @@ describe('triggerInvitationsCore', () => {
         );
         const sendGameInvitations = vi.fn();
 
-        const decision = await triggerInvitationsCore(
+        const decision = await coreTriggerInvitations(
             { overrideTimeCheck: false, customMessage: '' },
             { getInvitationDecision, sendGameInvitations },
         );

@@ -17,7 +17,7 @@ const defaultDeps: RecordHallHireDeps = {
  * @param data - The invoice details including amount in pence and optional note
  * @param deps - Optional dependencies for testing/injection
  */
-export async function recordHallHireCore(
+export async function coreRecordHallHire(
     data: RecordHallHireInput,
     deps: RecordHallHireDeps = defaultDeps,
 ): Promise<void> {

@@ -1,10 +1,10 @@
 import type { TeamName } from 'prisma/zod/schemas';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SubmitPickerCore } from '@/lib/core/submitPicker';
+import { coreSubmitPicker } from '@/lib/core/submitPicker';
 import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
-describe('SubmitPickerCore', () => {
+describe('coreSubmitPicker', () => {
     const gameDay = {
         id: 1249,
         year: 2026,
@@ -132,7 +132,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [
                 { playerId: 1 },
                 { playerId: 2 },
@@ -314,7 +314,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [
                 { playerId: 12 },
                 { playerId: 190 },
@@ -424,7 +424,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [
                 { playerId: 1 },
                 { playerId: 2 },
@@ -466,7 +466,7 @@ describe('SubmitPickerCore', () => {
         };
 
         await expect(
-            SubmitPickerCore([{ playerId: 7 }, { playerId: 9 }], deps),
+            coreSubmitPicker([{ playerId: 7 }, { playerId: 9 }], deps),
         ).rejects.toThrow('No current game day available for picking teams.');
     });
 
@@ -483,7 +483,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await expect(SubmitPickerCore([{ playerId: 1 }], deps)).rejects.toThrow(
+        await expect(coreSubmitPicker([{ playerId: 1 }], deps)).rejects.toThrow(
             'At least two players are required to pick teams.',
         );
         expect(deps.gameDayService.getCurrent).not.toHaveBeenCalled();
@@ -515,7 +515,7 @@ describe('SubmitPickerCore', () => {
         };
 
         await expect(
-            SubmitPickerCore([{ playerId: 1 }, { playerId: 99 }], deps),
+            coreSubmitPicker([{ playerId: 1 }, { playerId: 99 }], deps),
         ).rejects.toThrow(
             'Selected player 99 is not available for this game day.',
         );
@@ -554,7 +554,7 @@ describe('SubmitPickerCore', () => {
         };
 
         await expect(
-            SubmitPickerCore([{ playerId: 1 }, { playerId: 2 }], deps),
+            coreSubmitPicker([{ playerId: 1 }, { playerId: 2 }], deps),
         ).rejects.toThrow("Selected player 2 does not have a 'Yes' response.");
     });
 
@@ -635,7 +635,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [
                 { playerId: 1 },
                 { playerId: 2 },
@@ -734,7 +734,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [
                 { playerId: 1 },
                 { playerId: 2 },
@@ -841,7 +841,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [
                 { playerId: 1 },
                 { playerId: 2 },
@@ -931,7 +931,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [
                 { playerId: 1 },
                 { playerId: 2 },
@@ -1017,7 +1017,7 @@ describe('SubmitPickerCore', () => {
             getPublicBaseUrl: () => 'https://example.test',
         };
 
-        await SubmitPickerCore(
+        await coreSubmitPicker(
             [{ playerId: 1 }, { playerId: 2 }, { playerId: 3 }],
             deps,
         );

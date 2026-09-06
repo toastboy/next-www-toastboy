@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, setGameResultCoreMock, requireAdminMock } =
+const { revalidatePathMock, coreSetGameResultMock, requireAdminMock } =
     vi.hoisted(() => ({
         revalidatePathMock: vi.fn(),
-        setGameResultCoreMock: vi.fn(),
+        coreSetGameResultMock: vi.fn(),
         requireAdminMock: vi.fn().mockResolvedValue(undefined),
     }));
 
@@ -16,7 +16,7 @@ vi.mock('@/lib/auth.server', () => ({
 }));
 
 vi.mock('@/lib/core/setGameResult', () => ({
-    setGameResultCore: setGameResultCoreMock,
+    coreSetGameResult: coreSetGameResultMock,
 }));
 
 import { setGameResult } from '@/actions/setGameResult';
@@ -31,7 +31,7 @@ describe('setGameResult action wrapper', () => {
             id: 1249,
             bibs: 'A',
         };
-        setGameResultCoreMock.mockResolvedValue(gameDay);
+        coreSetGameResultMock.mockResolvedValue(gameDay);
 
         const result = await setGameResult({
             gameDayId: 1249,
@@ -39,7 +39,7 @@ describe('setGameResult action wrapper', () => {
             winner: 'A',
         });
 
-        expect(setGameResultCoreMock).toHaveBeenCalledWith({
+        expect(coreSetGameResultMock).toHaveBeenCalledWith({
             gameDayId: 1249,
             bibs: 'A',
             winner: 'A',
@@ -54,7 +54,7 @@ describe('setGameResult action wrapper', () => {
 
     it('propagates errors thrown by the core without calling revalidatePath', async () => {
         const coreError = new Error('core failed');
-        setGameResultCoreMock.mockRejectedValue(coreError);
+        coreSetGameResultMock.mockRejectedValue(coreError);
 
         await expect(
             setGameResult({ gameDayId: 1249, bibs: 'A', winner: 'A' }),

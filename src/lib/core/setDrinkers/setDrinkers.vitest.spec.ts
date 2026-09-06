@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { setDrinkersCore } from '@/lib/core/setDrinkers';
+import { coreSetDrinkers } from '@/lib/core/setDrinkers';
 import { APP_ERROR_CODE, InternalError, ValidationError } from '@/lib/errors';
 
 const noop = vi.fn().mockResolvedValue(undefined);
 
-describe('setDrinkersCore', () => {
+describe('coreSetDrinkers', () => {
     it('sets pub to 1 for team players, 2 for non-team players, and clears non-drinkers', async () => {
         const getByGameDay = vi.fn().mockResolvedValue([
             { playerId: 1, team: 'A' },
@@ -15,7 +15,7 @@ describe('setDrinkersCore', () => {
 
         const upsert = vi.fn().mockResolvedValue(null);
 
-        const result = await setDrinkersCore(
+        const result = await coreSetDrinkers(
             {
                 gameDayId: 1249,
                 players: [
@@ -64,7 +64,7 @@ describe('setDrinkersCore', () => {
         const getByGameDay = vi.fn().mockResolvedValue([]);
         const upsert = vi.fn().mockResolvedValue(null);
 
-        const result = await setDrinkersCore(
+        const result = await coreSetDrinkers(
             {
                 gameDayId: 1249,
                 players: [
@@ -95,7 +95,7 @@ describe('setDrinkersCore', () => {
     it('calls upsertFromGameDay with the gameDayId after updating outcomes', async () => {
         const upsertFromGameDay = vi.fn().mockResolvedValue(undefined);
 
-        await setDrinkersCore(
+        await coreSetDrinkers(
             { gameDayId: 1249, players: [{ playerId: 1, drinker: true }] },
             {
                 outcomeService: {
@@ -116,7 +116,7 @@ describe('setDrinkersCore', () => {
 
         let thrown: unknown;
         try {
-            await setDrinkersCore(
+            await coreSetDrinkers(
                 { gameDayId: 1249, players: [{ playerId: 1, drinker: true }] },
                 {
                     outcomeService: {
@@ -152,7 +152,7 @@ describe('setDrinkersCore', () => {
 
         let thrown: unknown;
         try {
-            await setDrinkersCore(
+            await coreSetDrinkers(
                 { gameDayId: 1249, players: [{ playerId: 1, drinker: true }] },
                 {
                     outcomeService: {

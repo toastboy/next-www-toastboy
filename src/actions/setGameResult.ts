@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { setGameResultCore } from '@/lib/core/setGameResult';
+import { coreSetGameResult } from '@/lib/core/setGameResult';
 import { broadcast } from '@/lib/events';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -24,7 +24,7 @@ export async function setGameResult(rawData: unknown) {
     await requireAdmin();
 
     const data = SetGameResultInputSchema.parse(rawData);
-    const gameDay = await setGameResultCore(data);
+    const gameDay = await coreSetGameResult(data);
 
     revalidatePath(`/footy/game/${data.gameDayId}`);
     revalidatePath('/footy/table');

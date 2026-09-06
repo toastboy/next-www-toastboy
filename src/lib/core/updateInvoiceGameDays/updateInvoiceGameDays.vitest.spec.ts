@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { updateInvoiceGameDaysCore } from '@/lib/core/updateInvoiceGameDays';
+import { coreUpdateInvoiceGameDays } from '@/lib/core/updateInvoiceGameDays';
 
-describe('updateInvoiceGameDaysCore', () => {
+describe('coreUpdateInvoiceGameDays', () => {
     it('calls gameDayService.update for each game day with the correct id and status', async () => {
         const get = vi
             .fn()
@@ -10,7 +10,7 @@ describe('updateInvoiceGameDaysCore', () => {
             .mockResolvedValueOnce({ id: 20, status: 'NoGame' });
         const update = vi.fn().mockResolvedValue(undefined);
 
-        await updateInvoiceGameDaysCore(
+        await coreUpdateInvoiceGameDays(
             {
                 gameDays: [
                     { id: 10, gameScheduled: true },
@@ -29,7 +29,7 @@ describe('updateInvoiceGameDaysCore', () => {
         const get = vi.fn().mockResolvedValue(null);
         const update = vi.fn().mockResolvedValue(undefined);
 
-        await updateInvoiceGameDaysCore(
+        await coreUpdateInvoiceGameDays(
             { gameDays: [] },
             { gameDayService: { get, update } },
         );
@@ -44,7 +44,7 @@ describe('updateInvoiceGameDaysCore', () => {
         const update = vi.fn().mockRejectedValue(serviceError);
 
         await expect(
-            updateInvoiceGameDaysCore(
+            coreUpdateInvoiceGameDays(
                 { gameDays: [{ id: 1, gameScheduled: true }] },
                 { gameDayService: { get, update } },
             ),
@@ -56,7 +56,7 @@ describe('updateInvoiceGameDaysCore', () => {
         const update = vi.fn().mockResolvedValue(undefined);
 
         await expect(
-            updateInvoiceGameDaysCore(
+            coreUpdateInvoiceGameDays(
                 { gameDays: [{ id: 30, gameScheduled: false }] },
                 { gameDayService: { get, update } },
             ),
@@ -76,7 +76,7 @@ describe('updateInvoiceGameDaysCore', () => {
         const update = vi.fn().mockResolvedValue(undefined);
 
         await expect(
-            updateInvoiceGameDaysCore(
+            coreUpdateInvoiceGameDays(
                 {
                     gameDays: [
                         { id: 10, gameScheduled: true },
@@ -94,7 +94,7 @@ describe('updateInvoiceGameDaysCore', () => {
         const get = vi.fn().mockResolvedValue(null);
         const update = vi.fn().mockResolvedValue(undefined);
 
-        await updateInvoiceGameDaysCore(
+        await coreUpdateInvoiceGameDays(
             { gameDays: [{ id: 99, gameScheduled: true }] },
             { gameDayService: { get, update } },
         );

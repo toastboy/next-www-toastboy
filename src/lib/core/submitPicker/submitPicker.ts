@@ -441,7 +441,7 @@ const buildTeamEmail = ({
  * @throws {ValidationError} If a selected player is not available for the game day.
  * @throws {ValidationError} If a selected player has not confirmed participation with 'Yes'.
  */
-export async function SubmitPickerCore(
+export async function coreSubmitPicker(
     data: SubmitPickerInput,
     deps: SubmitPickerDeps = defaultDeps,
 ): Promise<void> {

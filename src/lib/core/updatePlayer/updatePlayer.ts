@@ -64,7 +64,7 @@ const accountEmailSchema = z.email().trim().toLowerCase();
  * Defaults to `defaultDeps`.
  * @returns The updated player object.
  */
-export async function updatePlayerCore(
+export async function coreUpdatePlayer(
     playerId: number,
     data: UpdatePlayerInput,
     deps: UpdatePlayerDeps = defaultDeps,
@@ -124,7 +124,7 @@ export async function updatePlayerCore(
             const failedEmail = addedExtraEmails[index];
             captureUnexpectedError(result.reason, {
                 layer: 'server-action',
-                action: 'updatePlayerCore.sendVerificationEmail',
+                action: 'coreUpdatePlayer.sendVerificationEmail',
                 extra: {
                     playerId,
                     email: failedEmail,
@@ -143,7 +143,7 @@ export async function updatePlayerCore(
             const failedEmail = removedExtraEmails[index];
             captureUnexpectedError(result.reason, {
                 layer: 'server-action',
-                action: 'updatePlayerCore.removeExtraEmail',
+                action: 'coreUpdatePlayer.removeExtraEmail',
                 extra: {
                     playerId,
                     email: failedEmail,

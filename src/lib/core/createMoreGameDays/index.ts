@@ -1,1 +1,1 @@
-export { createMoreGameDaysCore } from './createMoreGameDays';
+export { coreCreateMoreGameDays } from './createMoreGameDays';

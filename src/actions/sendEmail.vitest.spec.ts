@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { requireUserMock, sendEmailCoreMock } = vi.hoisted(() => ({
+const { requireUserMock, coreSendEmailMock } = vi.hoisted(() => ({
     requireUserMock: vi.fn().mockResolvedValue(undefined),
-    sendEmailCoreMock: vi.fn().mockResolvedValue(undefined),
+    coreSendEmailMock: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@/lib/auth.server', () => ({ requireUser: requireUserMock }));
-vi.mock('@/lib/core/sendEmail', () => ({ sendEmailCore: sendEmailCoreMock }));
+vi.mock('@/lib/core/sendEmail', () => ({ coreSendEmail: coreSendEmailMock }));
 
 import { sendEmail } from '@/actions/sendEmail';
 
@@ -21,11 +21,11 @@ describe('sendEmail action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('calls requireUser then delegates to sendEmailCore with the mail options', async () => {
+    it('calls requireUser then delegates to coreSendEmail with the mail options', async () => {
         await sendEmail(mailOptions);
 
         expect(requireUserMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailCoreMock).toHaveBeenCalledWith(mailOptions);
+        expect(coreSendEmailMock).toHaveBeenCalledWith(mailOptions);
     });
 
     it('propagates AuthError when requireUser throws without calling core', async () => {
@@ -33,12 +33,12 @@ describe('sendEmail action wrapper', () => {
         requireUserMock.mockRejectedValueOnce(authError);
 
         await expect(sendEmail(mailOptions)).rejects.toBe(authError);
-        expect(sendEmailCoreMock).not.toHaveBeenCalled();
+        expect(coreSendEmailMock).not.toHaveBeenCalled();
     });
 
-    it('propagates errors from sendEmailCore', async () => {
+    it('propagates errors from coreSendEmail', async () => {
         const coreError = new Error('smtp failure');
-        sendEmailCoreMock.mockRejectedValueOnce(coreError);
+        coreSendEmailMock.mockRejectedValueOnce(coreError);
 
         await expect(sendEmail(mailOptions)).rejects.toBe(coreError);
     });

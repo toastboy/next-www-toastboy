@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { updateInvoiceGameDaysCore } from '@/lib/core/updateInvoiceGameDays';
+import { coreUpdateInvoiceGameDays } from '@/lib/core/updateInvoiceGameDays';
 import { broadcast } from '@/lib/events';
 import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -21,7 +21,7 @@ export async function updateInvoiceGameDays(rawData: unknown) {
     await requireAdmin();
 
     const data = UpdateInvoiceGameDaysInputSchema.parse(rawData);
-    await updateInvoiceGameDaysCore(data);
+    await coreUpdateInvoiceGameDays(data);
 
     revalidatePath('/footy/admin/invoice');
     revalidatePath('/footy/fixtures');

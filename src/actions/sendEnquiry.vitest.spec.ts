@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { sendEnquiryCoreMock, deliverContactEnquiryCoreMock } = vi.hoisted(
+const { coreSendEnquiryMock, coreDeliverContactEnquiryMock } = vi.hoisted(
     () => ({
-        sendEnquiryCoreMock: vi.fn().mockResolvedValue(undefined),
-        deliverContactEnquiryCoreMock: vi.fn(),
+        coreSendEnquiryMock: vi.fn().mockResolvedValue(undefined),
+        coreDeliverContactEnquiryMock: vi.fn(),
     }),
 );
 
 vi.mock('@/lib/core/sendEnquiry', () => ({
-    sendEnquiryCore: sendEnquiryCoreMock,
-    deliverContactEnquiryCore: deliverContactEnquiryCoreMock,
+    coreSendEnquiry: coreSendEnquiryMock,
+    coreDeliverContactEnquiry: coreDeliverContactEnquiryMock,
 }));
 
 import { deliverContactEnquiry, sendEnquiry } from '@/actions/sendEnquiry';
@@ -25,22 +25,22 @@ describe('sendEnquiry action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('validates input and delegates to sendEnquiryCore', async () => {
+    it('validates input and delegates to coreSendEnquiry', async () => {
         await sendEnquiry(validInput);
 
-        expect(sendEnquiryCoreMock).toHaveBeenCalledWith(validInput);
+        expect(coreSendEnquiryMock).toHaveBeenCalledWith(validInput);
     });
 
     it('propagates ZodError when input validation fails', async () => {
         await expect(
             sendEnquiry({ ...validInput, name: '' }),
         ).rejects.toThrow();
-        expect(sendEnquiryCoreMock).not.toHaveBeenCalled();
+        expect(coreSendEnquiryMock).not.toHaveBeenCalled();
     });
 
-    it('propagates errors from sendEnquiryCore', async () => {
+    it('propagates errors from coreSendEnquiry', async () => {
         const coreError = new Error('failed to persist enquiry');
-        sendEnquiryCoreMock.mockRejectedValueOnce(coreError);
+        coreSendEnquiryMock.mockRejectedValueOnce(coreError);
 
         await expect(sendEnquiry(validInput)).rejects.toBe(coreError);
     });
@@ -51,14 +51,14 @@ describe('deliverContactEnquiry action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('delegates to deliverContactEnquiryCore with the token', async () => {
+    it('delegates to coreDeliverContactEnquiry with the token', async () => {
         await deliverContactEnquiry('token-abc');
 
-        expect(deliverContactEnquiryCoreMock).toHaveBeenCalledWith('token-abc');
+        expect(coreDeliverContactEnquiryMock).toHaveBeenCalledWith('token-abc');
     });
 
-    it('returns the result from deliverContactEnquiryCore', async () => {
-        deliverContactEnquiryCoreMock.mockResolvedValueOnce({
+    it('returns the result from coreDeliverContactEnquiry', async () => {
+        coreDeliverContactEnquiryMock.mockResolvedValueOnce({
             enquiry: 'verified',
         });
 
@@ -67,9 +67,9 @@ describe('deliverContactEnquiry action wrapper', () => {
         expect(result).toEqual({ enquiry: 'verified' });
     });
 
-    it('propagates errors from deliverContactEnquiryCore', async () => {
+    it('propagates errors from coreDeliverContactEnquiry', async () => {
         const coreError = new Error('enquiry not found');
-        deliverContactEnquiryCoreMock.mockRejectedValueOnce(coreError);
+        coreDeliverContactEnquiryMock.mockRejectedValueOnce(coreError);
 
         await expect(deliverContactEnquiry('bad-token')).rejects.toBe(
             coreError,

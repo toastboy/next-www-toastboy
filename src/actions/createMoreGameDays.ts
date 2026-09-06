@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { createMoreGameDaysCore } from '@/lib/core/createMoreGameDays';
+import { coreCreateMoreGameDays } from '@/lib/core/createMoreGameDays';
 import { broadcast } from '@/lib/events';
 import { CreateMoreGameDaysSchema } from '@/types/actions/CreateMoreGameDays';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -19,7 +19,7 @@ export async function createMoreGameDays(rawData: unknown) {
     await requireAdmin();
 
     const data = CreateMoreGameDaysSchema.parse(rawData);
-    const created = await createMoreGameDaysCore(data);
+    const created = await coreCreateMoreGameDays(data);
 
     revalidatePath('/footy/admin/moregames');
     revalidatePath('/footy/fixtures');

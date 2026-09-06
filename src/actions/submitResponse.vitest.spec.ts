@@ -4,19 +4,19 @@ const {
     revalidatePathMock,
     broadcastMock,
     requireAdminMock,
-    submitResponseCoreMock,
+    coreSubmitResponseMock,
 } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    submitResponseCoreMock: vi.fn(),
+    coreSubmitResponseMock: vi.fn(),
 }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/submitResponse', () => ({
-    submitResponseCore: submitResponseCoreMock,
+    coreSubmitResponse: coreSubmitResponseMock,
 }));
 
 import { SubmitResponse } from '@/actions/submitResponse';
@@ -35,11 +35,11 @@ describe('SubmitResponse action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('calls requireAdmin, validates input, delegates to submitResponseCore, revalidates picker/responses/response paths, and broadcasts Responses channel', async () => {
+    it('calls requireAdmin, validates input, delegates to coreSubmitResponse, revalidates picker/responses/response paths, and broadcasts Responses channel', async () => {
         await SubmitResponse(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(submitResponseCoreMock).toHaveBeenCalledWith(validInput);
+        expect(coreSubmitResponseMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/picker');
         expect(revalidatePathMock).toHaveBeenCalledWith(
             '/footy/admin/responses',
@@ -51,9 +51,9 @@ describe('SubmitResponse action wrapper', () => {
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Responses);
     });
 
-    it('returns the result from submitResponseCore', async () => {
+    it('returns the result from coreSubmitResponse', async () => {
         const outcome = { id: 1, response: 'Yes' };
-        submitResponseCoreMock.mockResolvedValueOnce(outcome);
+        coreSubmitResponseMock.mockResolvedValueOnce(outcome);
 
         const result = await SubmitResponse(validInput);
 
@@ -65,7 +65,7 @@ describe('SubmitResponse action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(SubmitResponse(validInput)).rejects.toBe(authError);
-        expect(submitResponseCoreMock).not.toHaveBeenCalled();
+        expect(coreSubmitResponseMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
@@ -74,6 +74,6 @@ describe('SubmitResponse action wrapper', () => {
         await expect(
             SubmitResponse({ ...validInput, gameDayId: 0 }),
         ).rejects.toThrow();
-        expect(submitResponseCoreMock).not.toHaveBeenCalled();
+        expect(coreSubmitResponseMock).not.toHaveBeenCalled();
     });
 });

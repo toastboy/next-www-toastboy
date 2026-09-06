@@ -27,7 +27,7 @@ const defaultDeps: UpdateInvoiceGameDaysDeps = { gameDayService };
  * scheduled, and overwriting a decided game day's status here would silently
  * discard its recorded result.
  */
-export async function updateInvoiceGameDaysCore(
+export async function coreUpdateInvoiceGameDays(
     data: UpdateInvoiceGameDaysInput,
     deps: UpdateInvoiceGameDaysDeps = defaultDeps,
 ): Promise<void> {

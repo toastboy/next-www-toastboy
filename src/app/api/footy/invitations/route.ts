@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { buildJsonErrorResponse } from '@/lib/api';
-import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';
+import { coreTriggerInvitations } from '@/lib/core/triggerInvitations';
 import { broadcast } from '@/lib/events';
 import { getSecrets } from '@/lib/secrets';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
@@ -80,7 +80,7 @@ export const POST = async (request: NextRequest) => {
             }
         }
 
-        const decision = await triggerInvitationsCore({
+        const decision = await coreTriggerInvitations({
             overrideTimeCheck,
             customMessage: customMessage ?? '',
         });

@@ -1,1 +1,1 @@
-export { authExportCore } from './authExport';
+export { coreAuthExport } from './authExport';

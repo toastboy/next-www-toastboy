@@ -40,9 +40,9 @@ vi.mock('@/lib/email/sendViaGraphApi', () => ({
     sendViaGraphApi: sendViaGraphApiMock,
 }));
 
-import { sendEmailCore } from '@/lib/core/sendEmail';
+import { coreSendEmail } from '@/lib/core/sendEmail';
 
-describe('sendEmailCore', () => {
+describe('coreSendEmail', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.unstubAllEnvs();
@@ -66,7 +66,7 @@ describe('sendEmailCore', () => {
     });
 
     it('sends sanitized email content using local transport outside production', async () => {
-        await sendEmailCore({
+        await coreSendEmail({
             to: 'player@example.com',
             subject: 'Subject',
             html: '<script>bad()</script><p>Hello</p>',
@@ -93,7 +93,7 @@ describe('sendEmailCore', () => {
         vi.stubEnv('NODE_ENV', 'production');
         vi.stubEnv('CI', '');
 
-        await sendEmailCore({
+        await coreSendEmail({
             to: 'player@example.com',
             subject: 'Production test',
             html: '<p>Hello</p>',
@@ -122,7 +122,7 @@ describe('sendEmailCore', () => {
         sendMailMock.mockRejectedValue(new Error('SMTP down'));
 
         await expect(
-            sendEmailCore({
+            coreSendEmail({
                 to: 'player@example.com',
                 subject: 'Failure',
                 html: '<p>Hello</p>',
@@ -130,7 +130,7 @@ describe('sendEmailCore', () => {
         ).rejects.toBeInstanceOf(ExternalServiceError);
 
         await expect(
-            sendEmailCore({
+            coreSendEmail({
                 to: 'player@example.com',
                 subject: 'Failure',
                 html: '<p>Hello</p>',
@@ -141,7 +141,7 @@ describe('sendEmailCore', () => {
             1,
             expect.any(Error),
             expect.objectContaining({
-                action: 'sendEmailCore',
+                action: 'coreSendEmail',
                 layer: 'server-action',
             }),
         );
@@ -157,7 +157,7 @@ describe('sendEmailCore', () => {
         );
 
         await expect(
-            sendEmailCore({
+            coreSendEmail({
                 to: 'player@example.com',
                 subject: 'Failure',
                 html: '<p>Hello</p>',
@@ -165,7 +165,7 @@ describe('sendEmailCore', () => {
         ).rejects.toBeInstanceOf(ExternalServiceError);
 
         await expect(
-            sendEmailCore({
+            coreSendEmail({
                 to: 'player@example.com',
                 subject: 'Failure',
                 html: '<p>Hello</p>',
@@ -177,7 +177,7 @@ describe('sendEmailCore', () => {
         vi.stubEnv('NODE_ENV', 'production');
         vi.stubEnv('CI', 'true');
 
-        await sendEmailCore({
+        await coreSendEmail({
             to: 'player@example.com',
             subject: 'CI test',
             html: '<p>Hello</p>',
@@ -192,7 +192,7 @@ describe('sendEmailCore', () => {
         vi.stubEnv('CI', '');
         vi.stubEnv('PLAYWRIGHT_TEST', 'true');
 
-        await sendEmailCore({
+        await coreSendEmail({
             to: 'player@example.com',
             subject: 'Playwright test',
             html: '<p>Hello</p>',
@@ -203,7 +203,7 @@ describe('sendEmailCore', () => {
     });
 
     it('omits html from sendMail when html is not provided', async () => {
-        await sendEmailCore({
+        await coreSendEmail({
             to: 'player@example.com',
             subject: 'No HTML',
         });
@@ -218,7 +218,7 @@ describe('sendEmailCore', () => {
         vi.stubEnv('NODE_ENV', 'production');
         vi.stubEnv('CI', '');
 
-        await sendEmailCore({
+        await coreSendEmail({
             to: ['a@example.com', 'b@example.com'],
             cc: [{ address: 'c@example.com', name: 'C' }],
             bcc: [{ address: 'd@example.com', name: 'D' }, 'e@example.com'],
@@ -240,7 +240,7 @@ describe('sendEmailCore', () => {
         vi.stubEnv('NODE_ENV', 'production');
         vi.stubEnv('CI', '');
 
-        await sendEmailCore({
+        await coreSendEmail({
             to: { address: 'player@example.com', name: 'Player' },
             subject: 'Address object test',
             html: '<p>Hi</p>',
@@ -256,7 +256,7 @@ describe('sendEmailCore', () => {
         vi.stubEnv('NODE_ENV', 'production');
         vi.stubEnv('CI', '');
 
-        await sendEmailCore({
+        await coreSendEmail({
             to: 'player@example.com',
             subject: 'No HTML in prod',
         });
@@ -284,7 +284,7 @@ describe('sendEmailCore', () => {
             });
 
             await expect(
-                sendEmailCore({
+                coreSendEmail({
                     to: 'player@example.com',
                     subject: 'Test',
                     html: '<p>Hi</p>',
@@ -292,7 +292,7 @@ describe('sendEmailCore', () => {
             ).rejects.toBeInstanceOf(InternalError);
 
             await expect(
-                sendEmailCore({
+                coreSendEmail({
                     to: 'player@example.com',
                     subject: 'Test',
                     html: '<p>Hi</p>',
@@ -312,7 +312,7 @@ describe('sendEmailCore', () => {
             });
 
             await expect(
-                sendEmailCore({
+                coreSendEmail({
                     to: 'player@example.com',
                     subject: 'Test',
                     html: '<p>Hi</p>',
@@ -320,7 +320,7 @@ describe('sendEmailCore', () => {
             ).rejects.toBeInstanceOf(InternalError);
 
             await expect(
-                sendEmailCore({
+                coreSendEmail({
                     to: 'player@example.com',
                     subject: 'Test',
                     html: '<p>Hi</p>',
@@ -340,7 +340,7 @@ describe('sendEmailCore', () => {
             });
 
             await expect(
-                sendEmailCore({
+                coreSendEmail({
                     to: 'player@example.com',
                     subject: 'Test',
                     html: '<p>Hi</p>',
@@ -348,7 +348,7 @@ describe('sendEmailCore', () => {
             ).rejects.toBeInstanceOf(InternalError);
 
             await expect(
-                sendEmailCore({
+                coreSendEmail({
                     to: 'player@example.com',
                     subject: 'Test',
                     html: '<p>Hi</p>',
@@ -359,7 +359,7 @@ describe('sendEmailCore', () => {
         });
 
         it('passes valid secrets through to Graph API', async () => {
-            await sendEmailCore({
+            await coreSendEmail({
                 to: 'player@example.com',
                 subject: 'Test',
                 html: '<p>Hi</p>',

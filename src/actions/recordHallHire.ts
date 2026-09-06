@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { recordHallHireCore } from '@/lib/core/recordHallHire';
+import { coreRecordHallHire } from '@/lib/core/recordHallHire';
 import { broadcast } from '@/lib/events';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -19,7 +19,7 @@ export async function recordHallHire(rawData: unknown) {
     await requireAdmin();
 
     const data = RecordHallHireInputSchema.parse(rawData);
-    await recordHallHireCore(data);
+    await coreRecordHallHire(data);
 
     revalidatePath('/footy/admin/money');
     revalidatePath('/footy/admin/invoice');

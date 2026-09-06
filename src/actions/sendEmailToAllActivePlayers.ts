@@ -3,7 +3,7 @@
 import type { SendMailOptions } from 'nodemailer';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { sendEmailToAllActivePlayersCore } from '@/lib/core/sendEmailToAllActivePlayers';
+import { coreSendEmailToAllActivePlayers } from '@/lib/core/sendEmailToAllActivePlayers';
 
 /**
  * Sends an email to all active players.
@@ -18,5 +18,5 @@ export async function sendEmailToAllActivePlayers(
 ) {
     await requireAdmin();
 
-    return sendEmailToAllActivePlayersCore(mailOptions);
+    return coreSendEmailToAllActivePlayers(mailOptions);
 }

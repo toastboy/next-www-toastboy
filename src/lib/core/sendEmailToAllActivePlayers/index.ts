@@ -1,1 +1,1 @@
-export { sendEmailToAllActivePlayersCore } from './sendEmailToAllActivePlayers';
+export { coreSendEmailToAllActivePlayers } from './sendEmailToAllActivePlayers';

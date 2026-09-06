@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { payDebtCore } from '@/lib/core/payDebt';
+import { corePayDebt } from '@/lib/core/payDebt';
 
-describe('payDebtCore', () => {
+describe('corePayDebt', () => {
     it('delegates payment to moneyService.payMultiple', async () => {
         const payMultiple = vi.fn().mockResolvedValue({
             playerId: 42,
@@ -11,7 +11,7 @@ describe('payDebtCore', () => {
             resultingBalance: 250,
         });
 
-        const result = await payDebtCore(
+        const result = await corePayDebt(
             {
                 gameDayIds: [5, 7],
                 playerId: 42,

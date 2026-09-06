@@ -1,1 +1,1 @@
-export { recordHallHireCore } from './recordHallHire';
+export { coreRecordHallHire } from './recordHallHire';

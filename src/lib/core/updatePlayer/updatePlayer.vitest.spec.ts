@@ -8,9 +8,9 @@ vi.mock('@/lib/observability/sentry', () => ({
     captureUnexpectedError: captureUnexpectedErrorMock,
 }));
 
-import { updatePlayerCore } from '@/lib/core/updatePlayer';
+import { coreUpdatePlayer } from '@/lib/core/updatePlayer';
 
-describe('updatePlayerCore', () => {
+describe('coreUpdatePlayer', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -49,7 +49,7 @@ describe('updatePlayerCore', () => {
             sendEmailVerification: vi.fn().mockResolvedValue(undefined),
         };
 
-        const result = await updatePlayerCore(
+        const result = await coreUpdatePlayer(
             7,
             {
                 name: 'Alex Updated',
@@ -156,7 +156,7 @@ describe('updatePlayerCore', () => {
             },
             sendEmailVerification: vi.fn().mockResolvedValue(undefined),
         };
-        const result = await updatePlayerCore(
+        const result = await coreUpdatePlayer(
             7,
             {
                 name: 'Alex Updated',
@@ -202,7 +202,7 @@ describe('updatePlayerCore', () => {
             1,
             expect.any(Error),
             expect.objectContaining({
-                action: 'updatePlayerCore.sendVerificationEmail',
+                action: 'coreUpdatePlayer.sendVerificationEmail',
                 layer: 'server-action',
             }),
         );
@@ -210,7 +210,7 @@ describe('updatePlayerCore', () => {
             2,
             expect.any(Error),
             expect.objectContaining({
-                action: 'updatePlayerCore.removeExtraEmail',
+                action: 'coreUpdatePlayer.removeExtraEmail',
                 layer: 'server-action',
             }),
         );
@@ -264,7 +264,7 @@ describe('updatePlayerCore', () => {
             sendEmailVerification: vi.fn().mockResolvedValue(undefined),
         };
 
-        const result = await updatePlayerCore(
+        const result = await coreUpdatePlayer(
             7,
             {
                 name: 'Alex Updated',
@@ -324,7 +324,7 @@ describe('updatePlayerCore', () => {
         };
 
         await expect(
-            updatePlayerCore(
+            coreUpdatePlayer(
                 7,
                 {
                     name: 'Alex Updated',
@@ -386,7 +386,7 @@ describe('updatePlayerCore', () => {
         };
 
         await expect(
-            updatePlayerCore(
+            coreUpdatePlayer(
                 7,
                 {
                     name: 'Alex Updated',

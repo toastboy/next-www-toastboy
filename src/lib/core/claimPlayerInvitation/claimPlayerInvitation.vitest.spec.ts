@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-    claimPlayerInvitationCore,
-    finalizePlayerInvitationClaimCore,
+    coreClaimPlayerInvitation,
+    coreFinalizePlayerInvitationClaim,
 } from '@/lib/core/claimPlayerInvitation';
 import {
     AuthError,
@@ -46,11 +46,11 @@ function makeDeps() {
     };
 }
 
-describe('claimPlayerInvitationCore', () => {
+describe('coreClaimPlayerInvitation', () => {
     it('returns invitation data for a valid token', async () => {
         const deps = makeDeps();
 
-        const result = await claimPlayerInvitationCore('invite-token', deps);
+        const result = await coreClaimPlayerInvitation('invite-token', deps);
 
         expect(deps.emailVerificationService.getByToken).toHaveBeenCalledWith(
             'invite-token',
@@ -67,7 +67,7 @@ describe('claimPlayerInvitationCore', () => {
         const deps = makeDeps();
 
         await expect(
-            claimPlayerInvitationCore('', deps),
+            coreClaimPlayerInvitation('', deps),
         ).rejects.toBeInstanceOf(ValidationError);
         expect(deps.emailVerificationService.getByToken).not.toHaveBeenCalled();
     });
@@ -77,7 +77,7 @@ describe('claimPlayerInvitationCore', () => {
         deps.emailVerificationService.getByToken.mockResolvedValue(null);
 
         await expect(
-            claimPlayerInvitationCore('bad-token', deps),
+            coreClaimPlayerInvitation('bad-token', deps),
         ).rejects.toBeInstanceOf(NotFoundError);
     });
 
@@ -89,7 +89,7 @@ describe('claimPlayerInvitationCore', () => {
         });
 
         await expect(
-            claimPlayerInvitationCore('invite-token', deps),
+            coreClaimPlayerInvitation('invite-token', deps),
         ).rejects.toBeInstanceOf(ConflictError);
     });
 
@@ -101,7 +101,7 @@ describe('claimPlayerInvitationCore', () => {
         });
 
         await expect(
-            claimPlayerInvitationCore('invite-token', deps),
+            coreClaimPlayerInvitation('invite-token', deps),
         ).rejects.toBeInstanceOf(ConflictError);
     });
 
@@ -113,7 +113,7 @@ describe('claimPlayerInvitationCore', () => {
         });
 
         await expect(
-            claimPlayerInvitationCore('invite-token', deps),
+            coreClaimPlayerInvitation('invite-token', deps),
         ).rejects.toBeInstanceOf(ValidationError);
     });
 
@@ -124,7 +124,7 @@ describe('claimPlayerInvitationCore', () => {
         });
 
         await expect(
-            claimPlayerInvitationCore('invite-token', deps),
+            coreClaimPlayerInvitation('invite-token', deps),
         ).rejects.toBeInstanceOf(ConflictError);
     });
 
@@ -134,7 +134,7 @@ describe('claimPlayerInvitationCore', () => {
             playerId: 7,
         });
 
-        const result = await claimPlayerInvitationCore('invite-token', deps);
+        const result = await coreClaimPlayerInvitation('invite-token', deps);
 
         expect(result).toEqual({
             name: 'Alex Player',
@@ -148,12 +148,12 @@ describe('claimPlayerInvitationCore', () => {
         deps.playerService.getById.mockResolvedValue(null);
 
         await expect(
-            claimPlayerInvitationCore('invite-token', deps),
+            coreClaimPlayerInvitation('invite-token', deps),
         ).rejects.toBeInstanceOf(NotFoundError);
     });
 });
 
-describe('finalizePlayerInvitationClaimCore', () => {
+describe('coreFinalizePlayerInvitationClaim', () => {
     it('links the auth user to the invited player and sends verification for unverified extras', async () => {
         const deps = makeDeps();
         deps.authService.getSessionUser.mockResolvedValue({
@@ -169,7 +169,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
             },
         ]);
 
-        await finalizePlayerInvitationClaimCore('invite-token', deps);
+        await coreFinalizePlayerInvitationClaim('invite-token', deps);
 
         expect(deps.authService.updateCurrentUser).toHaveBeenCalledWith({
             playerId: 7,
@@ -193,7 +193,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
         deps.authService.getSessionUser.mockResolvedValue(null);
 
         await expect(
-            finalizePlayerInvitationClaimCore('invite-token', deps),
+            coreFinalizePlayerInvitationClaim('invite-token', deps),
         ).rejects.toBeInstanceOf(AuthError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
         expect(deps.emailVerificationService.markUsed).not.toHaveBeenCalled();
@@ -208,7 +208,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
         });
 
         await expect(
-            finalizePlayerInvitationClaimCore('invite-token', deps),
+            coreFinalizePlayerInvitationClaim('invite-token', deps),
         ).rejects.toBeInstanceOf(AuthError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
     });
@@ -222,7 +222,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
         });
 
         await expect(
-            finalizePlayerInvitationClaimCore('invite-token', deps),
+            coreFinalizePlayerInvitationClaim('invite-token', deps),
         ).rejects.toBeInstanceOf(AuthError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
     });
@@ -236,7 +236,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
         });
 
         await expect(
-            finalizePlayerInvitationClaimCore('invite-token', deps),
+            coreFinalizePlayerInvitationClaim('invite-token', deps),
         ).rejects.toBeInstanceOf(ConflictError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
     });
@@ -249,7 +249,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
             playerId: 7,
         });
 
-        await finalizePlayerInvitationClaimCore('invite-token', deps);
+        await coreFinalizePlayerInvitationClaim('invite-token', deps);
 
         expect(deps.authService.updateCurrentUser).toHaveBeenCalledWith({
             playerId: 7,
@@ -267,7 +267,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
             playerId: null,
         });
 
-        await finalizePlayerInvitationClaimCore('invite-token', deps);
+        await coreFinalizePlayerInvitationClaim('invite-token', deps);
 
         expect(deps.sendEmailVerification).not.toHaveBeenCalled();
     });
@@ -290,7 +290,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
             },
         ]);
 
-        await finalizePlayerInvitationClaimCore('invite-token', deps);
+        await coreFinalizePlayerInvitationClaim('invite-token', deps);
 
         expect(deps.sendEmailVerification).not.toHaveBeenCalled();
     });
@@ -307,7 +307,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
         ]);
         deps.playerService.getById.mockResolvedValue(null);
 
-        await finalizePlayerInvitationClaimCore('invite-token', deps);
+        await coreFinalizePlayerInvitationClaim('invite-token', deps);
 
         expect(deps.sendEmailVerification).toHaveBeenCalledWith(
             'extra@example.com',

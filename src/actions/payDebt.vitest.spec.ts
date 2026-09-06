@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, payDebtCoreMock } =
+const { revalidatePathMock, broadcastMock, requireAdminMock, corePayDebtMock } =
     vi.hoisted(() => ({
         revalidatePathMock: vi.fn(),
         broadcastMock: vi.fn(),
         requireAdminMock: vi.fn().mockResolvedValue(undefined),
-        payDebtCoreMock: vi.fn(),
+        corePayDebtMock: vi.fn(),
     }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/events', () => ({ broadcast: broadcastMock }));
 vi.mock('@/lib/core/payDebt', () => ({
-    payDebtCore: payDebtCoreMock,
+    corePayDebt: corePayDebtMock,
 }));
 
 import { payDebt } from '@/actions/payDebt';
@@ -33,7 +33,7 @@ describe('payDebt action wrapper', () => {
         await payDebt(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(payDebtCoreMock).toHaveBeenCalledWith(validInput);
+        expect(corePayDebtMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/money');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/game');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Money);
@@ -46,7 +46,7 @@ describe('payDebt action wrapper', () => {
             amount: 500,
             resultingBalance: 0,
         };
-        payDebtCoreMock.mockResolvedValueOnce(result);
+        corePayDebtMock.mockResolvedValueOnce(result);
 
         const returned = await payDebt(validInput);
 
@@ -58,7 +58,7 @@ describe('payDebt action wrapper', () => {
         requireAdminMock.mockRejectedValueOnce(authError);
 
         await expect(payDebt(validInput)).rejects.toBe(authError);
-        expect(payDebtCoreMock).not.toHaveBeenCalled();
+        expect(corePayDebtMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();
     });
@@ -67,6 +67,6 @@ describe('payDebt action wrapper', () => {
         await expect(
             payDebt({ ...validInput, gameDayIds: [] }),
         ).rejects.toThrow();
-        expect(payDebtCoreMock).not.toHaveBeenCalled();
+        expect(corePayDebtMock).not.toHaveBeenCalled();
     });
 });

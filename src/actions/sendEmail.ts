@@ -3,7 +3,7 @@
 import type { SendMailOptions } from 'nodemailer';
 
 import { requireUser } from '@/lib/auth.server';
-import { sendEmailCore } from '@/lib/core/sendEmail';
+import { coreSendEmail } from '@/lib/core/sendEmail';
 
 /**
  * Sends an email using the appropriate SMTP server configuration based on the environment.
@@ -18,5 +18,5 @@ import { sendEmailCore } from '@/lib/core/sendEmail';
 export async function sendEmail(mailOptions: SendMailOptions) {
     await requireUser();
 
-    await sendEmailCore(mailOptions);
+    await coreSendEmail(mailOptions);
 }

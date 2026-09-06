@@ -1,7 +1,7 @@
 import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { describe, expect, it } from 'vitest';
 
-import { SubmitPickerCore } from '@/lib/core/submitPicker';
+import { coreSubmitPicker } from '@/lib/core/submitPicker';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 import type { SubmitPickerInput } from '@/types/actions/SubmitPicker';
@@ -242,7 +242,7 @@ describeIntegration(
                     team: 'A' | 'B' | null;
                 }[] = [];
 
-                await SubmitPickerCore(selectedInput, {
+                await coreSubmitPicker(selectedInput, {
                     gameDayService: {
                         getCurrent: () => Promise.resolve(gameDay),
                     },

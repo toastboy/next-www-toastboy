@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { setDrinkersCore } from '@/lib/core/setDrinkers';
+import { coreSetDrinkers } from '@/lib/core/setDrinkers';
 import { broadcast } from '@/lib/events';
 import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -20,7 +20,7 @@ export async function setDrinkers(rawData: unknown) {
     await requireAdmin();
 
     const data = SetDrinkersInputSchema.parse(rawData);
-    const result = await setDrinkersCore(data);
+    const result = await coreSetDrinkers(data);
 
     revalidatePath('/footy/admin/drinkers');
     revalidatePath(`/footy/admin/drinkers/${data.gameDayId}`);

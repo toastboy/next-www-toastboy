@@ -2,7 +2,7 @@ import 'server-only';
 
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
-import { sendEmailCore } from '@/lib/core/sendEmail';
+import { coreSendEmail } from '@/lib/core/sendEmail';
 import { ConflictError, NotFoundError, ValidationError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
@@ -18,13 +18,13 @@ interface VerifyEmailDeps {
         typeof playerExtraEmailService,
         'getByEmail' | 'upsert'
     >;
-    sendEmailCore: typeof sendEmailCore;
+    coreSendEmail: typeof coreSendEmail;
 }
 
 const defaultDeps: VerifyEmailDeps = {
     emailVerificationService,
     playerExtraEmailService,
-    sendEmailCore,
+    coreSendEmail,
 };
 
 /**
@@ -139,7 +139,7 @@ async function requestPlayerEmailVerification(
  * @throws If the verification is missing a player reference or if the email
  * address already belongs to another player.
  */
-export async function verifyEmailCore(
+export async function coreVerifyEmail(
     token: string,
     deps: VerifyEmailDeps = defaultDeps,
 ) {
@@ -188,7 +188,7 @@ export async function verifyEmailCore(
  * @returns A promise that resolves when the email has been sent, or returns
  * early if the email is empty.
  */
-export async function sendEmailVerificationCore(
+export async function coreSendEmailVerification(
     email: string,
     player?: PlayerType,
     deps: VerifyEmailDeps = defaultDeps,
@@ -212,7 +212,7 @@ export async function sendEmailVerificationCore(
         '<p>If you did not request this, you can ignore this message.</p>',
     ].join('');
 
-    await deps.sendEmailCore({
+    await deps.coreSendEmail({
         to: normalizedEmail,
         subject: 'Verify your email address',
         html,

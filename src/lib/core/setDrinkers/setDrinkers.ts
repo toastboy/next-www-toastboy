@@ -23,7 +23,7 @@ const defaultDeps: SetDrinkersDeps = {
  * - clear pub value for every listed player
  * - set selected players to 1 if they were on team A/B, otherwise 2
  */
-export async function setDrinkersCore(
+export async function coreSetDrinkers(
     data: SetDrinkersInput,
     deps: SetDrinkersDeps = defaultDeps,
 ): Promise<SetDrinkersResult> {

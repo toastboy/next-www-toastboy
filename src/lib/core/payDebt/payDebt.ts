@@ -27,7 +27,7 @@ const defaultDeps: PayDebtDeps = {
  * This function delegates to the money service to execute the actual payment.
  * Dependencies can be injected for testing purposes.
  */
-export async function payDebtCore(
+export async function corePayDebt(
     data: PayDebtInput,
     deps: PayDebtDeps = defaultDeps,
 ) {

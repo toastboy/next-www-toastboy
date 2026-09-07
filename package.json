@@ -57,7 +57,7 @@
     "dependencies": {
         "@azure/identity": "^4.13.2",
         "@azure/storage-blob": "^12.33.0",
-        "@eslint/eslintrc": "^3.3.6",
+        "@eslint/eslintrc": "^3.3.7",
         "@mantine/code-highlight": "^9.5.2",
         "@mantine/core": "^9.5.2",
         "@mantine/dates": "^9.5.2",

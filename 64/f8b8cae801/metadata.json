@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "64f8b8cae801",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "e2e/well-known.spec.ts",
+    "next.config.mjs",
+    "public/.well-known/security.txt",
+    "src/app/api/events/route.ts",
+    "src/app/api/events/route.vitest.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/64/f8b8cae801/0/metadata.json",
+      "transcript": "/64/f8b8cae801/0/full.jsonl",
+      "compact_transcript": "/64/f8b8cae801/0/transcript.jsonl",
+      "content_hash": "/64/f8b8cae801/0/content_hash.txt",
+      "prompt": "/64/f8b8cae801/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 124,
+    "cache_creation_tokens": 80200,
+    "cache_read_tokens": 4667631,
+    "output_tokens": 27449,
+    "api_call_count": 62
+  }
+}

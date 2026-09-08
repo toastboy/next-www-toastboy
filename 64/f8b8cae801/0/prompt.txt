@@ -1,0 +1,90 @@
+Now let's work on SYS-575
+
+---
+
+   /Volumes/Development/next-www-toastboy  on   main !12 ?1 ────────────────────────── took 26s   at 08:55:06  
+❯ curl -sI http://localhost:3000/.well-known/change-password
+HTTP/1.1 307 Temporary Redirect
+location: /footy/password
+Date: Tue, 08 Sep 2026 08:53:03 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+    /Volumes/Development/next-www-toastboy  on   main !1 ?2 ──────────────────────────────────────── at 09:53:03  
+❯ curl -s  http://localhost:3000/.well-known/security.txt
+Contact: https://github.com/toastboy/next-www-toastboy/security/advisories/new
+Expires: 2027-09-07T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://www.toastboy.co.uk/.well-known/security.txt
+Policy: https://github.com/toastboy/next-www-toastboy/blob/main/SECURITY.md
+
+---
+
+What are these lines in the playwright test output (repeated a lot!)
+
+[WebServer] ⨯ Error: The destination stream closed early.
+[WebServer]     at ignore-listed frames {
+[WebServer]   digest: '1814632038'
+[WebServer] }
+
+---
+
+Yes
+
+---
+
+s authentication
+[WebServer] (node:55871) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:55871) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:55871) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:55871) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:55871) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to i
+[66/68] [chromium] › e2e/users-admin-mocked.spec.ts:50:9 › Profile Page with Auth Mocking › allows authenticated users to access profile
+[WebServer] (node:55871) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+[WebServer] (node:55871) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to i
+[67/68] [chromium] › e2e/well-known.spec.ts:10:9 › .well-known resources › /.well-known/change-pass
+  1) [chromium] › e2e/well-known.spec.ts:10:9 › .well-known resources › /.well-known/change-password redirects to the password page 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 307
+    Received: 404
+
+      15 |         });
+      16 |
+    > 17 |         expect(response.status()).toBe(307);
+         |                                   ^
+      18 |         expect(response.headers().location).toBe('/footy/password');
+      19 |     });
+      20 |
+        at /Volumes/Development/next-www-toastboy/e2e/well-known.spec.ts:17:35
+
+    Error Context: test-results/well-known--well-known-res-1ca72-irects-to-the-password-page-chromium/error-context.md
+
+[68/68] [chromium] › e2e/well-known.spec.ts:21:9 › .well-known resources › /.well-known/security.tx
+  2) [chromium] › e2e/well-known.spec.ts:21:9 › .well-known resources › /.well-known/security.txt is served as text/plain 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      24 |         const response = await request.get('/.well-known/security.txt');
+      25 |
+    > 26 |         expect(response.status()).toBe(200);
+         |                                   ^
+      27 |         expect(response.headers()['content-type']).toContain('text/plain');
+      28 |
+      29 |         const body = await response.text();
+        at /Volumes/Development/next-www-toastboy/e2e/well-known.spec.ts:26:35
+
+    Error Context: test-results/well-known--well-known-res-57a9b-txt-is-served-as-text-plain-chromium/error-context.md
+
+  2 failed
+    [chromium] › e2e/well-known.spec.ts:10:9 › .well-known resources › /.well-known/change-password redirects to the password page 
+    [chromium] › e2e/well-known.spec.ts:21:9 › .well-known resources › /.well-known/security.txt is served as text/plain
+
+---
+
+lsof -ti tcp:3002 | xargs kill          # drop the stale 09:13 webserver

@@ -9,6 +9,7 @@ This project is based on [Azure + MySQL example code](https://github.com/Azure-S
 [![Chromatic](https://github.com/toastboy/next-www-toastboy/actions/workflows/chromatic.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/chromatic.yml)
 [![Reviewdog](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml)
 [![Knip](https://github.com/toastboy/next-www-toastboy/actions/workflows/knip.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/knip.yml)
+[![Link Check](https://github.com/toastboy/next-www-toastboy/actions/workflows/link-check.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/link-check.yml)
 [![Terraform](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml)
 
 ## Azure App Registrations
@@ -136,6 +137,24 @@ npx playwright test
 ```
 
 The test runner starts a local Next.js server automatically, seeds the test database, and tears everything down when done.
+
+## Broken Link Checking
+
+[`.github/workflows/link-check.yml`](.github/workflows/link-check.yml) builds the app, runs it against the seeded CI database, and uses [`linkinator`](https://github.com/JustinBeckwith/linkinator) to recursively crawl the **public** surface from `http://127.0.0.1:3000`. Any non-skipped internal link that returns a 4xx/5xx fails the workflow (and therefore the PR check). The full JSON report is uploaded as a build artifact on every run.
+
+External hosts are deliberately out of scope here so PRs don't break on third-party outages — those are covered by the separate weekly external-link job (SYS-616).
+
+Exclusions live in [`linkinator.config.json`](linkinator.config.json) at the repo root: add a per-URL or per-domain regular expression to the `skip` array to stop a link being checked. The first entry (`^https?://(?!127\.0\.0\.1:3000)`) is what scopes the crawl to internal links; leave it in place and add new exclusions alongside it. The authenticated `src/app/footy/**` admin surface is not yet crawled (it needs the mock-auth cookie and the programmatic API — a follow-up).
+
+To run it locally, start a production build on port 3000 and point the script at it:
+
+```shell
+op run --env-file ./.env -- npm run build
+npm run start:ci &
+npm run linkcheck
+```
+
+Make sure nothing else is already bound to port 3000 first (a stray `next dev`, or VS Code's Live Preview) — `npm run linkcheck` just crawls whatever answers on `http://127.0.0.1:3000`, and a static file server there will happily serve the whole working tree.
 
 ## Sentry Sampling and Quota Controls
 

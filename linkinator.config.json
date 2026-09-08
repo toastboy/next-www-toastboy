@@ -1,0 +1,7 @@
+{
+    "recurse": true,
+    "skip": ["^https?://(?!127\\.0\\.0\\.1:3000)"],
+    "retry": true,
+    "concurrency": 20,
+    "timeout": 10000
+}

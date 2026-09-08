@@ -43,3 +43,7 @@ I want the privacy notice to be viewable on the site. Is 'privacy' the most usua
 ---
 
 yes, update Jira. Also add a navbar link. Finally, is privacy policy a .well-known thing?
+
+---
+
+Yes to the redirect

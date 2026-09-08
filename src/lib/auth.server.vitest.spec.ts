@@ -36,6 +36,7 @@ describe('isMockAuthEnabled', () => {
     afterEach(() => {
         // @ts-expect-error -- NODE_ENV is read-only in types but writable at runtime
         process.env.NODE_ENV = originalEnv;
+        vi.unstubAllEnvs();
     });
 
     it('returns true in development', () => {
@@ -63,6 +64,35 @@ describe('isMockAuthEnabled', () => {
         // @ts-expect-error -- NODE_ENV is read-only in types but writable at runtime
         process.env.NODE_ENV = 'production';
         vi.stubEnv('PLAYWRIGHT_TEST', 'true');
+
+        expect(isMockAuthEnabled()).toBe(true);
+    });
+
+    it('is force-disabled by MOCK_AUTH_DISABLED=true even in development', () => {
+        // @ts-expect-error -- NODE_ENV is read-only in types but writable at runtime
+        process.env.NODE_ENV = 'development';
+        vi.stubEnv('MOCK_AUTH_DISABLED', 'true');
+
+        expect(isMockAuthEnabled()).toBe(false);
+    });
+
+    it.each(['VERCEL_ENV', 'APP_ENV', 'NEXT_PUBLIC_APP_ENV'])(
+        'is force-disabled when %s=production, even with PLAYWRIGHT_TEST=true',
+        (envVar) => {
+            // @ts-expect-error -- NODE_ENV is read-only in types but writable at runtime
+            process.env.NODE_ENV = 'production';
+            vi.stubEnv('PLAYWRIGHT_TEST', 'true');
+            vi.stubEnv(envVar, 'production');
+
+            expect(isMockAuthEnabled()).toBe(false);
+        },
+    );
+
+    it('stays enabled for a non-production VERCEL_ENV such as preview', () => {
+        // @ts-expect-error -- NODE_ENV is read-only in types but writable at runtime
+        process.env.NODE_ENV = 'production';
+        vi.stubEnv('PLAYWRIGHT_TEST', 'true');
+        vi.stubEnv('VERCEL_ENV', 'preview');
 
         expect(isMockAuthEnabled()).toBe(true);
     });
@@ -142,6 +172,16 @@ describe('getMockAuthState', () => {
 
     it('returns none in production regardless of cookies', async () => {
         vi.stubEnv('NODE_ENV', 'production');
+        headersMock.mockResolvedValue(
+            new Headers({ cookie: 'mock-auth-state=admin' }),
+        );
+
+        await expect(getMockAuthState()).resolves.toBe('none');
+    });
+
+    it('ignores a crafted mock-auth-state cookie when VERCEL_ENV=production', async () => {
+        vi.stubEnv('NODE_ENV', 'test');
+        vi.stubEnv('VERCEL_ENV', 'production');
         headersMock.mockResolvedValue(
             new Headers({ cookie: 'mock-auth-state=admin' }),
         );

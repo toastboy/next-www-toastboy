@@ -6,22 +6,12 @@ import escapeHtml from 'escape-html';
 import prisma from 'prisma/prisma';
 
 import { beforeDeletePlayer } from '@/actions/deletePlayer';
+import { toAuthUserSummary } from '@/lib/authUser';
 import { coreSendEmail } from '@/lib/core/sendEmail';
 import { getSecrets } from '@/lib/secrets';
 import { getPublicBaseUrl, getTrustedOrigins } from '@/lib/urls';
-import type { AuthUserSummary } from '@/types/AuthUser';
 
 const secrets = getSecrets();
-
-// For some reason while sendResetPassword is properly typed, the
-// sendDeleteAccountVerification just has a bunch of 'any's
-interface DeleteAccountVerificationContext {
-    user: {
-        email?: string;
-    };
-    url: string;
-    token: string;
-}
 
 /**
  * Context supplied by Better Auth when confirming an email-change request.
@@ -86,19 +76,23 @@ export const auth = betterAuth({
         deleteUser: {
             enabled: true,
             sendDeleteAccountVerification: async ({ user, url }, _request) => {
-                const safeUrl = escapeHtml(url);
+                if (user.email) {
+                    const safeUrl = escapeHtml(url);
 
-                await coreSendEmail({
-                    to: user.email,
-                    subject: 'Delete your Toastboy FC account',
-                    html: [
-                        `<p>Click the link to confirm your account deletion:</p>`,
-                        `<a href="${safeUrl}">Delete account</a>`,
-                    ].join(''),
-                });
+                    await coreSendEmail({
+                        to: user.email,
+                        subject: 'Delete your Toastboy FC account',
+                        html: [
+                            `<p>Click the link to confirm your account deletion:</p>`,
+                            `<a href="${safeUrl}">Delete account</a>`,
+                        ].join(''),
+                    });
+                }
             },
-            beforeDelete: async (user) => {
-                await beforeDeletePlayer(user as unknown as AuthUserSummary);
+            beforeDelete: async (user: unknown) => {
+                // Better Auth types this hook's `user` loosely; map it through
+                // an explicit runtime-validated schema rather than casting.
+                await beforeDeletePlayer(toAuthUserSummary(user));
             },
         },
     },
@@ -137,29 +131,6 @@ export const auth = betterAuth({
                     html: [
                         `<p>Click the link to verify your email address:</p>`,
                         `<a href="${safeUrl}">Verify email</a>`,
-                    ].join(''),
-                });
-            }
-        },
-    },
-    deleteUser: {
-        enabled: true,
-        // The documentation specifically says that this shouldn't be awaited to
-        // avoid timing attacks: https://www.better-auth.com/docs/concepts/users-accounts
-        // eslint-disable-next-line @typescript-eslint/require-await
-        sendDeleteAccountVerification: async (
-            { user, url, token: _token }: DeleteAccountVerificationContext,
-            _request: Request | undefined,
-        ) => {
-            if (user.email) {
-                const safeUrl = escapeHtml(url);
-
-                void coreSendEmail({
-                    to: user.email,
-                    subject: 'Reset your Toastboy FC password',
-                    html: [
-                        `<p>Click the link to reset your password:</p>`,
-                        `<a href="${safeUrl}">Reset password</a>`,
                     ].join(''),
                 });
             }

@@ -1,0 +1,45 @@
+Let's work on SYS-334.
+
+---
+
+What would be the requirements of GDPR? I understand I've got some leeway here because this is a community site and not for profit
+
+---
+
+Yes, and I'd also like a draft privacy notice
+
+---
+
+Just write the privacy policy
+
+---
+
+I've decided not to encrypt and so the notice should note that backups and live data are access controlled with least-privilege accounts only.
+
+---
+
+Add the comment to the ticket but I will use this number to commit the privacy notice.
+
+---
+
+The 'how long we keep it' section needs a change: there's no idle timeout for anonymising data BUT there is an explicit flag to present a given player as anonymous, whether they're active or finished.
+
+---
+
+How do I make Prettier be the chosen formatter for Markdown in VS Code?
+
+---
+
+Yes
+
+---
+
+Oh, and one more thing on retention: the user can opt to request data deletion which is a step beyond appearing as anonymous
+
+---
+
+I want the privacy notice to be viewable on the site. Is 'privacy' the most usual name rather than 'privacy-notice'? Looks like the place such docs should live is src/app/footy/docs. Finally I'd like to have an index page of all the docs too.
+
+---
+
+yes, update Jira. Also add a navbar link. Finally, is privacy policy a .well-known thing?

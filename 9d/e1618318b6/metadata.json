@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "9de1618318b6",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 11,
+  "files_touched": [
+    ".prettierignore",
+    ".vscode/settings.json",
+    "CLAUDE.md",
+    "README.md",
+    "src/app/footy/docs/page.tsx",
+    "src/app/footy/docs/privacy/page.tsx",
+    "src/app/footy/docs/privacy/privacy.mdx",
+    "src/components/DocsIndex/DocsIndex.stories.tsx",
+    "src/components/DocsIndex/DocsIndex.tsx",
+    "src/components/DocsIndex/DocsIndex.vitest.spec.tsx",
+    "src/components/DocsIndex/__mocks__/DocsIndex.tsx",
+    "src/components/NavBarNested/NavBarNested.tsx",
+    "src/components/NavBarNested/NavBarNested.vitest.spec.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/9d/e1618318b6/0/metadata.json",
+      "transcript": "/9d/e1618318b6/0/full.jsonl",
+      "compact_transcript": "/9d/e1618318b6/0/transcript.jsonl",
+      "content_hash": "/9d/e1618318b6/0/content_hash.txt",
+      "prompt": "/9d/e1618318b6/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 206,
+    "cache_creation_tokens": 181413,
+    "cache_read_tokens": 15133940,
+    "output_tokens": 71112,
+    "api_call_count": 103
+  }
+}

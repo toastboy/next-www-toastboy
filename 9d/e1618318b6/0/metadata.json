@@ -1,0 +1,124 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "9de1618318b6",
+  "session_id": "d8501e0c-accd-4e9a-87aa-835a40c1ffe3",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-08T16:45:49.246853Z",
+  "branch": "main",
+  "checkpoints_count": 11,
+  "save_step_count": 7,
+  "files_touched": [
+    ".prettierignore",
+    ".vscode/settings.json",
+    "CLAUDE.md",
+    "README.md",
+    "src/app/footy/docs/page.tsx",
+    "src/app/footy/docs/privacy/page.tsx",
+    "src/app/footy/docs/privacy/privacy.mdx",
+    "src/components/DocsIndex/DocsIndex.stories.tsx",
+    "src/components/DocsIndex/DocsIndex.tsx",
+    "src/components/DocsIndex/DocsIndex.vitest.spec.tsx",
+    "src/components/DocsIndex/__mocks__/DocsIndex.tsx",
+    "src/components/NavBarNested/NavBarNested.tsx",
+    "src/components/NavBarNested/NavBarNested.vitest.spec.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "ec308f3b1e0c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 206,
+    "cache_creation_tokens": 181413,
+    "cache_read_tokens": 15133940,
+    "output_tokens": 71112,
+    "api_call_count": 103
+  },
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-08T16:45:49.182961Z",
+    "agent_lines": 409,
+    "agent_removed": 43,
+    "human_added": 5,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 414,
+    "total_lines_changed": 457,
+    "agent_percentage": 98.90590809628009,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 128,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 8,
+      "user_lines_removed": 13,
+      "agent_lines_added": 125,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "docs/privacy-notice.md": 8
+      },
+      "user_removed_per_file": {
+        "docs/privacy-notice.md": 13
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 124,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 34,
+      "user_lines_removed": 32,
+      "agent_lines_added": 172,
+      "agent_lines_removed": 43,
+      "user_added_per_file": {
+        "docs/privacy-notice.md": 34
+      },
+      "user_removed_per_file": {
+        "docs/privacy-notice.md": 32
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 1,
+      "agent_lines_added": 179,
+      "agent_lines_removed": 43,
+      "user_removed_per_file": {
+        "docs/privacy-notice.md": 1
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 375,
+      "agent_lines_removed": 43
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 409,
+      "agent_lines_removed": 43
+    }
+  ]
+}

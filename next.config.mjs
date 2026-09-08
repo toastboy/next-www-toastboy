@@ -63,6 +63,11 @@ const nextConfig = {
     async redirects() {
         return [
             {
+                source: '/.well-known/change-password',
+                destination: '/footy/password',
+                permanent: false,
+            },
+            {
                 source: '/footy/drinkers',
                 destination: '/footy/admin/drinkers',
                 permanent: true,

@@ -1,0 +1,5 @@
+Contact: https://github.com/toastboy/next-www-toastboy/security/advisories/new
+Expires: 2027-09-07T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://www.toastboy.co.uk/.well-known/security.txt
+Policy: https://github.com/toastboy/next-www-toastboy/blob/main/SECURITY.md

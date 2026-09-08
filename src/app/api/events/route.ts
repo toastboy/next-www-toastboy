@@ -27,15 +27,24 @@ export function GET(request: NextRequest): Response {
 
     const stream = new ReadableStream({
         start(controller) {
+            let closed = false;
+
             const listener = () => {
-                controller.enqueue(
-                    encoder.encode('event: update\ndata: {}\n\n'),
-                );
+                if (closed || request.signal.aborted) return;
+                try {
+                    controller.enqueue(
+                        encoder.encode('event: update\ndata: {}\n\n'),
+                    );
+                } catch {
+                    // Client disconnected between the abort and this write;
+                    // nothing to send to.
+                }
             };
 
             emitter.on(channel, listener);
 
             request.signal.addEventListener('abort', () => {
+                closed = true;
                 emitter.off(channel, listener);
                 controller.close();
             });

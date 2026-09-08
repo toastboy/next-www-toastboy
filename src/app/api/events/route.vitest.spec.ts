@@ -69,6 +69,22 @@ describe('/api/events', () => {
         expect(emitter.listenerCount('games')).toBe(0);
     });
 
+    it('ignores an emit that arrives after the request is aborted', () => {
+        const controller = new AbortController();
+        const request = new NextRequest(
+            'http://localhost/api/events?channel=games',
+            {
+                signal: controller.signal,
+            },
+        );
+        GET(request);
+
+        controller.abort();
+
+        // A late broadcast must not throw even though the stream is closed.
+        expect(() => broadcast('games')).not.toThrow();
+    });
+
     it('does not send events for other channels to the stream', async () => {
         const controller = new AbortController();
         const request = new NextRequest(

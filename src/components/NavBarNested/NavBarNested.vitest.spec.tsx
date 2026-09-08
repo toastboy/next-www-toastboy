@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import { NavBarNested } from '@/components/NavBarNested/NavBarNested';
@@ -30,6 +31,21 @@ describe('NavBarNested', () => {
         expect(
             screen.getByRole('link', { name: 'Results' }),
         ).toBeInTheDocument();
+    });
+
+    it('reveals documentation links when the group is opened', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <NavBarNested />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByText('Documentation'));
+
+        expect(
+            await screen.findByRole('link', { name: 'Privacy Notice' }),
+        ).toHaveAttribute('href', '/footy/docs/privacy');
     });
 
     it('renders navbar footer region', () => {

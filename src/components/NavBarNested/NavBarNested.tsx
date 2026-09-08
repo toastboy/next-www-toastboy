@@ -101,6 +101,24 @@ export const NavBarNested = ({ user }: Props) => {
                 },
             ],
         },
+        {
+            label: 'Documentation',
+            initiallyOpened: false,
+            links: [
+                {
+                    label: 'Overview',
+                    link: '/footy/docs',
+                },
+                {
+                    label: 'Privacy Notice',
+                    link: '/footy/docs/privacy',
+                },
+                {
+                    label: 'Migration Guide',
+                    link: '/footy/docs/migration',
+                },
+            ],
+        },
     ];
     const adminLinks = [
         {

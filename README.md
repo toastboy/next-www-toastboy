@@ -15,19 +15,19 @@ This project is based on [Azure + MySQL example code](https://github.com/Azure-S
 
 Three Azure AD app registrations are managed by Terraform in [`terraform/main.tf`](terraform/main.tf), each scoped to the minimum permissions needed:
 
-| App | Display Name | Purpose | Permissions |
-| --- | --- | --- | --- |
-| **Auth** | Next www toastboy – Auth | Microsoft social login via Better Auth | Delegated: `openid`, `profile`, `email`, `User.Read` |
-| **Storage** | Next www toastboy – Storage | Azure Blob Storage access via RBAC | None (RBAC role assignment only) |
-| **Mail** | Next www toastboy – Mail | Transactional email via Microsoft Graph | Application: `Mail.Send` (admin-consented) |
+| App         | Display Name                | Purpose                                 | Permissions                                          |
+| ----------- | --------------------------- | --------------------------------------- | ---------------------------------------------------- |
+| **Auth**    | Next www toastboy – Auth    | Microsoft social login via Better Auth  | Delegated: `openid`, `profile`, `email`, `User.Read` |
+| **Storage** | Next www toastboy – Storage | Azure Blob Storage access via RBAC      | None (RBAC role assignment only)                     |
+| **Mail**    | Next www toastboy – Mail    | Transactional email via Microsoft Graph | Application: `Mail.Send` (admin-consented)           |
 
 Terraform outputs the client IDs and secrets for each registration, which are synced to 1Password (vault `next-www-toastboy`) by the [Terraform workflow](.github/workflows/terraform.yml) after each apply. The env var mapping is:
 
-| App | Client ID env var | Client secret env var |
-| --- | --- | --- |
-| Auth | `AUTH_MICROSOFT_CLIENT_ID` | `AUTH_MICROSOFT_CLIENT_SECRET` |
-| Storage | `STORAGE_CLIENT_ID` | `STORAGE_CLIENT_SECRET` |
-| Mail | `MAIL_GRAPH_CLIENT_ID` | `MAIL_GRAPH_CLIENT_SECRET` |
+| App     | Client ID env var          | Client secret env var          |
+| ------- | -------------------------- | ------------------------------ |
+| Auth    | `AUTH_MICROSOFT_CLIENT_ID` | `AUTH_MICROSOFT_CLIENT_SECRET` |
+| Storage | `STORAGE_CLIENT_ID`        | `STORAGE_CLIENT_SECRET`        |
+| Mail    | `MAIL_GRAPH_CLIENT_ID`     | `MAIL_GRAPH_CLIENT_SECRET`     |
 
 ### Running Terraform locally
 
@@ -65,14 +65,14 @@ CI workflows are structured so that **PR-triggered workflows never access 1Passw
 
 The split between secret stores reflects this:
 
-| Secret | Store | Used by |
-| --- | --- | --- |
-| `OP_SERVICE_ACCOUNT_TOKEN` | GitHub Actions secret | Terraform apply and 1Password sync (main only) |
-| `CHROMATIC_PROJECT_TOKEN` | GitHub Actions secret | Chromatic visual regression (all pushes) |
-| `CODECOV_TOKEN` | GitHub Actions secret | Unit test coverage upload (all pushes) |
-| `TF_API_TOKEN` | GitHub Actions secret | Terraform plan & apply on main only. No Terraform runs on other branches or PRs. |
-| `CLAUDE_CODE_OAUTH_TOKEN` | GitHub Actions secret | Claude code review and `@claude` mentions |
-| All production app secrets | 1Password vault `next-www-toastboy` | Terraform apply + 1Password sync (main only) |
+| Secret                     | Store                               | Used by                                                                          |
+| -------------------------- | ----------------------------------- | -------------------------------------------------------------------------------- |
+| `OP_SERVICE_ACCOUNT_TOKEN` | GitHub Actions secret               | Terraform apply and 1Password sync (main only)                                   |
+| `CHROMATIC_PROJECT_TOKEN`  | GitHub Actions secret               | Chromatic visual regression (all pushes)                                         |
+| `CODECOV_TOKEN`            | GitHub Actions secret               | Unit test coverage upload (all pushes)                                           |
+| `TF_API_TOKEN`             | GitHub Actions secret               | Terraform plan & apply on main only. No Terraform runs on other branches or PRs. |
+| `CLAUDE_CODE_OAUTH_TOKEN`  | GitHub Actions secret               | Claude code review and `@claude` mentions                                        |
+| All production app secrets | 1Password vault `next-www-toastboy` | Terraform apply + 1Password sync (main only)                                     |
 
 Chromatic uses a plain GitHub Actions secret rather than 1Password because it is needed for PR branch pushes, where 1Password access is intentionally withheld. The Chromatic credential is low-sensitivity (it only allows publishing snapshots to the Chromatic project).
 

@@ -1,0 +1,96 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "4111fe4dfd09",
+  "session_id": "fbb38982-f6b0-422b-adeb-c4dfe7750df1",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-08T17:28:48.832398Z",
+  "branch": "SYS-593-harden-auth-redirect",
+  "checkpoints_count": 6,
+  "save_step_count": 6,
+  "files_touched": [
+    "docs/CHANGELOG.md",
+    "src/app/footy/auth/signin/page.tsx",
+    "src/app/footy/auth/signin/page.vitest.spec.ts",
+    "src/components/SignIn/SignIn.tsx",
+    "src/components/SignIn/SignIn.vitest.spec.tsx",
+    "src/lib/auth.server.ts",
+    "src/lib/auth.server.vitest.spec.ts",
+    "src/lib/auth.ts",
+    "src/lib/auth.vitest.spec.ts",
+    "src/lib/authUser.ts",
+    "src/lib/authUser.vitest.spec.ts",
+    "src/lib/urls.ts",
+    "src/lib/urls.vitest.spec.ts",
+    "vitest.setup.frontend.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "9ab93dfa4d3e",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 342,
+    "cache_creation_tokens": 200590,
+    "cache_read_tokens": 26480450,
+    "output_tokens": 85259,
+    "api_call_count": 171
+  },
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-08T17:28:48.759898Z",
+    "agent_lines": 559,
+    "agent_removed": 94,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 559,
+    "total_lines_changed": 653,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 522,
+      "agent_lines_removed": 94
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 530,
+      "agent_lines_removed": 94
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 532,
+      "agent_lines_removed": 94
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 559,
+      "agent_lines_removed": 94
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 559,
+      "agent_lines_removed": 94
+    }
+  ]
+}

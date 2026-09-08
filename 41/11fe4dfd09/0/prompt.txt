@@ -1,0 +1,21 @@
+Start work on this one: https://toastboy.atlassian.net/browse/SYS-593
+
+---
+
+The SAFE_REDIRECT_PATH regex includes an unescaped [ inside a character class (...#%[\\]]...), which is invalid syntax in JS/TS regular expressions and can throw at module evaluation time. Escape both [ and ] as literals inside the class (and consider adding a unit test that imports this module to catch regex syntax errors early).
+
+---
+
+With sanitizeRedirectPath(redirect, pathname), an explicitly provided but unsafe redirect value will fall back to pathname (often the sign-in route), potentially causing post-login navigation loops or unexpected UX. If the intent is 'use pathname only when redirect is missing, but use DEFAULT_REDIRECT_PATH when redirect is unsafe', split the logic to distinguish redirect == null from redirect being present-but-unsafe.
+
+---
+
+The docstring claims blank name/email become null, but the schema currently only null-coalesces (user.name ?? null) and will preserve empty strings (''). Either update the docs to say 'missing' (not blank), or change the schema transform to normalise blank/whitespace-only strings to null.
+
+---
+
+Why did you make a branch this time? I do trunk-based development. Don't change anything now, though.
+
+---
+
+yes

@@ -3,7 +3,7 @@
   "checkpoint_id": "4bfcf4287704",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 10,
+  "checkpoints_count": 11,
   "files_touched": [
     ".github/workflows/link-check.yml",
     ".gitignore",
@@ -33,13 +33,20 @@
       "compact_transcript": "/4b/fcf4287704/2/transcript.jsonl",
       "content_hash": "/4b/fcf4287704/2/content_hash.txt",
       "prompt": "/4b/fcf4287704/2/prompt.txt"
+    },
+    {
+      "metadata": "/4b/fcf4287704/3/metadata.json",
+      "transcript": "/4b/fcf4287704/3/full.jsonl",
+      "compact_transcript": "/4b/fcf4287704/3/transcript.jsonl",
+      "content_hash": "/4b/fcf4287704/3/content_hash.txt",
+      "prompt": "/4b/fcf4287704/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 308,
-    "cache_creation_tokens": 267864,
-    "cache_read_tokens": 12865504,
-    "output_tokens": 82578,
-    "api_call_count": 154
+    "input_tokens": 310,
+    "cache_creation_tokens": 293185,
+    "cache_read_tokens": 12899373,
+    "output_tokens": 84436,
+    "api_call_count": 155
   }
 }

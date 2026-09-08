@@ -66,7 +66,14 @@ ALTER TABLE `Invitation` DROP FOREIGN KEY IF EXISTS `invitation_ibfk_2`;
 DROP INDEX `invitation_ibfk_2` ON `Invitation`;
 
 -- DropIndex
+-- Whether this table's auto-generated FK follows a table rename depends on
+-- the MariaDB version: up to 11.8 it's renamed to match (PickerTeams_ibfk_1);
+-- 12.1+ reworked the internal constraint-naming scheme and no longer renames
+-- it, so it can still be named after this table's pre-rename name
+-- (picker_teams_ibfk_1). Drop both names so this doesn't depend on which
+-- MariaDB version originally created the database.
 ALTER TABLE `PickerTeams` DROP FOREIGN KEY IF EXISTS `PickerTeams_ibfk_1`;
+ALTER TABLE `PickerTeams` DROP FOREIGN KEY IF EXISTS `picker_teams_ibfk_1`;
 DROP INDEX `player` ON `PickerTeams`;
 
 -- AlterTable
@@ -179,6 +186,14 @@ CREATE UNIQUE INDEX `Country_name_key` ON `Country`(`name`);
 DROP INDEX `name` ON `Country`;
 
 -- RedefineIndex
+-- Unlike PickerTeams above, this DROP INDEX alone doesn't fail even when the
+-- FK is still named after the pre-rename `game_chat` table: MariaDB just
+-- repoints the FK at CREATE INDEX's replacement index instead of erroring.
+-- That leaves a stale FK constraint - which this schema was never meant to
+-- have (see relationMode = "prisma" in schema.prisma) - silently in place.
+-- Drop it under both possible names so it doesn't linger under either.
+ALTER TABLE `GameChat` DROP FOREIGN KEY IF EXISTS `GameChat_ibfk_1`;
+ALTER TABLE `GameChat` DROP FOREIGN KEY IF EXISTS `game_chat_ibfk_1`;
 CREATE INDEX `GameChat_player_idx` ON `GameChat`(`player`);
 DROP INDEX `player` ON `GameChat`;
 

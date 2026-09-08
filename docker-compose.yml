@@ -4,10 +4,12 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_APP_PASSWORD: ${DATABASE_APP_PASSWORD}
     ports:
       - "33306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./scripts/docker/create-app-user.sh:/docker-entrypoint-initdb.d/10-create-app-user.sh:ro
     healthcheck:
       test:
         [
@@ -23,10 +25,12 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: playwright_test_password
+      DATABASE_APP_PASSWORD: playwright_test_app_password
     ports:
       - "33307:3306"
     volumes:
       - db_test_data:/var/lib/mysql
+      - ./scripts/docker/create-app-user.sh:/docker-entrypoint-initdb.d/10-create-app-user.sh:ro
     healthcheck:
       test:
         [

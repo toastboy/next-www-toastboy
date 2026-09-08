@@ -99,6 +99,24 @@ Run the app with the following command:
 op run --env-file ./.env -- npm run dev
 ```
 
+### Database users
+
+The `db`/`db-test` containers get two MariaDB users: `root` (schema changes
+only — `prisma migrate`/`db push`, driven by `MIGRATE_DATABASE_URL`) and a
+non-privileged `footy_app` user, granted only `SELECT`/`INSERT`/`UPDATE`/
+`DELETE`, that the app and seed scripts actually connect as via
+`DATABASE_URL` (SYS-444). `footy_app` is created by
+[`scripts/docker/create-app-user.sh`](scripts/docker/create-app-user.sh) the
+first time a container boots with an empty data directory. If you already
+have a `db_data`/`db_test_data` volume from before this change, either
+recreate it (`docker compose down -v`, then start again — local data is
+disposable and reseeds) or create the user by hand once:
+
+```shell
+docker compose exec db mariadb -u root -p"$DATABASE_PASSWORD" -e \
+  "CREATE USER IF NOT EXISTS 'footy_app'@'%' IDENTIFIED BY '$DATABASE_APP_PASSWORD'; GRANT SELECT, INSERT, UPDATE, DELETE ON footy.* TO 'footy_app'@'%';"
+```
+
 ## Running Playwright Tests Locally (macOS)
 
 The `stdbuf` command used in some Linux CI seed scripts is not available on macOS by default. The `seed:playwright` and `seed:ci` scripts in `package.json` do not use `stdbuf`, so they work on both platforms.

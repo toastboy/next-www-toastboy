@@ -131,6 +131,17 @@ async function main() {
         await seedTable(containerClient, fileName, getModel(prisma));
     }
 
+    // Always keep the site owner as admin, linked to their player record,
+    // regardless of what the imported snapshot contains. A safety net for
+    // the exportAuthTables-ordering bug that once let this be silently lost
+    // across an importlivedb reset - a no-op once the account is already
+    // correct, and does nothing if the account hasn't signed in yet (there's
+    // no row to update in that case).
+    await prisma.user.updateMany({
+        where: { email: 'toastboy@toastboy.co.uk' },
+        data: { role: 'admin', playerId: 12 },
+    });
+
     console.log('🌱 Database seeding complete.');
 }
 

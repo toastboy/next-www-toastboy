@@ -21,7 +21,13 @@ jobs:
 
         env:
             DATABASE_PASSWORD: ci_test_password
-            DATABASE_URL: mysql://root:ci_test_password@127.0.0.1:33306/footy
+            DATABASE_APP_PASSWORD: ci_test_app_password
+            # Used only for "Apply schema" below (DDL). seed:ci runs on the
+            # non-privileged footy_app user via DATABASE_URL (SYS-444),
+            # created in "Create non-privileged app user" below so it's
+            # baked into the published image alongside the seed data.
+            MIGRATE_DATABASE_URL: mysql://root:ci_test_password@127.0.0.1:33306/footy
+            DATABASE_URL: mysql://footy_app:ci_test_app_password@127.0.0.1:33306/footy
 
         steps:
             - uses: actions/checkout@v7
@@ -74,6 +80,25 @@ jobs:
                   done
                   docker logs seed-db
                   exit 1
+            # Baked into the datadir that gets docker cp'd into the published
+            # image below, so Playwright jobs pulling this image already have
+            # the non-privileged user available (SYS-444) without needing
+            # their own docker-entrypoint-initdb.d run (the image's datadir
+            # is pre-populated, so those init scripts never fire for it).
+            - name: Create non-privileged app user
+              run: |
+                  # SQL-escape the password before embedding it below - same
+                  # algorithm the base mariadb image's own entrypoint uses for
+                  # MARIADB_PASSWORD/MARIADB_ROOT_PASSWORD, and the same as
+                  # scripts/docker/create-app-user.sh.
+                  escaped_password=${DATABASE_APP_PASSWORD//\\/\\\\}
+                  escaped_password="${escaped_password//$'\n'/\\n}"
+                  escaped_password="${escaped_password//\'/\\\'}"
+                  docker exec seed-db mariadb -u root -p"$DATABASE_PASSWORD" -e "
+                    CREATE USER IF NOT EXISTS 'footy_app'@'%' IDENTIFIED BY '${escaped_password}';
+                    GRANT SELECT, INSERT, UPDATE, DELETE ON footy.* TO 'footy_app'@'%';
+                    FLUSH PRIVILEGES;
+                  "
             - name: Apply schema
               run: npx prisma db push
             - name: Seed database

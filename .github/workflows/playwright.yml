@@ -32,7 +32,14 @@ jobs:
         env:
             # Hardcoded CI-only values — none of these are production secrets.
             DATABASE_PASSWORD: ci_test_password
-            DATABASE_URL: mysql://root:ci_test_password@127.0.0.1:33306/footy
+            DATABASE_APP_PASSWORD: ci_test_app_password
+            # Used only by the "Push Prisma schema" step below (DDL). The app
+            # under test, and the seed step it triggers, run on the
+            # non-privileged footy_app user via DATABASE_URL (SYS-444) - that
+            # user is baked into the seeded DB image (see
+            # publish-seeded-db-image.yml).
+            MIGRATE_DATABASE_URL: mysql://root:ci_test_password@127.0.0.1:33306/footy
+            DATABASE_URL: mysql://footy_app:ci_test_app_password@127.0.0.1:33306/footy
 
             # Any non-empty string works for Better Auth in tests (used for
             # signing tokens; tests bypass auth via mock cookies).

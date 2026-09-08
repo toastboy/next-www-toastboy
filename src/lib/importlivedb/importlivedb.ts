@@ -293,6 +293,17 @@ async function importBackup(): Promise<void> {
             execSync(cmd, { stdio: 'inherit' });
         };
 
+        // Capture any player accounts claimed since the last run before
+        // anything below touches the local database. This has to happen
+        // first, not just "before the final reset" - the dev database gets
+        // wiped twice in this function (the DROP/CREATE DATABASE just below,
+        // for the legacy reimport, and the `migrate reset` near the end), and
+        // the local user/account tables don't survive either one on their
+        // own. Capturing here, before either wipe, is what makes repeated
+        // calls to importlivedb non-destructive to claimed accounts.
+        console.log('Capturing current Better Auth state before reset...');
+        await exportAuthTables(containerClient);
+
         // Take a backup of the current live database
         console.log('Taking production mysql backup...');
         shellExec(
@@ -308,22 +319,38 @@ async function importBackup(): Promise<void> {
             'prisma',
             'migrations',
         );
-        const migrations = await readdir(migrationsDir);
+        // readdir() doesn't guarantee ordering, and the directory also
+        // contains migration_lock.toml (a file, not a migration) alongside
+        // the timestamped migration directories - so this can't just be
+        // migrations[0]. Filter to directories only and sort lexicographically
+        // (equivalent to chronological order, since Prisma's migration
+        // directory names are zero-padded YYYYMMDDHHMMSS timestamps).
+        const migrationDirNames = (
+            await readdir(migrationsDir, { withFileTypes: true })
+        )
+            .filter((entry) => entry.isDirectory())
+            .map((entry) => entry.name)
+            .sort();
+        if (migrationDirNames.length === 0) {
+            throw new Error(
+                `No migration directories found in ${migrationsDir}`,
+            );
+        }
+        const initMigration = migrationDirNames[0];
 
         // Run prisma generate to ensure the Prisma Client is up to date
         console.log('Running prisma generate...');
         shellExec('npx prisma generate --schema prisma/schema.prisma');
 
-        // Run prisma db push to ensure the database is up to date with the schema
-        console.log('Running prisma db push...');
+        // Reset the dev database. No prisma db push here: the mysqldump
+        // import below recreates the schema itself from its own embedded
+        // DROP/CREATE TABLE statements, so pushing the current schema first
+        // would just be discarded a few lines later.
         shellExec(
             `mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`,
         );
         shellExec(
             `mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`,
-        );
-        shellExec(
-            'npx prisma db push --accept-data-loss --schema prisma/schema.prisma',
         );
 
         // Import the mysqldump backup created above
@@ -334,23 +361,22 @@ async function importBackup(): Promise<void> {
 
         const legacyPlayerEmailSources = await fetchLegacyPlayerEmailSources();
 
-        // Run each migration except the first one: the backup created the
-        // database structure through the conditional comments such as '/*!40000
-        // DROP DATABASE IF EXISTS `footy`*/;'
-        for (let i = 1; i < migrations.length; i++) {
-            if (migrations[i].endsWith('migration_lock.toml')) {
-                continue;
-            }
-            console.log(`Running migration ${migrations[i]}...`);
-            const migration = path.join(
-                migrationsDir,
-                migrations[i],
-                'migration.sql',
-            );
-            shellExec(
-                `cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`,
-            );
-        }
+        // Bring the imported legacy data forward to the current schema via
+        // Prisma's own tracked migration engine, rather than piping each
+        // migration.sql through the mysql client by hand: this gets proper
+        // _prisma_migrations bookkeeping (a failed run can be diagnosed and
+        // resumed via `prisma migrate status` instead of leaving no record
+        // of progress) and applies migrations in guaranteed chronological
+        // order rather than trusting readdir()'s listing order. The backup's
+        // own DROP/CREATE TABLE statements already produced the schema
+        // `initMigration` would have created, so mark it applied without
+        // running it, then deploy the rest.
+        console.log(`Marking ${initMigration} as already applied...`);
+        shellExec(
+            `npx prisma migrate resolve --applied ${initMigration} --schema prisma/schema.prisma`,
+        );
+        console.log('Running prisma migrate deploy...');
+        shellExec('npx prisma migrate deploy --schema prisma/schema.prisma');
 
         // Run prisma generate again to take account of any schema changes during migrations
         console.log('Running prisma generate again...');
@@ -403,12 +429,6 @@ async function importBackup(): Promise<void> {
             await blockBlobClient.uploadFile(filePath);
         }
         shellExec('rm -rf /tmp/importlivedb');
-
-        // Capture any player accounts that were claimed since the last run so
-        // they survive the database reset below. Without this, repeated calls
-        // to importlivedb would silently destroy claimed accounts.
-        console.log('Capturing current Better Auth state before reset...');
-        await exportAuthTables(containerClient);
 
         // Now the dev database is up to date with the live one and the seed
         // files in blob storage reflect that, do a final reset/migrate and then

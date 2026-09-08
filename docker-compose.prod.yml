@@ -5,8 +5,10 @@ services:
     command: --log-warnings=1
     environment:
       MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_APP_PASSWORD: ${DATABASE_APP_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+      - ./scripts/docker/create-app-user.sh:/docker-entrypoint-initdb.d/10-create-app-user.sh:ro
     healthcheck:
       test:
         [
@@ -23,7 +25,10 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=5&pool_timeout=20"
+      # migrate deploy needs DDL (root); db seed only needs DML (footy_app) -
+      # see prisma.config.ts and prisma/seed.ts respectively.
+      MIGRATE_DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=5&pool_timeout=20"
+      DATABASE_URL: "mysql://footy_app:${DATABASE_APP_PASSWORD}@db:3306/footy?connection_limit=5&pool_timeout=20"
       AZURE_TENANT_ID: ${AZURE_TENANT_ID}
       STORAGE_CLIENT_ID: ${STORAGE_CLIENT_ID}
       STORAGE_CLIENT_SECRET: ${STORAGE_CLIENT_SECRET}
@@ -49,7 +54,9 @@ services:
       start_period: 40s
       retries: 3
     environment:
-      DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=10&pool_timeout=20&connect_timeout=10"
+      # Runtime connection only ever does SELECT/INSERT/UPDATE/DELETE (see
+      # SYS-444) - schema changes happen in the seeder service, as root.
+      DATABASE_URL: "mysql://footy_app:${DATABASE_APP_PASSWORD}@db:3306/footy?connection_limit=10&pool_timeout=20&connect_timeout=10"
       SECRETS_DIR: /run/secrets
       # Both read at runtime (not baked into the image), so the same image
       # works unmodified for local testing (leave unset - falls back to

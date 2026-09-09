@@ -1,3 +1,4 @@
+import { PlayerResponseSchema } from 'prisma/zod/schemas';
 import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { describe, expect, it } from 'vitest';
 
@@ -247,6 +248,14 @@ describeIntegration(
                 const selectedInput: SubmitPickerInput = historicallyPicked.map(
                     (row) => ({ playerId: row.playerId }),
                 );
+                // A stored team assignment means the player was 'Yes' at pick
+                // time (ontology: "picked" ≡ response 'Yes' AND team not null).
+                // A later Flaked/Injured/Excused amendment is post-game and
+                // must not change who the picker would have chosen, so restore
+                // the pick-time response for these players.
+                const pickedPlayerIds = new Set(
+                    historicallyPicked.map((row) => row.playerId),
+                );
                 const writePayloads: {
                     gameDayId: number;
                     playerId: number;
@@ -258,8 +267,22 @@ describeIntegration(
                         getCurrent: () => Promise.resolve(gameDay),
                     },
                     outcomeService: {
-                        getAdminByGameDay: (id: number) =>
-                            outcomeService.getAdminByGameDay(id),
+                        getAdminByGameDay: async (id: number, asOf?: Date) => {
+                            const rows = await outcomeService.getAdminByGameDay(
+                                id,
+                                asOf,
+                            );
+                            return rows.map((row) =>
+                                pickedPlayerIds.has(row.playerId) &&
+                                row.response !== PlayerResponseSchema.enum.Yes
+                                    ? {
+                                          ...row,
+                                          response:
+                                              PlayerResponseSchema.enum.Yes,
+                                      }
+                                    : row,
+                            );
+                        },
                         getPlayerGamesPlayedBeforeGameDay: (
                             playerId: number,
                             id: number,
@@ -348,8 +371,10 @@ describeIntegration(
                     const selectedPlayerIdsInOrder = selectedInput.map(
                         (item) => item.playerId,
                     );
-                    const adminRows =
-                        await outcomeService.getAdminByGameDay(gameDayId);
+                    const adminRows = await outcomeService.getAdminByGameDay(
+                        gameDayId,
+                        gameDay.date,
+                    );
                     const history = gameDay.pickerGamesHistory ?? 10;
                     const candidates = await buildCandidates({
                         gameDayId,

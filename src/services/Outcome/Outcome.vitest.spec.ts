@@ -395,6 +395,28 @@ describe('OutcomeService', () => {
             ]);
         });
 
+        it('should filter the roster by who had not finished as of the given date when asOf is passed', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
+            const asOf = new Date('2020-06-01T00:00:00.000Z');
+
+            await outcomeService.getAdminByGameDay(25, asOf);
+
+            expect(prisma.player.findMany).toHaveBeenCalledWith({
+                where: {
+                    OR: [{ finished: null }, { finished: { gte: asOf } }],
+                },
+                orderBy: [{ name: 'asc' }, { id: 'asc' }],
+                include: {
+                    outcomes: {
+                        where: {
+                            gameDayId: 25,
+                        },
+                        take: 1,
+                    },
+                },
+            });
+        });
+
         it('should throw for invalid gameDayId', async () => {
             await expect(outcomeService.getAdminByGameDay(0)).rejects.toThrow();
             expect(prisma.player.findMany).not.toHaveBeenCalled();

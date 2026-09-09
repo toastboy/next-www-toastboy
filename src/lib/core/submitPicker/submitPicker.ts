@@ -462,7 +462,12 @@ export async function coreSubmitPicker(
     }
 
     const history = gameDay.pickerGamesHistory ?? 10;
-    const outcomes = await deps.outcomeService.getAdminByGameDay(gameDay.id);
+    // Filter the roster by who had not finished as of the game day itself, so
+    // replaying a historical game isn't broken by players who have left since.
+    const outcomes = await deps.outcomeService.getAdminByGameDay(
+        gameDay.id,
+        gameDay.date,
+    );
 
     // Legacy `game_reset_teams`: clear teams for the whole game before re-picking.
     await Promise.all(

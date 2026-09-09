@@ -1,0 +1,13 @@
+Now let's investigate what caused the divergence: choose an example day and tell me the verbose output: what changed in the teams and why? By the way, the distinction between 'A' and 'B' is obviously arbitrary - what counts is who played whom
+
+---
+
+Right, well the average used to pick sides should obviously be pickerGamesHistory's worth of games immediately before the game in question, NOT now
+
+---
+
+Yes
+
+---
+
+The code for the old site is at /Volumes/Development/www-toastboy

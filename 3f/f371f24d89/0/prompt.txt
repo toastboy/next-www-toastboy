@@ -1,0 +1,13 @@
+I'm confused. Give me a game number to look at to check what's going on with coreSubmitPicker and 'Selected player N is not available for this game day.' - I suspect a bug. All players with teams picked should have a matching 'Yes' response historically
+
+---
+
+I'd say modify the picker code to use the game day's date and not the runtime date for 'finished' checks. Any harm in doing that?
+
+---
+
+Yes
+
+---
+
+The 'not yes' are likely to be statuses that were set after the game, e.g. 'Flaked' or 'Injured'. That means their response was 'Yes' before the game and so should be included in the picker run, but after the game a different outcome was recorded.

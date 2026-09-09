@@ -8,7 +8,7 @@ on:
 
 jobs:
     link-check:
-        name: Broken link check (public surface)
+        name: Broken link check (public + admin surface)
         timeout-minutes: 20
         runs-on: ubuntu-latest
         permissions:
@@ -107,7 +107,12 @@ jobs:
                   npm run start:ci > /tmp/next-start.log 2>&1 &
                   npx wait-on --timeout 120000 http://127.0.0.1:3000
             - name: Check links
-              run: npx linkinator http://127.0.0.1:3000 --config linkinator.config.json --format json > linkinator-report.json
+              # Programmatic crawl (src/lib/linkcheck/linkcheck.ts): seeds from
+              # / and /footy as a mock admin so the src/app/footy/** admin
+              # surface is covered too, not just what an anonymous visitor
+              # sees. Writes linkinator-report.json in the same shape as the
+              # linkinator CLI's --format json.
+              run: npm run linkcheck
             - name: Report link check results
               if: always()
               run: |

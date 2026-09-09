@@ -48,3 +48,17 @@ export const test = baseTest.extend({
         }
     },
 });
+
+/**
+ * Call at the top of a test body to make it **CI-only**. Locally the test is
+ * skipped so `npx playwright test` stays fast for quick checks; run it on
+ * demand with `PLAYWRIGHT_RUN_SLOW=1`. Use for the handful of genuinely
+ * expensive tests (e.g. the full-site crawl) whose coverage doesn't need to
+ * gate every local iteration.
+ */
+export const ciOnly = (): void => {
+    test.skip(
+        !process.env.CI && process.env.PLAYWRIGHT_RUN_SLOW !== '1',
+        'CI-only (slow); run locally with PLAYWRIGHT_RUN_SLOW=1',
+    );
+};

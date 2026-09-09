@@ -140,7 +140,9 @@ The test runner starts a local Next.js server automatically, seeds the test data
 
 ## Broken Link Checking
 
-[`.github/workflows/link-check.yml`](.github/workflows/link-check.yml) builds the app, runs it against the seeded CI database, and uses [`linkinator`](https://github.com/JustinBeckwith/linkinator) to recursively crawl the **public** surface from `http://127.0.0.1:3000`. Any non-skipped internal link that returns a 4xx/5xx fails the workflow (and therefore the PR check). The full JSON report is uploaded as a build artifact on every run.
+[`.github/workflows/link-check.yml`](.github/workflows/link-check.yml) builds the app, runs it against the seeded CI database, and recursively crawls it from `http://127.0.0.1:3000` with [`linkinator`](https://github.com/JustinBeckwith/linkinator). Any non-skipped internal link that returns a 4xx/5xx fails the workflow (and therefore the PR check). The full JSON report is uploaded as a build artifact on every run.
+
+The crawl runs via [`src/lib/linkcheck/linkcheck.ts`](src/lib/linkcheck/linkcheck.ts) (`npm run linkcheck`), not the bare CLI, so it can send the `mock-auth-state=admin` cookie on every request. That means it covers the `src/app/footy/**` **admin** surface too — an unauthenticated crawl only ever sees a redirect to the sign-in page there. Mock auth is honoured because `npm run start:ci` sets `PLAYWRIGHT_TEST=true`.
 
 External hosts are deliberately out of scope here so PRs don't break on third-party outages — those are covered by the separate weekly external-link job (SYS-616).
 
@@ -148,8 +150,6 @@ Exclusions live in [`linkinator.config.json`](linkinator.config.json) at the rep
 
 - `^https?://(?!127\.0\.0\.1:3000)` — scopes the crawl to internal links; leave it in place and add new exclusions alongside it.
 - `/api/footy/.+/(?:mugshot|badge|flag)$` — the Azure-blob-backed image routes. PR CI has no storage credentials, so these currently return 500 regardless of link health. Remove this entry once **SYS-618** makes those routes degrade gracefully; asset availability itself belongs in a storage-aware job, not this one.
-
-The authenticated `src/app/footy/**` admin surface is not yet crawled (it needs the mock-auth cookie and the programmatic API — a follow-up).
 
 To run it locally, start a production build on port 3000 and point the script at it:
 

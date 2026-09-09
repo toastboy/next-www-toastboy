@@ -169,6 +169,10 @@ export const NavBarNested = ({ user }: Props) => {
                     label: 'Users',
                     link: '/footy/admin/users',
                 },
+                {
+                    label: 'Busted',
+                    link: '/footy/admin/busted',
+                },
             ],
         },
     ];

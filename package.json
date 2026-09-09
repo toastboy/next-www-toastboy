@@ -24,7 +24,7 @@
         "fetchseeddata": "TS_NODE_PROJECT=tsconfig.scripts.json TSX_TSCONFIG=tsconfig.scripts.json tsx -r tsconfig-paths/register src/lib/fetchseeddata/fetchseeddata.ts",
         "format:check": "prettier --check .",
         "format": "prettier --write .",
-        "linkcheck": "linkinator http://127.0.0.1:3000 --config linkinator.config.json",
+        "linkcheck": "npx tsx --tsconfig tsconfig.scripts.json -r tsconfig-paths/register src/lib/linkcheck/linkcheck.ts",
         "lint:fix": "eslint . --fix",
         "lint": "eslint .",
         "lint:rules:test": "node eslint-rules/require-use-client.test.mjs",

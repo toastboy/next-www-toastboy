@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "fca3363cbc90",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 12,
+  "files_touched": [
+    "docs/PICKER.md",
+    "docs/ontology.yaml",
+    "src/lib/core/submitPicker/submitPicker.integration.vitest.spec.ts",
+    "src/lib/core/submitPicker/submitPicker.ts",
+    "src/lib/core/submitPicker/submitPicker.vitest.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/fc/a3363cbc90/0/metadata.json",
+      "transcript": "/fc/a3363cbc90/0/full.jsonl",
+      "compact_transcript": "/fc/a3363cbc90/0/transcript.jsonl",
+      "content_hash": "/fc/a3363cbc90/0/content_hash.txt",
+      "prompt": "/fc/a3363cbc90/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 236,
+    "cache_creation_tokens": 567537,
+    "cache_read_tokens": 41053209,
+    "output_tokens": 115236,
+    "api_call_count": 118
+  }
+}

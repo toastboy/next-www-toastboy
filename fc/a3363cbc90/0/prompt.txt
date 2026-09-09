@@ -1,0 +1,41 @@
+Yes - but only so we can more usefully single out any other picker differences: I think the new way is almost certainly better, assuming that the 1.45 for unplayed games is a fair estimate of how to handle brand new players. But do make sure the comment matches the code either way.
+
+---
+
+! RUN_PICKER_INTEGRATION=true op run --env-file ./.env -- npx vitest run --config vitest.picker.integration.config.ts --reporter=json --outputFile=/Users/toastboy/.claude/jobs/d1b14dd8/tmp/parity_played.json > /Users/toastboy/.claude/jobs/d1b14dd8/tmp/parity_played.txt 2>&1; echo done
+
+---
+
+Revert the changes, and give me a statistical analysis of all the games in history: are they fairer with the new picker? Give me the similar data points you highlighted in tables like this one:
+
+┌─────────────────────┬────────────┬────────┐
+│       metric        │ historical │ picker │
+├─────────────────────┼────────────┼────────┤
+│ Δ goalies           │ 1          │ 1      │
+├─────────────────────┼────────────┼────────┤
+│ Δ average           │ 1.10       │ 0.10   │
+├─────────────────────┼────────────┼────────┤
+│ Δ unknown-age count │ 1          │ 1      │
+├─────────────────────┼────────────┼────────┤
+│ Δ age               │ 4.57       │ 2.57   │
+└─────────────────────┴────────────┴────────┘
+
+---
+
+So what might be a fairer way to pick teams for odd numbers of players? Bear in mind that typically if we get 9 Yesses then we'll play 4 v 4 with the 5-man team having a substitute (i.e. rotating team of 4 with 1 sitting out) and similarly 11 yesses means 5 v 5 with the 6-man team having a sub.
+
+---
+
+Also I will note that some of the historical age mismatches may be because the player didn't enter a date of birth until after the game in question (or there was a bug in age calculation, which I think I remember having to fix)
+
+---
+
+Do it.
+
+---
+
+Write a new documentation page summarising the improvements to the picker
+
+---
+
+Convert the tables in the doc file to pure markdown tables

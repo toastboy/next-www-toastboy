@@ -11,18 +11,29 @@ const shouldRunIntegration =
     process.env.RUN_PICKER_INTEGRATION === 'true' && !!process.env.DATABASE_URL;
 const describeIntegration = shouldRunIntegration ? describe : describe.skip;
 
-const parseGameIds = () => {
+const parseExplicitGameIds = (): number[] => {
     const raw = process.env.PICKER_PARITY_GAME_IDS?.trim();
-    if (!raw) return [1249];
+    if (!raw) return [];
 
-    const ids = raw
+    return raw
         .split(',')
         .map((value) => Number.parseInt(value.trim(), 10))
         .filter(Number.isFinite)
         .filter((id) => id > 0);
-
-    return ids.length > 0 ? ids : [1249];
 };
+
+/**
+ * The games to check parity for: `PICKER_PARITY_GAME_IDS` when set, otherwise
+ * every game day that has a stored picker split. Resolved at collection time so
+ * one `it` is generated per game.
+ */
+const resolveGameDayIds = async (): Promise<number[]> => {
+    const explicit = parseExplicitGameIds();
+    if (explicit.length > 0) return explicit;
+    return outcomeService.getGameDayIdsWithTeamsPicked();
+};
+
+const gameDayIds = shouldRunIntegration ? await resolveGameDayIds() : [1249];
 
 const sorted = (ids: number[]) => ids.slice().sort((a, b) => a - b);
 
@@ -220,7 +231,7 @@ const buildCandidatesUsingPlayedAllTime = async ({
 describeIntegration(
     'SubmitPicker parity against historical game outcomes',
     () => {
-        for (const gameDayId of parseGameIds()) {
+        for (const gameDayId of gameDayIds) {
             it(`matches stored teams for game ${gameDayId}`, async () => {
                 const gameDay = await gameDayService.get(gameDayId);
                 expect(gameDay).not.toBeNull();

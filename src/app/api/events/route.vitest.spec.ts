@@ -85,6 +85,26 @@ describe('/api/events', () => {
         expect(() => broadcast('games')).not.toThrow();
     });
 
+    it('ignores an emit when the signal is already aborted before the listener runs', () => {
+        const controller = new AbortController();
+        controller.abort();
+
+        const request = new NextRequest(
+            'http://localhost/api/events?channel=games',
+            {
+                signal: controller.signal,
+            },
+        );
+        GET(request);
+
+        // The abort event never fires for an already-aborted signal, so the
+        // emitter listener stays registered and `closed` stays false — the
+        // late emit must still be a no-op via the `request.signal.aborted`
+        // guard, without throwing.
+        expect(emitter.listenerCount('games')).toBe(1);
+        expect(() => broadcast('games')).not.toThrow();
+    });
+
     it('does not send events for other channels to the stream', async () => {
         const controller = new AbortController();
         const request = new NextRequest(

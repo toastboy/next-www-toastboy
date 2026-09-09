@@ -67,6 +67,31 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getGameDayIdsWithTeamsPicked', () => {
+        it('should return the game day IDs that have two or more team-assigned outcomes, ascending', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValueOnce([
+                { gameDayId: 1249, _count: { team: 12 } },
+                { gameDayId: 1300, _count: { team: 10 } },
+            ]);
+            const result = await outcomeService.getGameDayIdsWithTeamsPicked();
+            expect(prisma.outcome.groupBy).toHaveBeenCalledWith({
+                by: ['gameDayId'],
+                where: { team: { not: null } },
+                _count: { team: true },
+                having: { team: { _count: { gt: 1 } } },
+                orderBy: { gameDayId: 'asc' },
+            });
+            expect(result).toEqual([1249, 1300]);
+        });
+
+        it('should return an empty array when no game day has a picked split', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValueOnce([]);
+            expect(await outcomeService.getGameDayIdsWithTeamsPicked()).toEqual(
+                [],
+            );
+        });
+    });
+
     describe('getLastPlayed', () => {
         it('should return the correct last played GameDay ID', async () => {
             (prisma.outcome.findFirst as Mock).mockResolvedValueOnce(

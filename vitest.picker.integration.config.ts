@@ -24,8 +24,6 @@ export default defineConfig({
         name: 'picker-integration-vitest',
         environment: 'node',
         globals: true,
-        include: [
-            'src/lib/actions/submitPicker/**/*.integration.vitest.spec.ts',
-        ],
+        include: ['src/lib/core/submitPicker/**/*.integration.vitest.spec.ts'],
     },
 });

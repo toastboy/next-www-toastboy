@@ -66,6 +66,22 @@
             "problemMatcher": []
         },
         {
+            "label": "Picker parity integration test (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "RUN_PICKER_INTEGRATION=true npm run test:picker:integration"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
             "label": "Start (1Password env)",
             "type": "shell",
             "command": "op",

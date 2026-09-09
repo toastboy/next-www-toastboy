@@ -32,6 +32,15 @@ vi.mock('node:fs', () => ({
 
 import { readLinkinatorConfig, runLinkCheck } from '@/lib/linkcheck/linkcheck';
 
+type LinkListener = (link: {
+    url: string;
+    status?: number;
+    state: string;
+    parent?: string;
+}) => void;
+
+let linkListener: LinkListener | undefined;
+
 const CONFIG = {
     recurse: true,
     skip: ['^https?://(?!127\\.0\\.0\\.1:3000)', '/api/footy/.+/mugshot$'],
@@ -54,6 +63,10 @@ describe('runLinkCheck', () => {
         vi.unstubAllEnvs();
         readFileSyncMock.mockReturnValue(JSON.stringify(CONFIG));
         checkMock.mockResolvedValue(okResult);
+        linkListener = undefined;
+        onMock.mockImplementation((event: string, cb: LinkListener) => {
+            if (event === 'link') linkListener = cb;
+        });
     });
 
     afterEach(() => {
@@ -75,6 +88,66 @@ describe('runLinkCheck', () => {
         await runLinkCheck();
 
         expect(onMock).toHaveBeenCalledWith('link', expect.any(Function));
+    });
+
+    it('logs OK links and reports BROKEN links via the progress listener', async () => {
+        const logSpy = vi
+            .spyOn(console, 'log')
+            .mockImplementation(() => undefined);
+        const errorSpy = vi
+            .spyOn(console, 'error')
+            .mockImplementation(() => undefined);
+
+        try {
+            await runLinkCheck();
+            expect(linkListener).toBeDefined();
+
+            linkListener?.({
+                url: 'http://127.0.0.1:3000/footy/rules',
+                status: 200,
+                state: 'OK',
+            });
+            linkListener?.({
+                url: 'http://127.0.0.1:3000/footy/admin/busted',
+                status: 404,
+                state: 'BROKEN',
+                parent: 'http://127.0.0.1:3000/footy',
+            });
+            // No status / no parent — exercises the '—' and '?' fallbacks.
+            linkListener?.({
+                url: 'http://127.0.0.1:3000/footy/orphan',
+                state: 'BROKEN',
+            });
+
+            expect(logSpy).toHaveBeenCalledWith(
+                '[200] http://127.0.0.1:3000/footy/rules',
+            );
+            expect(errorSpy).toHaveBeenCalledWith(
+                '[404] BROKEN http://127.0.0.1:3000/footy/admin/busted (from http://127.0.0.1:3000/footy)',
+            );
+            expect(errorSpy).toHaveBeenCalledWith(
+                '[—] BROKEN http://127.0.0.1:3000/footy/orphan (from ?)',
+            );
+        } finally {
+            logSpy.mockRestore();
+            errorSpy.mockRestore();
+        }
+    });
+
+    it('falls back to linkinator defaults when the config file is empty', async () => {
+        readFileSyncMock.mockReturnValue('{}');
+
+        await runLinkCheck();
+
+        expect(checkMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                recurse: true,
+                linksToSkip: [],
+                retry: true,
+                concurrency: 20,
+                timeout: 10_000,
+            }),
+        );
     });
 
     it('reuses recurse / skip / retry / concurrency / timeout from linkinator.config.json', async () => {

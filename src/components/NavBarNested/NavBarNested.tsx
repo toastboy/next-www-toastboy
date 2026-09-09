@@ -99,10 +99,6 @@ export const NavBarNested = ({ user }: Props) => {
                     label: 'Family Tree',
                     link: '/footy/familytree',
                 },
-                {
-                    label: 'Busted',
-                    link: '/footy/admin/busted',
-                },
             ],
         },
         {

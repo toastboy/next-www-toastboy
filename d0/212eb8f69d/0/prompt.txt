@@ -1,0 +1,56 @@
+What vitest tests currently will be skipped?
+
+---
+
+There is missing coverage in events and link checks.
+
+---
+
+So describeIntegration really is a special case: using the test machinery to test whether the current picker would pick the same sides as the old site?
+
+---
+
+Fix the glob
+
+---
+
+Right, so how do I run it?
+
+---
+
+Add a tasks.json entry for it.
+
+---
+
+*  Executing task: op run --env-file ./.env -- sh -c 'RUN_PICKER_INTEGRATION=true npm run test:picker:integration' 
+
+
+> test:picker:integration
+> vitest run --config vitest.picker.integration.config.ts
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.picker.integration.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.11 /Volumes/Development/next-www-toastboy
+
+ ✓  picker-integration-vitest  src/lib/core/submitPicker/submitPicker.integration.vitest.spec.ts (1 test) 182ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  09:37:20
+   Duration  3.98s (transform 2.33s, setup 0ms, import 3.69s, tests 182ms, environment 0ms)
+
+ *  Terminal will be reused by tasks, press any key to close it.
+
+---
+
+So it's only checking one game?
+
+---
+
+Yes, default should be all games with teams picked
+
+---
+
+I'm going to commit what I have so far and then keep working

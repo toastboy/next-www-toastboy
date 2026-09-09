@@ -175,6 +175,21 @@ Every page that displays data that can be mutated by a server action must render
 
 `FootyChannel` values live in `src/types/FootyChannel.ts`; add a new entry there if the new feature needs its own channel.
 
+### Web standards & `.well-known`
+
+Whenever a feature has a standardised discovery URI, wire it up — don't leave it unimplemented. If a spec (RFC 8615 / the IANA well-known URI registry) defines a `/.well-known/…` location for what you're building, expose it:
+
+- **Static payloads** → `public/.well-known/<name>` (e.g. `public/.well-known/security.txt`, RFC 9116). Next serves `public/` verbatim.
+- **Redirects / dynamic responses** → a `redirects()` entry in `next.config.mjs` (e.g. `/.well-known/change-password` → `/footy/password`, [w3c/webappsec-change-password-url](https://w3.org/TR/change-password-url/)) or a route handler.
+- Every `.well-known` resource gets an entry in `e2e/well-known.spec.ts` guarding its status, content-type and key content.
+
+This applies to anything with an established well-known path — `security.txt`, `change-password`, `openid-configuration`, `apple-app-site-association`, `assetlinks.json`, `webfinger`, `mta-sts.txt`, etc.
+
+Resources that have a **conventional root path but are _not_ `.well-known`** still get wired up the idiomatic way, not shoehorned into `.well-known`:
+
+- **Sitemap** → `src/app/sitemap.ts` (`MetadataRoute.Sitemap`, served at `/sitemap.xml`; make it `async` and enumerate dynamic routes via services). Use `generateSitemaps()` only past 50 000 URLs.
+- **Robots** → `src/app/robots.ts` (`MetadataRoute.Robots`, served at `/robots.txt`), with its `sitemap` field pointing at `/sitemap.xml`.
+
 ### Observability
 
 - Sentry: configured via `instrumentation.ts` / `instrumentation-client.ts` and `next.config.mjs`

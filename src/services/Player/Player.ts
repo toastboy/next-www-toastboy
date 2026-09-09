@@ -422,6 +422,21 @@ class PlayerService {
     }
 
     /**
+     * Retrieves the numeric ID of every player, ascending.
+     *
+     * @returns A promise that resolves to an array of player IDs.
+     * @throws Will throw an error if there is an issue fetching the player data.
+     */
+    async getAllIds(): Promise<number[]> {
+        const players = await prisma.player.findMany({
+            select: { id: true },
+            orderBy: { id: 'asc' },
+        });
+
+        return players.map((player) => player.id);
+    }
+
+    /**
      * Retrieves the form of a player for a given game day, based on their previous outcomes.
      * @param playerId - The ID of the player.
      * @param gameDayId - The ID of the game day to consider, or 0 for the latest.

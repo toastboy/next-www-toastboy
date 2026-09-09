@@ -891,6 +891,40 @@ describe('PlayerService', () => {
         });
     });
 
+    describe('getAllIds', () => {
+        it('should return every player id ascending', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1 },
+                { id: 2 },
+                { id: 7 },
+            ]);
+
+            const result = await playerService.getAllIds();
+
+            expect(prisma.player.findMany).toHaveBeenCalledWith({
+                select: { id: true },
+                orderBy: { id: 'asc' },
+            });
+            expect(result).toEqual([1, 2, 7]);
+        });
+
+        it('should return an empty array when there are no players', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
+
+            expect(await playerService.getAllIds()).toEqual([]);
+        });
+
+        it('should propagate a database error', async () => {
+            (prisma.player.findMany as Mock).mockRejectedValueOnce(
+                new Error('database unavailable'),
+            );
+
+            await expect(playerService.getAllIds()).rejects.toThrow(
+                'database unavailable',
+            );
+        });
+    });
+
     describe('getForm', () => {
         it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 or zero with history of 3', async () => {
             const outcomeListMock: PlayerFormType[] = [

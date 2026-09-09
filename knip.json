@@ -10,6 +10,8 @@
         "src/app/**/global-error.tsx",
         "src/app/**/not-found.tsx",
         "src/app/**/route.ts",
+        "src/app/**/sitemap.ts",
+        "src/app/**/robots.ts",
         "vitest.*.config.ts",
         "vitest.setup.*.ts"
     ],

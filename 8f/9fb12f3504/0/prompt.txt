@@ -1,0 +1,27 @@
+I've pushed a deliberately bad link to the nav to check the CI tells me about it. Next I want to explore the site map remark: is there a way to auto-generate a site map, and is there a .well-known place for it to live? In fact, add a note to CLAUDE.md that I always want to provide .well-known links when appropriate.
+
+---
+
+Yes
+
+---
+
+Do I really want to exclude admin and auth-gated routes from the site map? They exist, and just show the appropriate message and login form where necessary: why would I exclude them?
+
+---
+
+Building URLs via string concatenation can produce malformed URLs if getPublicBaseUrl() ever includes a trailing slash (e.g. https://example.com/ + /footy → https://example.com//footy) or if callers pass paths without a leading slash. Consider normalizing with the URL constructor (e.g. new URL(path || '/', baseUrl).toString()) and/or trimming exactly one trailing slash from baseUrl.
+
+---
+
+The sitemap output isn’t explicitly de-duplicated. While the current inputs may be unique, duplicates can sneak in (e.g. if getAllYears accidentally returns duplicates, or if STATIC_PATHS is edited later), and the spec/test intent is uniqueness. Consider de-duping by URL (e.g. build all entries then filter via a Set) before returning.
+
+---
+
+The new getAllIds() behavior doesn’t have a test covering the error path (e.g. prisma.player.findMany rejects). Adding a rejection test would lock in the intended propagation/handling of database failures.
+
+---
+
+Now, I previously added a deliberately bad link to the end of the nav, and I'm confused why CI didn't find it an fail
+
+/Users/toastboy/Downloads/linkinator-report\ 2.json

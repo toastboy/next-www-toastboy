@@ -1,0 +1,34 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "3e5fcfe6815a",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/workflows/link-check.yml",
+    "README.md",
+    "e2e/site-crawl.spec.ts",
+    "e2e/utils/base.ts",
+    "eslint.config.mjs",
+    "package.json",
+    "src/components/NavBarNested/NavBarNested.tsx",
+    "src/lib/linkcheck/linkcheck.ts",
+    "src/lib/linkcheck/linkcheck.vitest.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/3e/5fcfe6815a/0/metadata.json",
+      "transcript": "/3e/5fcfe6815a/0/full.jsonl",
+      "compact_transcript": "/3e/5fcfe6815a/0/transcript.jsonl",
+      "content_hash": "/3e/5fcfe6815a/0/content_hash.txt",
+      "prompt": "/3e/5fcfe6815a/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 522,
+    "cache_creation_tokens": 580346,
+    "cache_read_tokens": 58981146,
+    "output_tokens": 176411,
+    "api_call_count": 261
+  }
+}

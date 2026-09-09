@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "3e5fcfe6815a",
+  "session_id": "d1b14dd8-437c-459c-a3ee-bf859b1f2374",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-09T07:49:08.214527Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    ".github/workflows/link-check.yml",
+    "README.md",
+    "e2e/site-crawl.spec.ts",
+    "e2e/utils/base.ts",
+    "eslint.config.mjs",
+    "package.json",
+    "src/components/NavBarNested/NavBarNested.tsx",
+    "src/lib/linkcheck/linkcheck.ts",
+    "src/lib/linkcheck/linkcheck.vitest.spec.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "30dd9f517bf8",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 522,
+    "cache_creation_tokens": 580346,
+    "cache_read_tokens": 58981146,
+    "output_tokens": 176411,
+    "api_call_count": 261
+  },
+  "session_metrics": {
+    "turn_count": 18
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-09T07:49:08.105001Z",
+    "agent_lines": 333,
+    "agent_removed": 7,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 333,
+    "total_lines_changed": 363,
+    "agent_percentage": 93.66391184573003,
+    "metric_version": 2
+  }
+}

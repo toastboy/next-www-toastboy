@@ -1,0 +1,5 @@
+Right, we have proved that a bad link fails the CI and added a sitemap. Now how do we cover the v2 requirements?
+
+---
+
+OK, go (a). Is there perhaps a way for some playwright tests like site-crawl only to run in CI and not when I'm quick-checking playwright locally?

@@ -229,6 +229,43 @@ const buildCandidatesUsingPlayedAllTime = async ({
     return candidates;
 };
 
+/**
+ * Reconstructs the trailing-window points list `getRecentAverage` sums for a
+ * player, game by game, so a divergence can be traced to the exact prior
+ * games (and their stored result/team) that feed the average. Mirrors
+ * `getRecentGamePoints` + `getRecentAverage`: prior games only, team assigned,
+ * newest first, capped at `history`, with 1.45 credited per missing game.
+ */
+const recentGameBreakdown = async (
+    playerId: number,
+    gameDayId: number,
+    history: number,
+) => {
+    const all = await outcomeService.getByPlayer(playerId);
+    const contributing = all
+        .filter((row) => row.gameDayId < gameDayId && row.team !== null)
+        .sort((a, b) => b.gameDayId - a.gameDayId)
+        .slice(0, history)
+        .map((row) => ({
+            gameDayId: row.gameDayId,
+            team: row.team,
+            points: row.points,
+        }));
+    const played = contributing.length;
+    const sumPoints = contributing.reduce(
+        (acc, row) => acc + (row.points ?? 0),
+        0,
+    );
+    const creditedForMissing = 1.45 * (history - played);
+    return {
+        played,
+        sumPoints,
+        creditedForMissing,
+        recomputedAverage: (sumPoints + creditedForMissing) / history,
+        contributing,
+    };
+};
+
 describeIntegration(
     'SubmitPicker parity against historical game outcomes',
     () => {
@@ -449,6 +486,45 @@ describeIntegration(
                           ).length
                         : null;
 
+                    // Players who ended up on a different side than history,
+                    // under whichever A/B labelling moves the fewest people.
+                    const actualSideOf = new Map<number, 'A' | 'B'>();
+                    actualTeamA.forEach((id) => actualSideOf.set(id, 'A'));
+                    actualTeamB.forEach((id) => actualSideOf.set(id, 'B'));
+                    const predictedSideOf = new Map<number, 'A' | 'B'>();
+                    predictedTeamA.forEach((id) =>
+                        predictedSideOf.set(id, 'A'),
+                    );
+                    predictedTeamB.forEach((id) =>
+                        predictedSideOf.set(id, 'B'),
+                    );
+                    const flip = (side?: 'A' | 'B') =>
+                        side === 'A' ? 'B' : side === 'B' ? 'A' : side;
+                    const movedDirect = selectedPlayerIdsInOrder.filter(
+                        (id) =>
+                            actualSideOf.get(id) !== predictedSideOf.get(id),
+                    );
+                    const movedSwapped = selectedPlayerIdsInOrder.filter(
+                        (id) =>
+                            actualSideOf.get(id) !==
+                            flip(predictedSideOf.get(id)),
+                    );
+                    const movedPlayerIds =
+                        movedSwapped.length < movedDirect.length
+                            ? movedSwapped
+                            : movedDirect;
+                    const movedPlayers = await Promise.all(
+                        movedPlayerIds.map(async (playerId) => ({
+                            playerId,
+                            candidate: byPlayerId.get(playerId) ?? null,
+                            recentAverageWindow: await recentGameBreakdown(
+                                playerId,
+                                gameDayId,
+                                history,
+                            ),
+                        })),
+                    );
+
                     const candidatesPlayedAllTime =
                         await buildCandidatesUsingPlayedAllTime({
                             gameDayId,
@@ -543,6 +619,7 @@ describeIntegration(
                                     equalToActual,
                                     splitsAtBestTupleCount:
                                         splitsAtBestTuple.length,
+                                    movedPlayers,
                                     candidateSnapshot: candidates
                                         .slice()
                                         .sort(

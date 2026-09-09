@@ -55,6 +55,9 @@ interface Candidate {
 
 const sum = (values: number[]) => values.reduce((acc, value) => acc + value, 0);
 
+// Mirrors production calculateDiffs: cumulative metrics scaled by each side's
+// on-pitch share (onPitch / teamSize), goalie count left unscaled. For an even
+// squad both scales are 1.
 const diffTuple = (
     teamAIds: number[],
     teamBIds: number[],
@@ -70,19 +73,22 @@ const diffTuple = (
     };
     const teamA = teamAIds.map(read);
     const teamB = teamBIds.map(read);
+    const onPitch = Math.floor((teamA.length + teamB.length) / 2);
+    const scaleA = onPitch / teamA.length;
+    const scaleB = onPitch / teamB.length;
 
     const diffGoalies =
         sum(teamA.map((player) => (player.goalie ? 1 : 0))) -
         sum(teamB.map((player) => (player.goalie ? 1 : 0)));
     const diffAverage =
-        sum(teamA.map((player) => player.average)) -
-        sum(teamB.map((player) => player.average));
+        scaleA * sum(teamA.map((player) => player.average)) -
+        scaleB * sum(teamB.map((player) => player.average));
     const diffUnknownAge =
-        sum(teamA.map((player) => (player.age === null ? 1 : 0))) -
-        sum(teamB.map((player) => (player.age === null ? 1 : 0)));
+        scaleA * sum(teamA.map((player) => (player.age === null ? 1 : 0))) -
+        scaleB * sum(teamB.map((player) => (player.age === null ? 1 : 0)));
     const diffAge =
-        sum(teamA.map((player) => player.age ?? unknownAgeValue)) -
-        sum(teamB.map((player) => player.age ?? unknownAgeValue));
+        scaleA * sum(teamA.map((player) => player.age ?? unknownAgeValue)) -
+        scaleB * sum(teamB.map((player) => player.age ?? unknownAgeValue));
 
     return [
         Math.abs(diffGoalies),
@@ -103,18 +109,25 @@ const compareTuple = (left: number[], right: number[]) => {
     return 0;
 };
 
+// Every distinct split, matching production findBestSplit. Even squad: teamA is
+// half the squad with player[0] pinned to it (one representative per mirrored
+// pair). Odd squad: teamA is the larger side (⌈n/2⌉) and the two sides differ
+// in size, so all C(n, ⌈n/2⌉) subsets are enumerated.
 const uniqueSplits = (playerIdsInOrder: number[]) => {
-    if (playerIdsInOrder.length % 2 !== 0 || playerIdsInOrder.length < 2)
-        return [] as { teamA: number[]; teamB: number[] }[];
+    const n = playerIdsInOrder.length;
+    if (n < 2) return [] as { teamA: number[]; teamB: number[] }[];
 
-    const teamSize = playerIdsInOrder.length / 2;
-    const first = playerIdsInOrder[0];
-    const remaining = playerIdsInOrder.slice(1);
+    const teamASize = Math.ceil(n / 2);
+    const evenSquad = n % 2 === 0;
+    const pool = evenSquad ? playerIdsInOrder.slice(1) : playerIdsInOrder;
+    const need = evenSquad ? teamASize - 1 : teamASize;
     const result: { teamA: number[]; teamB: number[] }[] = [];
 
     const walk = (start: number, needed: number, prefix: number[]) => {
         if (needed === 0) {
-            const teamA = [first, ...prefix];
+            const teamA = evenSquad
+                ? [playerIdsInOrder[0], ...prefix]
+                : [...prefix];
             const teamASet = new Set(teamA);
             const teamB = playerIdsInOrder.filter(
                 (playerId) => !teamASet.has(playerId),
@@ -123,12 +136,12 @@ const uniqueSplits = (playerIdsInOrder: number[]) => {
             return;
         }
 
-        for (let index = start; index <= remaining.length - needed; index++) {
-            walk(index + 1, needed - 1, [...prefix, remaining[index]]);
+        for (let index = start; index <= pool.length - needed; index++) {
+            walk(index + 1, needed - 1, [...prefix, pool[index]]);
         }
     };
 
-    walk(0, teamSize - 1, []);
+    walk(0, need, []);
     return result;
 };
 
@@ -446,8 +459,11 @@ describeIntegration(
                         byPlayerId,
                         unknownAgeValue,
                     );
+                    // Both parities are now exhaustively rankable: even squads
+                    // via mirrored splits, odd squads via all C(n, ceil(n/2))
+                    // subsets. Guard only against a squad too small to split.
                     const canRankByExhaustiveSearch =
-                        selectedPlayerIdsInOrder.length % 2 === 0;
+                        selectedPlayerIdsInOrder.length >= 2;
                     const allSplits = canRankByExhaustiveSearch
                         ? uniqueSplits(selectedPlayerIdsInOrder).map(
                               (split) => ({

@@ -578,18 +578,22 @@ processes:
                 players born before 1995 (older data is treated as
                 unreliable/unknown and excluded from the age balance).
             - >
-                If the candidate count is odd, one non-goalie 'middle'
-                player is set aside first (selectMiddleOutfieldPlayer) so
-                the remaining pool is even.
-            - >
-                findBestSplit exhaustively evaluates every even split and
-                picks the one minimising, in priority order: |difference in
-                goalie count|, |difference in total skill average|,
+                findBestSplit exhaustively evaluates every way to divide
+                the squad into two sides differing in size by at most one,
+                and picks the one minimising, in priority order:
+                |difference in goalie count|, |difference in team average|,
                 |difference in count of unknown-age players|, |difference
-                in total age|.
+                in total age|. Ties break to the lexicographically smallest
+                team-A bitmask, for determinism.
             - >
-                The set-aside middle player (if any) joins whichever team
-                has the lower total skill average.
+                For an odd squad the game is K-a-side (K = floor(n/2)) with
+                the larger side rotating a substitute. Each side's
+                cumulative metrics (average, age, unknown-age count) are
+                scaled by its time-averaged on-pitch share, K / teamSize,
+                so the balance is judged on who is actually playing; goalie
+                count is compared unscaled. For an even squad both scales
+                are 1 and this is a plain summed-difference comparison. See
+                docs/PICKER.md.
             - >
                 Outcome.team is set to 'A'/'B' for every selected player,
                 and an email announcing both line-ups is sent to all active

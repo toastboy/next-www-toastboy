@@ -67,25 +67,6 @@ const compareNumber = (a: number, b: number, epsilon = 1e-9) => {
 };
 
 /**
- * Compares two nullable numbers, treating null values as coming first in sort
- * order.
- * @param a - The first number to compare, or null
- * @param b - The second number to compare, or null
- * @returns A negative number if a comes before b, 0 if equal, or a positive
- *          number if a comes after b. Null values are always sorted before
- *          non-null values.
- */
-const compareNullableNumberNullsFirst = (
-    a: number | null,
-    b: number | null,
-) => {
-    if (a === null && b === null) return 0;
-    if (a === null) return -1;
-    if (b === null) return 1;
-    return compareNumber(a, b);
-};
-
-/**
  * Computes the total of all numeric values in the provided array.
  *
  * @param values - The list of numbers to add together.
@@ -169,9 +150,10 @@ const combForeach = <T>(
         }
     };
 
-    // For mirrored team splits, only evaluate combinations where item[0] is
-    // included. This yields exactly one representative per mirrored pair.
-    /* v8 ignore next -- current caller always uses mirrored evaluation */
+    // Even squad: the two sides are the same size, so {A,B} and {B,A} are the
+    // same split. Pin item[0] to the included side to evaluate one
+    // representative per mirrored pair. Odd squad: the sides differ in size
+    // and are not interchangeable, so every combination is evaluated.
     if (mirror) {
         /* v8 ignore next -- cannot occur with validated team sizes */
         if (k === 0 || n === 0) return;
@@ -181,16 +163,26 @@ const combForeach = <T>(
         return;
     }
 
-    /* v8 ignore next -- current caller always uses mirrored evaluation */
     walk(0, k);
 };
 
 /**
  * Calculates the differences between two teams across multiple metrics.
+ *
+ * For an odd squad the two teams are unequal — the larger side fields
+ * `onPitch` players and rotates the rest through a substitute. Each cumulative
+ * metric (average, age, unknown-age count) is therefore scaled by that team's
+ * time-averaged on-pitch share, `onPitch / teamSize`, so the comparison is
+ * between the strength actually on the pitch rather than raw squad totals. For
+ * an even squad both teams field their whole side, the scale is 1, and this
+ * reduces exactly to summed differences. Goalie count is a structural
+ * constraint, not a pitch-time quantity, so it is compared unscaled.
+ *
  * @param teamA - The first team of picker candidates
  * @param teamB - The second team of picker candidates
  * @param unknownAgeValue - The numeric value to use for players with unknown
  * age
+ * @param onPitch - Players fielded per side (`⌊squad / 2⌋`)
  * @returns An object containing the differences in goalies, average skill,
  * unknown age count, and total age between the two teams
  */
@@ -198,19 +190,23 @@ const calculateDiffs = (
     teamA: PickerCandidate[],
     teamB: PickerCandidate[],
     unknownAgeValue: number,
+    onPitch: number,
 ): TeamDiffs => {
+    const scaleA = onPitch / teamA.length;
+    const scaleB = onPitch / teamB.length;
+
     const teamAGoalies = sum(teamA.map((player) => (player.goalie ? 1 : 0)));
     const teamBGoalies = sum(teamB.map((player) => (player.goalie ? 1 : 0)));
-    const teamAAverage = sum(teamA.map((player) => player.average));
-    const teamBAverage = sum(teamB.map((player) => player.average));
-    const teamAUnknownAge = sum(
-        teamA.map((player) => (player.age === null ? 1 : 0)),
-    );
-    const teamBUnknownAge = sum(
-        teamB.map((player) => (player.age === null ? 1 : 0)),
-    );
-    const teamAAge = sum(teamA.map((player) => player.age ?? unknownAgeValue));
-    const teamBAge = sum(teamB.map((player) => player.age ?? unknownAgeValue));
+    const teamAAverage = scaleA * sum(teamA.map((player) => player.average));
+    const teamBAverage = scaleB * sum(teamB.map((player) => player.average));
+    const teamAUnknownAge =
+        scaleA * sum(teamA.map((player) => (player.age === null ? 1 : 0)));
+    const teamBUnknownAge =
+        scaleB * sum(teamB.map((player) => (player.age === null ? 1 : 0)));
+    const teamAAge =
+        scaleA * sum(teamA.map((player) => player.age ?? unknownAgeValue));
+    const teamBAge =
+        scaleB * sum(teamB.map((player) => player.age ?? unknownAgeValue));
 
     return {
         diffGoalies: teamAGoalies - teamBGoalies,
@@ -221,9 +217,15 @@ const calculateDiffs = (
 };
 
 const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
-    // Mirrors legacy picker_best_teams ordering:
-    // ABS(diff_goalies), ABS(diff_played), ABS(diff_average),
-    // ABS(diff_unknown_age), ABS(diff_age)
+    // Lexicographic order:
+    //   ABS(diff_goalies), ABS(diff_average), ABS(diff_unknown_age),
+    //   ABS(diff_age)
+    //
+    // Legacy picker_best_teams also ranked ABS(diff_played) second (between
+    // goalies and average). It is deliberately omitted: replaying every
+    // historical game showed the played term moved teams further from the
+    // stored (often hand-adjusted) splits than the average-first order does,
+    // and adds no fairness the recent-average metric doesn't already capture.
     const comparisons = [
         compareNumber(Math.abs(left.diffGoalies), Math.abs(right.diffGoalies)),
         compareNumber(Math.abs(left.diffAverage), Math.abs(right.diffAverage)),
@@ -244,34 +246,39 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
 /**
  * Finds the optimal split of players into two balanced teams.
  *
- * The function evaluates all possible team combinations and selects the one that minimizes
- * the differences in team attributes (e.g., skill level, age). When multiple splits have
- * equal differences, the lexicographically smallest team mask is preferred for consistency.
+ * Evaluates every way to divide the squad into two sides that differ in size
+ * by at most one and selects the one that minimises the team differences
+ * (goalies, then skill, then age) via {@link compareDiffs}. When several splits
+ * tie, the lexicographically smallest team-A bitmask wins, for determinism.
  *
- * @param players - An array of player candidates to be split into teams. Must contain an even
- *                  number of at least 2 players.
- * @returns A {@link TeamSplit} object containing the two balanced teams (teamA and teamB) and
- *          their calculated differences.
- * @throws {ValidationError} If the number of players is less than 2 or not an even number.
- * @throws {InternalError} If unable to determine balanced teams (should not occur with valid input).
+ * For an odd squad `teamA` is the larger side (it carries the rotating
+ * substitute); {@link calculateDiffs} scales each side by its on-pitch share
+ * so the balance is judged on who is actually playing at any moment.
+ *
+ * @param players - Candidates to split. At least 2; any parity.
+ * @returns A {@link TeamSplit} with the two teams and their diffs.
+ * @throws {ValidationError} If fewer than two players are given.
+ * @throws {InternalError} If no split could be determined (unreachable for
+ * valid input).
  *
  * @remarks
- * - The function calculates an average age from players with known ages to handle cases where
- *   some players may have null age values.
- * - Team balance is determined by comparing differences in various attributes using
- *   {@link calculateDiffs} and {@link compareDiffs}.
- * - The algorithm uses bitmasking via {@link combForeach} to efficiently iterate through
- *   all possible team combinations.
+ * - An average of the known ages stands in for players with unknown age.
+ * - {@link combForeach} enumerates the combinations by bitmask; for an even
+ *   squad it uses mirrored evaluation (one representative per pair), for an
+ *   odd squad the two sides are distinguishable by size so every combination
+ *   is evaluated.
  */
 const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
-    /* v8 ignore next -- upstream selection always passes even-sized arrays >= 2 */
-    if (players.length < 2 || players.length % 2 !== 0) {
+    /* v8 ignore next -- upstream selection always passes arrays of >= 2 */
+    if (players.length < 2) {
         throw new ValidationError(
-            'Cannot split teams: expected an even number of at least two players.',
+            'Cannot split teams: expected at least two players.',
         );
     }
 
-    const teamSize = players.length / 2;
+    const onPitch = Math.floor(players.length / 2);
+    const teamASize = Math.ceil(players.length / 2);
+    const evenSquad = players.length % 2 === 0;
     const knownAges = players
         .map((player) => player.age)
         .filter((age): age is number => age !== null);
@@ -280,26 +287,36 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
 
     let bestSplit: TeamSplit | null = null;
     let bestSplitMask: bigint | null = null;
-    combForeach(teamSize, players, (teamA, teamB, _teamAIndexes, teamAMask) => {
-        const diffs = calculateDiffs(teamA, teamB, averageKnownAge);
+    combForeach(
+        teamASize,
+        players,
+        (teamA, teamB, _teamAIndexes, teamAMask) => {
+            const diffs = calculateDiffs(
+                teamA,
+                teamB,
+                averageKnownAge,
+                onPitch,
+            );
 
-        if (!bestSplit) {
-            bestSplit = { teamA, teamB, diffs };
-            bestSplitMask = teamAMask;
-            return;
-        }
+            if (!bestSplit) {
+                bestSplit = { teamA, teamB, diffs };
+                bestSplitMask = teamAMask;
+                return;
+            }
 
-        const diffComparison = compareDiffs(diffs, bestSplit.diffs);
-        if (
-            diffComparison < 0 ||
-            (diffComparison === 0 &&
-                bestSplitMask !== null &&
-                teamAMask < bestSplitMask)
-        ) {
-            bestSplit = { teamA, teamB, diffs };
-            bestSplitMask = teamAMask;
-        }
-    });
+            const diffComparison = compareDiffs(diffs, bestSplit.diffs);
+            if (
+                diffComparison < 0 ||
+                (diffComparison === 0 &&
+                    bestSplitMask !== null &&
+                    teamAMask < bestSplitMask)
+            ) {
+                bestSplit = { teamA, teamB, diffs };
+                bestSplitMask = teamAMask;
+            }
+        },
+        evenSquad,
+    );
 
     /* v8 ignore next -- combForeach always emits at least one split for valid input */
     if (!bestSplit) {
@@ -307,62 +324,6 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
     }
 
     return bestSplit;
-};
-
-/**
- * Selects a middle outfield player from a list of candidates and returns the
- * remaining players.
- *
- * For even-sized lists, returns all players for splitting with no middle
- * player. For odd-sized lists, sorts players by goalie status, average, age,
- * and player ID, then selects the middle non-goalie player as the separator.
- *
- * @param players - Array of picker candidates to process
- * @returns An object containing:
- *   - playersForSplit: Array of players excluding the middle player
- *   - middlePlayer: The selected middle player, or null for even-sized lists
- * @throws {InternalError} If unable to select a middle player for odd-sized
- * lists.
- */
-const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
-    if (players.length % 2 === 0) {
-        return {
-            playersForSplit: players,
-            middlePlayer: null as PickerCandidate | null,
-        };
-    }
-
-    let middle = Math.floor(
-        players.filter((player) => !player.goalie).length / 2,
-    );
-    const orderedPlayers = [...players].sort(
-        (left, right) =>
-            compareNumber(left.goalie ? 1 : 0, right.goalie ? 1 : 0) ||
-            compareNumber(left.average, right.average) ||
-            compareNullableNumberNullsFirst(left.age, right.age) ||
-            left.playerId - right.playerId,
-    );
-    let middlePlayer: PickerCandidate | null = null;
-    const playersForSplit: PickerCandidate[] = [];
-
-    for (const player of orderedPlayers) {
-        const removeCurrentPlayer = middlePlayer === null && middle === 0;
-        middle--;
-        if (removeCurrentPlayer) {
-            middlePlayer = player;
-        } else {
-            playersForSplit.push(player);
-        }
-    }
-
-    /* v8 ignore next -- odd-sized iteration always selects exactly one middle player */
-    if (!middlePlayer) {
-        throw new InternalError(
-            'Unable to select middle player for odd-sized picker list.',
-        );
-    }
-
-    return { playersForSplit, middlePlayer };
 };
 
 /**
@@ -517,22 +478,7 @@ export async function coreSubmitPicker(
         }),
     );
 
-    const { playersForSplit, middlePlayer } =
-        selectMiddleOutfieldPlayer(candidates);
-    const split = findBestSplit(playersForSplit);
-    let teamA = [...split.teamA];
-    let teamB = [...split.teamB];
-
-    if (middlePlayer) {
-        const teamAAverage = sum(teamA.map((player) => player.average));
-        const teamBAverage = sum(teamB.map((player) => player.average));
-
-        if (teamAAverage < teamBAverage) {
-            teamA = [...teamA, middlePlayer];
-        } else {
-            teamB = [...teamB, middlePlayer];
-        }
-    }
+    const { teamA, teamB } = findBestSplit(candidates);
 
     const teamAssignments = new Map<number, 'A' | 'B'>();
     for (const player of teamA) {

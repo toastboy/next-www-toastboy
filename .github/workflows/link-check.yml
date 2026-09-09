@@ -108,14 +108,46 @@ jobs:
                   npx wait-on --timeout 120000 http://127.0.0.1:3000
             - name: Check links
               run: npx linkinator http://127.0.0.1:3000 --config linkinator.config.json --format json > linkinator-report.json
-            - name: Summarise broken links
-              if: failure()
+            - name: Report link check results
+              if: always()
               run: |
-                  # --format json swallows the human-readable output, so on a
-                  # failure surface the offending links in the log rather than
-                  # making a reviewer download the artifact.
-                  [ -f linkinator-report.json ] || exit 0
-                  jq -r '.links[] | select(.state == "BROKEN") | "\(.status)  \(.url)  (linked from \(.parent))"' linkinator-report.json || cat linkinator-report.json
+                  # --format json swallows linkinator's human-readable output,
+                  # so turn the report into a job-summary table plus inline
+                  # ::error annotations - no need to download the artifact to
+                  # see what broke.
+                  report=linkinator-report.json
+                  if [ ! -f "$report" ]; then
+                    echo "⚠️ No linkinator report was produced — the crawl did not run to completion." >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
+                  fi
+
+                  total=$(jq '.links | length' "$report")
+                  broken=$(jq '[.links[] | select(.state == "BROKEN")] | length' "$report")
+
+                  if [ "$broken" -eq 0 ]; then
+                    {
+                      echo "## Link check"
+                      echo
+                      echo "✅ Scanned **$total** links — all healthy."
+                    } >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
+                  fi
+
+                  jq -r '.links[] | select(.state == "BROKEN")
+                    | "| \(.status) | \(.url) | \(.parent // "—") |"' "$report" > /tmp/broken-rows.txt
+                  {
+                    echo "## Link check — $broken broken link(s)"
+                    echo
+                    echo "Out of $total links scanned. Full report in the **linkinator-report** artifact."
+                    echo
+                    echo "| Status | Broken URL | Linked from |"
+                    echo "| ------ | ---------- | ----------- |"
+                    head -n 200 /tmp/broken-rows.txt
+                  } >> "$GITHUB_STEP_SUMMARY"
+
+                  jq -r '.links[] | select(.state == "BROKEN")
+                    | "::error title=Broken link::\(.url) returned \(.status) (linked from \(.parent // "unknown"))"' "$report" > /tmp/broken-annotations.txt
+                  head -n 50 /tmp/broken-annotations.txt
             - name: Upload linkinator report
               if: always()
               uses: actions/upload-artifact@v7

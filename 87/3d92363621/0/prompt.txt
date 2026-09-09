@@ -1,0 +1,5 @@
+Presumably some of the invariants can be cached in GitHub cache for the link checker workflow
+
+---
+
+Yes

@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "873d92363621",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/workflows/link-check.yml",
+    ".github/workflows/playwright.yml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/87/3d92363621/0/metadata.json",
+      "transcript": "/87/3d92363621/0/full.jsonl",
+      "compact_transcript": "/87/3d92363621/0/transcript.jsonl",
+      "content_hash": "/87/3d92363621/0/content_hash.txt",
+      "prompt": "/87/3d92363621/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 8161,
+    "cache_read_tokens": 2858807,
+    "output_tokens": 6014,
+    "api_call_count": 10
+  }
+}

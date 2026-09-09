@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "873d92363621",
+  "session_id": "d1b14dd8-437c-459c-a3ee-bf859b1f2374",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-09T06:27:20.13176Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    ".github/workflows/link-check.yml",
+    ".github/workflows/playwright.yml"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "1f9111616565",
+  "checkpoint_transcript_start": 965,
+  "transcript_lines_at_start": 965,
+  "compact_transcript_start": 203,
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 8161,
+    "cache_read_tokens": 2858807,
+    "output_tokens": 6014,
+    "api_call_count": 10
+  },
+  "session_metrics": {
+    "turn_count": 15
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-09T06:27:20.049228Z",
+    "agent_lines": 14,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 14,
+    "total_lines_changed": 14,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

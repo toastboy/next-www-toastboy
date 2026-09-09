@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "a8b5ac087eba",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "README.md",
+    "linkinator.config.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a8/b5ac087eba/0/metadata.json",
+      "transcript": "/a8/b5ac087eba/0/full.jsonl",
+      "compact_transcript": "/a8/b5ac087eba/0/transcript.jsonl",
+      "content_hash": "/a8/b5ac087eba/0/content_hash.txt",
+      "prompt": "/a8/b5ac087eba/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 58,
+    "cache_creation_tokens": 273081,
+    "cache_read_tokens": 4381470,
+    "output_tokens": 25317,
+    "api_call_count": 29
+  }
+}

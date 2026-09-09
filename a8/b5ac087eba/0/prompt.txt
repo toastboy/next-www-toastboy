@@ -1,0 +1,13 @@
+/Users/toastboy/Downloads/linkinator-report.json
+
+---
+
+What would be the most representative way to improve the real site?
+
+---
+
+I'm torn. Some players have mugshots and some don't, and the correct behaviour is to throw a 404 for an invalid player id, otherwise return the mugshot if there is one, falling back to manofmystery.jpg if there isn't. HOWEVER, for club badges and country flags I want every lookup to succeed because there ought to be a valid blob in storage for each valid value.
+
+---
+
+Yes

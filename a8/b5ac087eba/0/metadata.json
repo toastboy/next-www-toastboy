@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "a8b5ac087eba",
+  "session_id": "d1b14dd8-437c-459c-a3ee-bf859b1f2374",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-09T05:50:03.526274Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 1,
+  "files_touched": [
+    "README.md",
+    "linkinator.config.json"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "bc69ce8901c9",
+  "checkpoint_transcript_start": 287,
+  "transcript_lines_at_start": 287,
+  "compact_transcript_start": 76,
+  "token_usage": {
+    "input_tokens": 58,
+    "cache_creation_tokens": 273081,
+    "cache_read_tokens": 4381470,
+    "output_tokens": 25317,
+    "api_call_count": 29
+  },
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-09T05:50:03.468505Z",
+    "agent_lines": 10,
+    "agent_removed": 2,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 10,
+    "total_lines_changed": 12,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

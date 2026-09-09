@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.10.0",
+  "checkpoint_id": "18c511b4e9fb",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/link-check.yml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/18/c511b4e9fb/0/metadata.json",
+      "transcript": "/18/c511b4e9fb/0/full.jsonl",
+      "compact_transcript": "/18/c511b4e9fb/0/transcript.jsonl",
+      "content_hash": "/18/c511b4e9fb/0/content_hash.txt",
+      "prompt": "/18/c511b4e9fb/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 8331,
+    "cache_read_tokens": 2060695,
+    "output_tokens": 6263,
+    "api_call_count": 7
+  }
+}

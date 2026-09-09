@@ -1,0 +1,1 @@
+Good. Now I can see my deliberately bad link in nav failing the CI run, but how can the failure be surfaced in GitHub summary or whatever rather than me having to dig in the JSON output?

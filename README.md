@@ -144,7 +144,12 @@ The test runner starts a local Next.js server automatically, seeds the test data
 
 External hosts are deliberately out of scope here so PRs don't break on third-party outages — those are covered by the separate weekly external-link job (SYS-616).
 
-Exclusions live in [`linkinator.config.json`](linkinator.config.json) at the repo root: add a per-URL or per-domain regular expression to the `skip` array to stop a link being checked. The first entry (`^https?://(?!127\.0\.0\.1:3000)`) is what scopes the crawl to internal links; leave it in place and add new exclusions alongside it. The authenticated `src/app/footy/**` admin surface is not yet crawled (it needs the mock-auth cookie and the programmatic API — a follow-up).
+Exclusions live in [`linkinator.config.json`](linkinator.config.json) at the repo root: add a per-URL or per-domain regular expression to the `skip` array to stop a link being checked. The entries currently there:
+
+- `^https?://(?!127\.0\.0\.1:3000)` — scopes the crawl to internal links; leave it in place and add new exclusions alongside it.
+- `/api/footy/.+/(?:mugshot|badge|flag)$` — the Azure-blob-backed image routes. PR CI has no storage credentials, so these currently return 500 regardless of link health. Remove this entry once **SYS-618** makes those routes degrade gracefully; asset availability itself belongs in a storage-aware job, not this one.
+
+The authenticated `src/app/footy/**` admin surface is not yet crawled (it needs the mock-auth cookie and the programmatic API — a follow-up).
 
 To run it locally, start a production build on port 3000 and point the script at it:
 

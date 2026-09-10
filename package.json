@@ -82,7 +82,7 @@
         "@tiptap/starter-kit": "^3.31.0",
         "@types/topojson-client": "^3.1.5",
         "@types/topojson-specification": "^1.0.5",
-        "better-auth": "^1.7.2",
+        "better-auth": "^1.7.3",
         "d3-array": "^3.2.4",
         "d3-axis": "^3.0.0",
         "d3-fetch": "^3.0.1",

@@ -9,25 +9,26 @@ This project is based on [Azure + MySQL example code](https://github.com/Azure-S
 [![Chromatic](https://github.com/toastboy/next-www-toastboy/actions/workflows/chromatic.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/chromatic.yml)
 [![Reviewdog](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml)
 [![Knip](https://github.com/toastboy/next-www-toastboy/actions/workflows/knip.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/knip.yml)
+[![Link Check](https://github.com/toastboy/next-www-toastboy/actions/workflows/link-check.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/link-check.yml)
 [![Terraform](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml)
 
 ## Azure App Registrations
 
 Three Azure AD app registrations are managed by Terraform in [`terraform/main.tf`](terraform/main.tf), each scoped to the minimum permissions needed:
 
-| App | Display Name | Purpose | Permissions |
-| --- | --- | --- | --- |
-| **Auth** | Next www toastboy – Auth | Microsoft social login via Better Auth | Delegated: `openid`, `profile`, `email`, `User.Read` |
-| **Storage** | Next www toastboy – Storage | Azure Blob Storage access via RBAC | None (RBAC role assignment only) |
-| **Mail** | Next www toastboy – Mail | Transactional email via Microsoft Graph | Application: `Mail.Send` (admin-consented) |
+| App         | Display Name                | Purpose                                 | Permissions                                          |
+| ----------- | --------------------------- | --------------------------------------- | ---------------------------------------------------- |
+| **Auth**    | Next www toastboy – Auth    | Microsoft social login via Better Auth  | Delegated: `openid`, `profile`, `email`, `User.Read` |
+| **Storage** | Next www toastboy – Storage | Azure Blob Storage access via RBAC      | None (RBAC role assignment only)                     |
+| **Mail**    | Next www toastboy – Mail    | Transactional email via Microsoft Graph | Application: `Mail.Send` (admin-consented)           |
 
 Terraform outputs the client IDs and secrets for each registration, which are synced to 1Password (vault `next-www-toastboy`) by the [Terraform workflow](.github/workflows/terraform.yml) after each apply. The env var mapping is:
 
-| App | Client ID env var | Client secret env var |
-| --- | --- | --- |
-| Auth | `AUTH_MICROSOFT_CLIENT_ID` | `AUTH_MICROSOFT_CLIENT_SECRET` |
-| Storage | `STORAGE_CLIENT_ID` | `STORAGE_CLIENT_SECRET` |
-| Mail | `MAIL_GRAPH_CLIENT_ID` | `MAIL_GRAPH_CLIENT_SECRET` |
+| App     | Client ID env var          | Client secret env var          |
+| ------- | -------------------------- | ------------------------------ |
+| Auth    | `AUTH_MICROSOFT_CLIENT_ID` | `AUTH_MICROSOFT_CLIENT_SECRET` |
+| Storage | `STORAGE_CLIENT_ID`        | `STORAGE_CLIENT_SECRET`        |
+| Mail    | `MAIL_GRAPH_CLIENT_ID`     | `MAIL_GRAPH_CLIENT_SECRET`     |
 
 ### Running Terraform locally
 
@@ -65,14 +66,14 @@ CI workflows are structured so that **PR-triggered workflows never access 1Passw
 
 The split between secret stores reflects this:
 
-| Secret | Store | Used by |
-| --- | --- | --- |
-| `OP_SERVICE_ACCOUNT_TOKEN` | GitHub Actions secret | Terraform apply and 1Password sync (main only) |
-| `CHROMATIC_PROJECT_TOKEN` | GitHub Actions secret | Chromatic visual regression (all pushes) |
-| `CODECOV_TOKEN` | GitHub Actions secret | Unit test coverage upload (all pushes) |
-| `TF_API_TOKEN` | GitHub Actions secret | Terraform plan & apply on main only. No Terraform runs on other branches or PRs. |
-| `CLAUDE_CODE_OAUTH_TOKEN` | GitHub Actions secret | Claude code review and `@claude` mentions |
-| All production app secrets | 1Password vault `next-www-toastboy` | Terraform apply + 1Password sync (main only) |
+| Secret                     | Store                               | Used by                                                                          |
+| -------------------------- | ----------------------------------- | -------------------------------------------------------------------------------- |
+| `OP_SERVICE_ACCOUNT_TOKEN` | GitHub Actions secret               | Terraform apply and 1Password sync (main only)                                   |
+| `CHROMATIC_PROJECT_TOKEN`  | GitHub Actions secret               | Chromatic visual regression (all pushes)                                         |
+| `CODECOV_TOKEN`            | GitHub Actions secret               | Unit test coverage upload (all pushes)                                           |
+| `TF_API_TOKEN`             | GitHub Actions secret               | Terraform plan & apply on main only. No Terraform runs on other branches or PRs. |
+| `CLAUDE_CODE_OAUTH_TOKEN`  | GitHub Actions secret               | Claude code review and `@claude` mentions                                        |
+| All production app secrets | 1Password vault `next-www-toastboy` | Terraform apply + 1Password sync (main only)                                     |
 
 Chromatic uses a plain GitHub Actions secret rather than 1Password because it is needed for PR branch pushes, where 1Password access is intentionally withheld. The Chromatic credential is low-sensitivity (it only allows publishing snapshots to the Chromatic project).
 
@@ -136,6 +137,29 @@ npx playwright test
 ```
 
 The test runner starts a local Next.js server automatically, seeds the test database, and tears everything down when done.
+
+## Broken Link Checking
+
+[`.github/workflows/link-check.yml`](.github/workflows/link-check.yml) builds the app, runs it against the seeded CI database, and recursively crawls it from `http://127.0.0.1:3000` with [`linkinator`](https://github.com/JustinBeckwith/linkinator). Any non-skipped internal link that returns a 4xx/5xx fails the workflow (and therefore the PR check). The full JSON report is uploaded as a build artifact on every run.
+
+The crawl runs via [`src/lib/linkcheck/linkcheck.ts`](src/lib/linkcheck/linkcheck.ts) (`npm run linkcheck`), not the bare CLI, so it can send the `mock-auth-state=admin` cookie on every request. That means it covers the `src/app/footy/**` **admin** surface too — an unauthenticated crawl only ever sees a redirect to the sign-in page there. Mock auth is honoured because `npm run start:ci` sets `PLAYWRIGHT_TEST=true`.
+
+External hosts are deliberately out of scope here so PRs don't break on third-party outages — those are covered by the separate weekly external-link job (SYS-616).
+
+Exclusions live in [`linkinator.config.json`](linkinator.config.json) at the repo root: add a per-URL or per-domain regular expression to the `skip` array to stop a link being checked. The entries currently there:
+
+- `^https?://(?!127\.0\.0\.1:3000)` — scopes the crawl to internal links; leave it in place and add new exclusions alongside it.
+- `/api/footy/.+/(?:mugshot|badge|flag)$` — the Azure-blob-backed image routes. PR CI has no storage credentials, so these currently return 500 regardless of link health. Remove this entry once **SYS-618** makes those routes degrade gracefully; asset availability itself belongs in a storage-aware job, not this one.
+
+To run it locally, start a production build on port 3000 and point the script at it:
+
+```shell
+op run --env-file ./.env -- npm run build
+npm run start:ci &
+npm run linkcheck
+```
+
+Make sure nothing else is already bound to port 3000 first (a stray `next dev`, or VS Code's Live Preview) — `npm run linkcheck` just crawls whatever answers on `http://127.0.0.1:3000`, and a static file server there will happily serve the whole working tree.
 
 ## Sentry Sampling and Quota Controls
 

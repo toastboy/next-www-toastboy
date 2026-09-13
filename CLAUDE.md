@@ -51,8 +51,8 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
    skip or dismiss any output. Remove any unused files, exports, or
    dependencies reported by `knip`.
 3. If you are unsure whether a problem is pre-existing, run `git stash` and
-   repeat the checks on the clean tree to establish a baseline, then `git stash
-   pop` and fix only the new ones.
+   repeat the checks on the clean tree to establish a baseline, then
+   `git stash pop` and fix only the new ones.
 4. Never report work as done while typecheck, lint, format:check, or knip
    exit with a non-zero code or report any errors or warnings.
 
@@ -70,7 +70,7 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 
 **Data flow rule:** Components call services (read) or server actions (write). Never write direct Prisma calls in API routes, pages, or components — refactor into a service method. If you filter/sort service results in calling code, move that logic into the service.
 
-**Client/server split:** Every file under `src/components/**/*.tsx` must start with `'use client';` — the presentation layer is always Client Components, full stop, regardless of whether a given component happens to need interactivity today. Every `src/app/**/page.tsx` (and `layout.tsx`) must stay a Server Component — that's where data fetching happens; pass the results down as props. Both rules are enforced by ESLint (`local/require-use-client` and the existing `no-restricted-syntax` block for pages, in `eslint.config.mjs`) and `eslint --fix` will insert/remove the directive automatically. Rationale: it keeps the "fetch on the server, render from props" split unambiguous with no per-component judgment call, and it categorically avoids the Mantine dot-notation Server Component bug described below (that bug requires the *accessing* file to be a Server Component, which can no longer happen inside `src/components`). At this project's scale the cost — losing zero-JS server rendering for otherwise-static presentational leaves — is negligible.
+**Client/server split:** Every file under `src/components/**/*.tsx` must start with `'use client';` — the presentation layer is always Client Components, full stop, regardless of whether a given component happens to need interactivity today. Every `src/app/**/page.tsx` (and `layout.tsx`) must stay a Server Component — that's where data fetching happens; pass the results down as props. Both rules are enforced by ESLint (`local/require-use-client` and the existing `no-restricted-syntax` block for pages, in `eslint.config.mjs`) and `eslint --fix` will insert/remove the directive automatically. Rationale: it keeps the "fetch on the server, render from props" split unambiguous with no per-component judgment call, and it categorically avoids the Mantine dot-notation Server Component bug described below (that bug requires the _accessing_ file to be a Server Component, which can no longer happen inside `src/components`). At this project's scale the cost — losing zero-JS server rendering for otherwise-static presentational leaves — is negligible.
 
 ## Key Conventions
 
@@ -83,7 +83,7 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 - Formatting is enforced by Prettier (`.prettierrc`), not ESLint — `eslint-config-prettier` is the last entry in `eslint.config.mjs` and disables the handful of ESLint rules that would otherwise conflict with it (`semi`, `comma-dangle`, `eol-last`, `operator-linebreak`, `react/jsx-wrap-multilines`). ESLint still owns everything else: import sorting, SonarJS, promise rules, type-aware `@typescript-eslint/*` rules, etc.
 - `.prettierrc`: single quotes, 4-space indent, semicolons, trailing commas wherever valid, `singleAttributePerLine: true` (any JSX/HTML element with 2+ attributes that wraps onto multiple lines gets one attribute per line, rather than packing attributes onto the opening-tag line) — otherwise plain Prettier defaults (printWidth 80, double-quoted JSX attributes, etc.). No per-package or per-directory exceptions.
 - `npm run format` to apply, `npm run format:check` to verify (part of the finalisation checklist above).
-- `.prettierignore` excludes generated/vendored files that shouldn't be hand-formatted (`prisma/generated`, `prisma/zod`, `public/mockServiceWorker.js`, `public/countries-110m.json`, `package-lock.json`) and YAML/Markdown, which are out of scope for this tooling and stay hand-maintained.
+- `.prettierignore` excludes generated/vendored files that shouldn't be hand-formatted (`prisma/generated`, `prisma/zod`, `public/mockServiceWorker.js`, `public/countries-110m.json`, `package-lock.json`) and YAML (CI workflows, docker-compose, ontology), whose layout is deliberate and stays hand-maintained. Markdown **is** in Prettier's scope — `.md` files are formatted by `npm run format` and checked by `npm run format:check` like the JS/TS/JSON/CSS sources. VS Code formats Markdown on save via the `[markdown]` block in `.vscode/settings.json`.
 
 ### Library usage
 
@@ -150,9 +150,9 @@ export class SomeModelService {
 - Test files: `*.vitest.spec.ts(x)` placed next to the file they test — never in a `__tests__/` subdirectory
 - Mocks: `__mocks__/` as sibling to the target code
 - **Every component under `src/components/**` must ship with both an auto-mock and a Storybook story**, added in the same commit that adds the component:
-  - `__mocks__/ComponentName.tsx` — a lightweight placeholder any other test can pull in via `vi.mock('@/components/ComponentName/ComponentName')` with no factory. Render `<div>ComponentName: {JSON.stringify(props)}</div>` (props-carrying) or `<div>ComponentName</div>` (no props), and set `ComponentName.displayName`. Needed even if nothing currently imports the component — it's for whichever future composing component does.
-  - `ComponentName.stories.tsx` — a real `@storybook/nextjs-vite` story (`title`, `component`, `tags: ['autodocs']`, at least one `args`-driven story) so `npm run test:storybook` exercises the component. Add a `play` function when there's real interactive or conditional behaviour to verify; a plain args-only story is fine for static/presentational components, matching most of the existing suite.
-  - **Exception:** a component that renders nothing itself (a side-effect-only component like `AutoRefresh`) or a dev-only debug overlay (`Debug*`) doesn't need a story — it has nothing to render.
+    - `__mocks__/ComponentName.tsx` — a lightweight placeholder any other test can pull in via `vi.mock('@/components/ComponentName/ComponentName')` with no factory. Render `<div>ComponentName: {JSON.stringify(props)}</div>` (props-carrying) or `<div>ComponentName</div>` (no props), and set `ComponentName.displayName`. Needed even if nothing currently imports the component — it's for whichever future composing component does.
+    - `ComponentName.stories.tsx` — a real `@storybook/nextjs-vite` story (`title`, `component`, `tags: ['autodocs']`, at least one `args`-driven story) so `npm run test:storybook` exercises the component. Add a `play` function when there's real interactive or conditional behaviour to verify; a plain args-only story is fine for static/presentational components, matching most of the existing suite.
+    - **Exception:** a component that renders nothing itself (a side-effect-only component like `AutoRefresh`) or a dev-only debug overlay (`Debug*`) doesn't need a story — it has nothing to render.
 - Use accessible selectors (`getByRole`, `getByLabelText`, `getByText`) over `data-testid`
 - Do not rely on Mantine internals in tests (for example generated class names, internal DOM wrappers, or implementation-specific structure). Prefer selectors and assertions that reflect real user interactions and visible behaviour.
 - Prefer the generic overload (`getByRole<HTMLInputElement>(…)`) over a type assertion (`as HTMLInputElement`) when narrowing query results — ESLint strips assertions but preserves generics
@@ -175,6 +175,21 @@ Every page that displays data that can be mutated by a server action must render
 
 `FootyChannel` values live in `src/types/FootyChannel.ts`; add a new entry there if the new feature needs its own channel.
 
+### Web standards & `.well-known`
+
+Whenever a feature has a standardised discovery URI, wire it up — don't leave it unimplemented. If a spec (RFC 8615 / the IANA well-known URI registry) defines a `/.well-known/…` location for what you're building, expose it:
+
+- **Static payloads** → `public/.well-known/<name>` (e.g. `public/.well-known/security.txt`, RFC 9116). Next serves `public/` verbatim.
+- **Redirects / dynamic responses** → a `redirects()` entry in `next.config.mjs` (e.g. `/.well-known/change-password` → `/footy/password`, [w3c/webappsec-change-password-url](https://w3.org/TR/change-password-url/)) or a route handler.
+- Every `.well-known` resource gets an entry in `e2e/well-known.spec.ts` guarding its status, content-type and key content.
+
+This applies to anything with an established well-known path — `security.txt`, `change-password`, `openid-configuration`, `apple-app-site-association`, `assetlinks.json`, `webfinger`, `mta-sts.txt`, etc.
+
+Resources that have a **conventional root path but are _not_ `.well-known`** still get wired up the idiomatic way, not shoehorned into `.well-known`:
+
+- **Sitemap** → `src/app/sitemap.ts` (`MetadataRoute.Sitemap`, served at `/sitemap.xml`; make it `async` and enumerate dynamic routes via services). Use `generateSitemaps()` only past 50 000 URLs.
+- **Robots** → `src/app/robots.ts` (`MetadataRoute.Robots`, served at `/robots.txt`), with its `sitemap` field pointing at `/sitemap.xml`.
+
 ### Observability
 
 - Sentry: configured via `instrumentation.ts` / `instrumentation-client.ts` and `next.config.mjs`
@@ -182,17 +197,17 @@ Every page that displays data that can be mutated by a server action must render
 
 ## Tech Stack
 
-| Layer | Technology |
-| --- | --- |
-| Framework | Next.js (App Router) + React |
-| Database | MariaDB via Prisma ORM |
-| UI | Mantine |
-| Auth | Better Auth (Google, Microsoft OAuth + email) |
-| Testing | Vitest + Playwright + Storybook |
-| API mocking | MSW |
-| Validation | Zod (with Prisma-generated schemas) |
-| Monitoring | Sentry |
-| Storage | Azure Blob Storage |
-| Email | Nodemailer via Microsoft Graph |
-| Containers | Docker Compose (MariaDB + Mailpit) |
-| Secrets | 1Password (`op run`) |
+| Layer       | Technology                                    |
+| ----------- | --------------------------------------------- |
+| Framework   | Next.js (App Router) + React                  |
+| Database    | MariaDB via Prisma ORM                        |
+| UI          | Mantine                                       |
+| Auth        | Better Auth (Google, Microsoft OAuth + email) |
+| Testing     | Vitest + Playwright + Storybook               |
+| API mocking | MSW                                           |
+| Validation  | Zod (with Prisma-generated schemas)           |
+| Monitoring  | Sentry                                        |
+| Storage     | Azure Blob Storage                            |
+| Email       | Nodemailer via Microsoft Graph                |
+| Containers  | Docker Compose (MariaDB + Mailpit)            |
+| Secrets     | 1Password (`op run`)                          |

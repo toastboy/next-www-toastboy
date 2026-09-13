@@ -1,5 +1,5 @@
 import { asAdmin } from './utils/auth';
-import { expect, test } from './utils/base';
+import { ciOnly, expect, test } from './utils/base';
 
 // A full-site crawl is many page loads; repeating it once per browser project
 // (chromium/firefox/webkit/mobile/tablet) would 5x the runtime for no extra
@@ -42,6 +42,7 @@ test('crawl every reachable internal page and verify it renders without error', 
     page,
     baseURL,
 }, testInfo) => {
+    ciOnly();
     test.skip(testInfo.project.name !== 'chromium', CHROMIUM_ONLY);
     test.setTimeout(5 * 60 * 1000);
 

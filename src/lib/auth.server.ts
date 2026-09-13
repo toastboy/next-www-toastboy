@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 
 import { auth } from '@/lib/auth';
+import { toAuthUserSummary } from '@/lib/authUser';
 import { AuthError } from '@/lib/errors';
 import type { AuthRole, AuthUserSummary } from '@/types/AuthUser';
 
@@ -55,15 +56,41 @@ const getMockAuthUserFromCookie = (
 };
 
 /**
- * Returns `true` when mock authentication is permitted.
+ * Environment signals that mean "this is a real, production-like deployment",
+ * independent of `NODE_ENV`. When any is present, mock auth is force-disabled
+ * so a leaked or crafted `mock-auth-*` cookie can never escalate privileges,
+ * whatever else is configured.
+ */
+function isProductionLikeRuntime(): boolean {
+    return (
+        process.env.VERCEL_ENV === 'production' ||
+        process.env.APP_ENV === 'production' ||
+        process.env.NEXT_PUBLIC_APP_ENV === 'production'
+    );
+}
+
+/**
+ * Returns `true` when mock authentication is permitted for this runtime.
  *
- * Mock auth is disabled in production to prevent cookie-based privilege
- * escalation. It is available when:
+ * Mock auth is **off by default** and only enabled under an explicitly
+ * recognised non-production condition:
  *  - `NODE_ENV` is `'development'` or `'test'`, OR
- *  - `PLAYWRIGHT_TEST=true` is set (allows `next start` in production-build
- *    mode to honour mock-auth cookies during CI Playwright runs).
+ *  - `PLAYWRIGHT_TEST=true` (set only by the `start:ci` / `start:playwright`
+ *    scripts so a production build can honour mock-auth cookies during CI
+ *    Playwright runs).
+ *
+ * It is force-disabled — regardless of the above — when `MOCK_AUTH_DISABLED`
+ * is `'true'` (an explicit kill switch for any environment) or when a
+ * production-like hosting signal is present ({@link isProductionLikeRuntime}).
  */
 export function isMockAuthEnabled(): boolean {
+    if (
+        process.env.MOCK_AUTH_DISABLED === 'true' ||
+        isProductionLikeRuntime()
+    ) {
+        return false;
+    }
+
     return (
         process.env.NODE_ENV === 'development' ||
         process.env.NODE_ENV === 'test' ||
@@ -188,13 +215,10 @@ export async function getCurrentUser(): Promise<AuthUserSummary | null> {
         return null;
     }
 
-    return {
-        name: session.user.name ?? null,
-        email: session.user.email ?? null,
-        playerId: session.user.playerId ?? 0,
-        role: session.user.role === 'admin' ? 'admin' : 'user',
+    return toAuthUserSummary({
+        ...session.user,
         impersonatedBy: session.session?.impersonatedBy ?? null,
-    };
+    });
 }
 
 /**

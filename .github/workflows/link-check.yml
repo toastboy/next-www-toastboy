@@ -1,0 +1,170 @@
+name: Link Check
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    link-check:
+        name: Broken link check (public + admin surface)
+        timeout-minutes: 20
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: read
+
+        env:
+            # Hardcoded CI-only values — none of these are production secrets.
+            # Kept byte-for-byte in step with playwright.yml: this job stands up
+            # the same docker stack against the same pre-seeded DB image.
+            DATABASE_PASSWORD: ci_test_password
+            DATABASE_APP_PASSWORD: ci_test_app_password
+            MIGRATE_DATABASE_URL: mysql://root:ci_test_password@127.0.0.1:33306/footy
+            DATABASE_URL: mysql://footy_app:ci_test_app_password@127.0.0.1:33306/footy
+
+            BETTER_AUTH_SECRET: ci-better-auth-secret-for-link-check-only
+
+            AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+            AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+            AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+            AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+
+            SEEDED_DB_IMAGE: ghcr.io/${{ github.repository_owner }}/next-www-toastboy-db-test-seeded:latest
+
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: "npm"
+            - name: Install dependencies
+              run: npm ci
+            - name: Generate Prisma client and Zod schemas
+              run: npm run generate
+            - name: Cache Next.js build
+              uses: actions/cache@v6
+              with:
+                  path: .next/cache
+                  key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.{ts,tsx,js,jsx}', 'prisma/schema.prisma') }}
+                  restore-keys: |
+                      ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+            - name: Log in to GHCR
+              uses: docker/login-action@v4.6.0
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Start docker stack (database, mailpit, etc.)
+              run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+            - name: Wait for database
+              run: |
+                  for i in {1..30}; do
+                    if [ "$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q db))" = "healthy" ]; then
+                      exit 0
+                    fi
+                    sleep 2
+                  done
+                  docker compose logs db
+                  exit 1
+            - name: Push Prisma schema
+              id: schema_push
+              run: |
+                  # Same recipe as playwright.yml: a plain push is a no-op when
+                  # the pre-seeded image already matches prisma/schema.prisma
+                  # (the common case) and the baked-in seed data stays valid. On
+                  # a branch whose schema has diverged, Prisma refuses without
+                  # --accept-data-loss — reapply with the flag and force a full
+                  # reseed so the data matches the new schema.
+                  set +e
+                  npx prisma db push
+                  status=$?
+                  set -e
+                  if [ $status -eq 0 ]; then
+                    echo "reseed=false" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "Pre-seeded image schema has diverged - reapplying with --accept-data-loss and forcing a full reseed."
+                    npx prisma db push --accept-data-loss
+                    echo "reseed=true" >> "$GITHUB_OUTPUT"
+                  fi
+            - name: Seed database
+              run: |
+                  # Mirrors e2e/global-setup.ts: the pre-seeded image already
+                  # carries the fixture data, so normally we only re-point the
+                  # single "upcoming" game day at the next Friday. A full reseed
+                  # is needed only when the schema push above had to reconcile a
+                  # diverged image.
+                  if [ "${{ steps.schema_push.outputs.reseed }}" = "true" ]; then
+                    npm run seed:ci
+                  else
+                    npm run refresh:upcoming-gameday:ci
+                  fi
+            - name: Build Next.js app
+              run: npm run build
+            - name: Start production server
+              run: |
+                  npm run start:ci > /tmp/next-start.log 2>&1 &
+                  npx wait-on --timeout 120000 http://127.0.0.1:3000
+            - name: Check links
+              # Programmatic crawl (src/lib/linkcheck/linkcheck.ts): seeds from
+              # / and /footy as a mock admin so the src/app/footy/** admin
+              # surface is covered too, not just what an anonymous visitor
+              # sees. Writes linkinator-report.json in the same shape as the
+              # linkinator CLI's --format json.
+              run: npm run linkcheck
+            - name: Report link check results
+              if: always()
+              run: |
+                  # --format json swallows linkinator's human-readable output,
+                  # so turn the report into a job-summary table plus inline
+                  # ::error annotations - no need to download the artifact to
+                  # see what broke.
+                  report=linkinator-report.json
+                  if [ ! -f "$report" ]; then
+                    echo "⚠️ No linkinator report was produced — the crawl did not run to completion." >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
+                  fi
+
+                  total=$(jq '.links | length' "$report")
+                  broken=$(jq '[.links[] | select(.state == "BROKEN")] | length' "$report")
+
+                  if [ "$broken" -eq 0 ]; then
+                    {
+                      echo "## Link check"
+                      echo
+                      echo "✅ Scanned **$total** links — all healthy."
+                    } >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
+                  fi
+
+                  jq -r '.links[] | select(.state == "BROKEN")
+                    | "| \(.status) | \(.url) | \(.parent // "—") |"' "$report" > /tmp/broken-rows.txt
+                  {
+                    echo "## Link check — $broken broken link(s)"
+                    echo
+                    echo "Out of $total links scanned. Full report in the **linkinator-report** artifact."
+                    echo
+                    echo "| Status | Broken URL | Linked from |"
+                    echo "| ------ | ---------- | ----------- |"
+                    head -n 200 /tmp/broken-rows.txt
+                  } >> "$GITHUB_STEP_SUMMARY"
+
+                  jq -r '.links[] | select(.state == "BROKEN")
+                    | "::error title=Broken link::\(.url) returned \(.status) (linked from \(.parent // "unknown"))"' "$report" > /tmp/broken-annotations.txt
+                  head -n 50 /tmp/broken-annotations.txt
+            - name: Upload linkinator report
+              if: always()
+              uses: actions/upload-artifact@v7
+              with:
+                  name: linkinator-report
+                  path: linkinator-report.json
+                  retention-days: 30
+            - name: Upload server log
+              if: always()
+              uses: actions/upload-artifact@v7
+              with:
+                  name: next-start-log
+                  path: /tmp/next-start.log
+                  if-no-files-found: ignore
+                  retention-days: 7

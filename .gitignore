@@ -61,6 +61,10 @@ footy.sql.gz
 # The live site links script output
 livesitelinks.json
 
+# linkinator (broken-link check) report / local run output
+linkinator-report.json
+linkcheck.out
+
 # Sentry Config File
 .env.sentry-build-plugin
 

@@ -40,9 +40,8 @@ prisma/fetch.js
 livesitelinks.json
 footy.sql.gz
 
-# This ticket (SYS-598) scopes Prettier to JS/TS/JSON/CSS source formatting.
-# YAML (CI workflows, docker-compose, ontology) and Markdown (docs) are
-# hand-maintained and out of scope — reformatting them is a separate decision.
+# Prettier owns JS/TS/JSON/CSS source formatting and, since SYS-334, Markdown
+# docs too. YAML (CI workflows, docker-compose, ontology) stays hand-maintained
+# and out of scope — its layout is deliberate and reformatting is diff noise.
 *.yml
 *.yaml
-*.md

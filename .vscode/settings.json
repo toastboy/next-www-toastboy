@@ -66,6 +66,12 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
     },
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    },
     "[terraform]": {
         "editor.defaultFormatter": "hashicorp.terraform",
         "editor.formatOnSave": true

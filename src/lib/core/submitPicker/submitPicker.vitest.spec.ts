@@ -351,7 +351,12 @@ describe('coreSubmitPicker', () => {
         expect(predictedTeamB).toEqual([190, 191, 196, 239]);
     });
 
-    it('removes the middle outfield player for odd counts then adds them to the lower-average team', async () => {
+    it('splits an odd squad into unequal sides and keeps goalie balance', async () => {
+        // 5 players, 2 goalies (P1, P5). On-pitch = 2 a side; team A has 3
+        // (one rotating out), team B has 2. Best split keeps one goalie each
+        // side and, after scaling team A by 2/3 for its substitute, minimises
+        // the on-pitch average gap: A = {P3,P4,P5} (2/3 * (1+5+2) = 5.33),
+        // B = {P1,P2} (4+2 = 6).
         const adminRows: OutcomePlayerType[] = [
             createOutcomePlayer({
                 playerId: 1,
@@ -384,16 +389,9 @@ describe('coreSubmitPicker', () => {
                 goalie: true,
             }),
         ];
-        const playedByPlayer = new Map([
-            [1, 10],
-            [2, 5],
-            [3, 5],
-            [4, 5],
-            [5, 10],
-        ]);
         const averageByPlayer = new Map([
             [1, 4],
-            [2, 2], // middle outfield player by goalie/played/average/age ordering
+            [2, 2],
             [3, 1],
             [4, 5],
             [5, 2],
@@ -407,9 +405,7 @@ describe('coreSubmitPicker', () => {
                 getAdminByGameDay: vi.fn().mockResolvedValue(adminRows),
                 getPlayerGamesPlayedBeforeGameDay: vi
                     .fn()
-                    .mockImplementation(
-                        (playerId: number) => playedByPlayer.get(playerId) ?? 0,
-                    ),
+                    .mockResolvedValue(10),
                 getRecentAverage: vi
                     .fn()
                     .mockImplementation(
@@ -435,19 +431,31 @@ describe('coreSubmitPicker', () => {
             deps,
         );
 
-        const upsertPayloads = deps.outcomeService.upsert.mock.calls.map(
-            (call) =>
-                call[0] as {
-                    gameDayId: number;
-                    playerId: number;
-                    team: TeamName | null;
-                },
-        );
-        expect(upsertPayloads).toContainEqual({
-            gameDayId: 1249,
-            playerId: 2,
-            team: 'A',
-        });
+        const teams = new Map<number, TeamName>();
+        for (const call of deps.outcomeService.upsert.mock.calls) {
+            const payload = call[0] as {
+                playerId: number;
+                team: TeamName | null;
+            };
+            if (payload.team === 'A' || payload.team === 'B') {
+                teams.set(payload.playerId, payload.team);
+            }
+        }
+
+        const teamA = [...teams.entries()]
+            .filter(([, team]) => team === 'A')
+            .map(([id]) => id)
+            .sort((l, r) => l - r);
+        const teamB = [...teams.entries()]
+            .filter(([, team]) => team === 'B')
+            .map(([id]) => id)
+            .sort((l, r) => l - r);
+
+        expect(teamA).toEqual([3, 4, 5]);
+        expect(teamB).toEqual([1, 2]);
+        // one goalie each side
+        expect(teamA).toContain(5);
+        expect(teamB).toContain(1);
     });
 
     it('throws when no current game is available', async () => {
@@ -864,11 +872,11 @@ describe('coreSubmitPicker', () => {
         expect(teamAssignments).toHaveLength(7);
     });
 
-    it('distributes odd-numbered player list across teams maintaining balance', async () => {
-        // P5 (avg=3) is the middle outfield player and is removed before splitting.
-        // The remaining 4 players (avg 1, 1, 5, 5) produce two teams with equal total
-        // averages (6 each), so teamAAverage < teamBAverage is false and the middle
-        // player is added to teamB via the else branch.
+    it('loads the larger side of an odd split to offset its rotating substitute', async () => {
+        // 5 players, no goalies, avgs [1, 1, 5, 5, 3]. Team A has 3 (one
+        // resting at a time), team B has 2. The fair split equalises on-pitch
+        // strength: A = {P1,P3,P5}, sum 9, scaled by 2/3 -> 6; B = {P2,P4},
+        // sum 6. The 3-player side deliberately carries the larger raw total.
         const adminRows: OutcomePlayerType[] = [
             createOutcomePlayer({
                 playerId: 1,
@@ -962,8 +970,8 @@ describe('coreSubmitPicker', () => {
             .map(([playerId]) => playerId)
             .sort((left, right) => left - right);
 
-        expect(teamAPlayers).toEqual([1, 3]);
-        expect(teamBPlayers).toEqual([2, 4, 5]);
+        expect(teamAPlayers).toEqual([1, 3, 5]);
+        expect(teamBPlayers).toEqual([2, 4]);
 
         const teamAAverage = teamAPlayers.reduce(
             (sum, playerId) => sum + (averageByPlayer.get(playerId) ?? 0),
@@ -974,8 +982,11 @@ describe('coreSubmitPicker', () => {
             0,
         );
 
-        expect(teamAAverage).toBe(6);
-        expect(teamBAverage).toBe(9);
+        // Larger side carries the higher raw total ...
+        expect(teamAAverage).toBe(9);
+        expect(teamBAverage).toBe(6);
+        // ... but on-pitch (A scaled by 2/3) the two sides are equal.
+        expect((2 / 3) * teamAAverage).toBeCloseTo(teamBAverage);
     });
 
     it('assigns all players for a minimal odd-sized selection with mixed birthdate availability', async () => {

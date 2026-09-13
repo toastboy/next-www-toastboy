@@ -1,4 +1,5 @@
 import { SignIn } from '@/components/SignIn/SignIn';
+import { sanitizeRedirectPath } from '@/lib/urls';
 
 export const metadata = { title: 'Sign In' };
 
@@ -13,7 +14,7 @@ const SignInPage = async ({ searchParams }: PageProps) => {
 
     return (
         <SignIn
-            redirect={redirect ?? '/footy/profile'}
+            redirect={sanitizeRedirectPath(redirect)}
             admin={adminProp}
         />
     );

@@ -357,6 +357,7 @@ const config = [
             'src/lib/importlivedb/**',
             'src/lib/fetchseeddata/**',
             'src/lib/crawllivesite/**',
+            'src/lib/linkcheck/**',
             'src/lib/observability/sentry.ts',
         ],
         rules: {

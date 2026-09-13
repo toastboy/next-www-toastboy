@@ -25,7 +25,7 @@ describe('Sign In page', () => {
         );
     });
 
-    it('passes through a custom redirect param', async () => {
+    it('passes through a safe custom redirect param', async () => {
         renderToStaticMarkup(
             await SignInPage({
                 searchParams: Promise.resolve({ redirect: '/footy/games' }),
@@ -36,6 +36,21 @@ describe('Sign In page', () => {
             { redirect: string },
         ][];
         expect(props.redirect).toBe('/footy/games');
+    });
+
+    it('replaces a crafted external redirect param with the safe default', async () => {
+        renderToStaticMarkup(
+            await SignInPage({
+                searchParams: Promise.resolve({
+                    redirect: 'https://evil.example/steal',
+                }),
+            }),
+        );
+
+        const [[props]] = (SignIn as Mock).mock.calls as [
+            { redirect: string },
+        ][];
+        expect(props.redirect).toBe('/footy/profile');
     });
 
     it('parses admin=true into a boolean true', async () => {

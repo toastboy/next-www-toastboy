@@ -29,7 +29,7 @@ import {
 } from '@/lib/auth.client';
 import { config } from '@/lib/config';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { getPublicBaseUrl } from '@/lib/urls';
+import { getPublicBaseUrl, sanitizeRedirectPath } from '@/lib/urls';
 
 export interface Props {
     admin?: boolean;
@@ -41,7 +41,12 @@ export const SignIn = ({ admin, redirect }: Props) => {
     const [loginError, setLoginError] = useState<boolean>(false);
     const router = useRouter();
     const pathname = usePathname();
-    const redirectPath = redirect ?? pathname;
+    // Only ever navigate to a safe internal path: a crafted `?redirect=` value
+    // (absolute, protocol-relative, `javascript:`…) must not reach either the
+    // client router or the social-auth callback URL. A missing or unsafe
+    // redirect falls back to DEFAULT_REDIRECT_PATH (`/footy/profile`), never to
+    // the current route — landing back on the sign-in page would loop.
+    const redirectPath = sanitizeRedirectPath(redirect);
     const socialRedirect = new URL(redirectPath, getPublicBaseUrl()).toString();
     const form = useForm({
         initialValues: {

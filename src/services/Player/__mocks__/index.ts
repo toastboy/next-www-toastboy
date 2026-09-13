@@ -11,6 +11,7 @@ const playerService = {
     getId: vi.fn(),
     getAll: vi.fn(),
     getAllIdsAndLogins: vi.fn(),
+    getAllIds: vi.fn(),
     getForm: vi.fn(),
     getLastPlayed: vi.fn(),
     getLastResult: vi.fn(),

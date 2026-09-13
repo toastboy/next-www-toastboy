@@ -11,6 +11,66 @@ export function safeDecodeURIComponent(value: string): string {
     }
 }
 
+/** Default redirect target when a caller-supplied one is missing or unsafe. */
+export const DEFAULT_REDIRECT_PATH = '/footy/profile';
+
+/**
+ * Characters allowed in a safe internal redirect target: the RFC 3986 "pchar"
+ * set plus the path/query/fragment delimiters `/ ? # [ ]` and the percent
+ * sign. Anything outside this set (backslashes, control characters,
+ * whitespace, quotes) makes the value unsafe.
+ *
+ * Note: inside a character class an unescaped `[` is a literal in JavaScript
+ * regex (and `eslint`'s `no-useless-escape` rejects escaping it); `]` is
+ * written as `\]` so it is a literal rather than closing the class.
+ */
+const SAFE_REDIRECT_PATH = /^\/[\w\-.~!$&'()*+,;=:@/?#%[\]]*$/;
+
+/**
+ * Returns `true` when `value` is a redirect target safe to hand to client-side
+ * navigation or a social-auth callback URL: a path rooted at a single `/` that
+ * cannot leave the current origin.
+ *
+ * Rejects absolute URLs (`https://evil.example`), protocol-relative URLs
+ * (`//evil.example`), scheme-relative values (`javascript:...`), backslash
+ * variants some browsers normalise to `/` (`/\evil.example`, `\\evil.example`),
+ * and any value carrying control characters or whitespace that could smuggle
+ * past a naive check (`/foo bar`, a decoded CR/LF).
+ */
+export function isSafeRedirectPath(
+    value: string | null | undefined,
+): value is string {
+    if (typeof value !== 'string' || value.length === 0) {
+        return false;
+    }
+    if (!value.startsWith('/') || value.startsWith('//')) {
+        return false;
+    }
+    return SAFE_REDIRECT_PATH.test(value);
+}
+
+/**
+ * Normalises a caller-supplied redirect target to a safe internal path.
+ *
+ * Returns `value` when it is a safe internal path (see
+ * {@link isSafeRedirectPath}), otherwise `fallback` when that is itself safe,
+ * otherwise {@link DEFAULT_REDIRECT_PATH}. Centralised so every auth flow
+ * sanitises redirects the same way and none can be pointed at an external
+ * origin.
+ */
+export function sanitizeRedirectPath(
+    value: string | null | undefined,
+    fallback: string = DEFAULT_REDIRECT_PATH,
+): string {
+    if (isSafeRedirectPath(value)) {
+        return value;
+    }
+    if (isSafeRedirectPath(fallback)) {
+        return fallback;
+    }
+    return DEFAULT_REDIRECT_PATH;
+}
+
 /**
  * Returns the normalized public base URL for the application.
  *

@@ -130,7 +130,7 @@ describe('auth config callbacks', () => {
                 'sendDeleteAccountVerification',
             );
 
-        it('sends a delete account email', async () => {
+        it('sends a deletion-focused email, not a password-reset one', async () => {
             await getCallback_()({
                 user: { email: 'user@example.com' },
                 url: 'https://example.test/delete',
@@ -144,22 +144,59 @@ describe('auth config callbacks', () => {
                     html: expect.stringContaining('Delete account') as unknown,
                 }),
             );
+            const { html } = coreSendEmailMock.mock.calls[0][0] as {
+                html: string;
+            };
+            expect(html).not.toMatch(/reset/i);
+        });
+
+        it('skips sending when user.email is absent', async () => {
+            await getCallback_()({
+                user: { email: undefined },
+                url: 'https://example.test/delete',
+                token: 'tok',
+            });
+
+            expect(coreSendEmailMock).not.toHaveBeenCalled();
         });
     });
 
     describe('user.deleteUser.beforeDelete', () => {
-        it('calls beforeDeletePlayer with the user object', async () => {
+        it('calls beforeDeletePlayer with a validated user summary', async () => {
             const cb = getCallback<AnyFn>('user', 'deleteUser', 'beforeDelete');
-            const user = {
+
+            await cb({
                 id: '1',
                 name: 'Alex',
                 email: 'alex@example.com',
                 playerId: 42,
-            };
+                token: 'secret',
+            });
 
-            await cb(user);
+            expect(beforeDeletePlayerMock).toHaveBeenCalledWith({
+                name: 'Alex',
+                email: 'alex@example.com',
+                playerId: 42,
+                role: 'user',
+                impersonatedBy: null,
+            });
+        });
 
-            expect(beforeDeletePlayerMock).toHaveBeenCalledWith(user);
+        it('rejects a malformed user object instead of casting it through', async () => {
+            const cb = getCallback<AnyFn>('user', 'deleteUser', 'beforeDelete');
+
+            await expect(cb('not-an-object')).rejects.toThrow();
+            expect(beforeDeletePlayerMock).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('canonical delete-account configuration', () => {
+        it('defines deleteUser only under `user`, with no ambiguous top-level block', () => {
+            const config = capturedConfigRef.value!;
+            const userConfig = config.user as Record<string, unknown>;
+
+            expect(userConfig.deleteUser).toBeDefined();
+            expect(config.deleteUser).toBeUndefined();
         });
     });
 
@@ -221,31 +258,6 @@ describe('auth config callbacks', () => {
             await getCallback_()({
                 user: { email: undefined },
                 url: 'https://example.test/verify',
-                token: 'tok',
-            });
-
-            expect(coreSendEmailMock).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('deleteUser.sendDeleteAccountVerification', () => {
-        const getCallback_ = () =>
-            getCallback<AnyFn>('deleteUser', 'sendDeleteAccountVerification');
-
-        it('fires coreSendEmail when user.email is set', async () => {
-            await getCallback_()({
-                user: { email: 'user@example.com' },
-                url: 'https://example.test/delete',
-                token: 'tok',
-            });
-
-            expect(coreSendEmailMock).toHaveBeenCalled();
-        });
-
-        it('skips sending when user.email is absent', async () => {
-            await getCallback_()({
-                user: { email: undefined },
-                url: 'https://example.test/delete',
                 token: 'tok',
             });
 

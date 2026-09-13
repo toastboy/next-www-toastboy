@@ -68,6 +68,11 @@ const nextConfig = {
                 permanent: false,
             },
             {
+                source: '/privacy',
+                destination: '/footy/docs/privacy',
+                permanent: true,
+            },
+            {
                 source: '/footy/drinkers',
                 destination: '/footy/admin/drinkers',
                 permanent: true,

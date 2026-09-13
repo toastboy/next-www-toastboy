@@ -1,3 +1,4 @@
+import { PlayerResponseSchema } from 'prisma/zod/schemas';
 import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { describe, expect, it } from 'vitest';
 
@@ -11,18 +12,29 @@ const shouldRunIntegration =
     process.env.RUN_PICKER_INTEGRATION === 'true' && !!process.env.DATABASE_URL;
 const describeIntegration = shouldRunIntegration ? describe : describe.skip;
 
-const parseGameIds = () => {
+const parseExplicitGameIds = (): number[] => {
     const raw = process.env.PICKER_PARITY_GAME_IDS?.trim();
-    if (!raw) return [1249];
+    if (!raw) return [];
 
-    const ids = raw
+    return raw
         .split(',')
         .map((value) => Number.parseInt(value.trim(), 10))
         .filter(Number.isFinite)
         .filter((id) => id > 0);
-
-    return ids.length > 0 ? ids : [1249];
 };
+
+/**
+ * The games to check parity for: `PICKER_PARITY_GAME_IDS` when set, otherwise
+ * every game day that has a stored picker split. Resolved at collection time so
+ * one `it` is generated per game.
+ */
+const resolveGameDayIds = async (): Promise<number[]> => {
+    const explicit = parseExplicitGameIds();
+    if (explicit.length > 0) return explicit;
+    return outcomeService.getGameDayIdsWithTeamsPicked();
+};
+
+const gameDayIds = shouldRunIntegration ? await resolveGameDayIds() : [1249];
 
 const sorted = (ids: number[]) => ids.slice().sort((a, b) => a - b);
 
@@ -43,6 +55,9 @@ interface Candidate {
 
 const sum = (values: number[]) => values.reduce((acc, value) => acc + value, 0);
 
+// Mirrors production calculateDiffs: cumulative metrics scaled by each side's
+// on-pitch share (onPitch / teamSize), goalie count left unscaled. For an even
+// squad both scales are 1.
 const diffTuple = (
     teamAIds: number[],
     teamBIds: number[],
@@ -58,19 +73,22 @@ const diffTuple = (
     };
     const teamA = teamAIds.map(read);
     const teamB = teamBIds.map(read);
+    const onPitch = Math.floor((teamA.length + teamB.length) / 2);
+    const scaleA = onPitch / teamA.length;
+    const scaleB = onPitch / teamB.length;
 
     const diffGoalies =
         sum(teamA.map((player) => (player.goalie ? 1 : 0))) -
         sum(teamB.map((player) => (player.goalie ? 1 : 0)));
     const diffAverage =
-        sum(teamA.map((player) => player.average)) -
-        sum(teamB.map((player) => player.average));
+        scaleA * sum(teamA.map((player) => player.average)) -
+        scaleB * sum(teamB.map((player) => player.average));
     const diffUnknownAge =
-        sum(teamA.map((player) => (player.age === null ? 1 : 0))) -
-        sum(teamB.map((player) => (player.age === null ? 1 : 0)));
+        scaleA * sum(teamA.map((player) => (player.age === null ? 1 : 0))) -
+        scaleB * sum(teamB.map((player) => (player.age === null ? 1 : 0)));
     const diffAge =
-        sum(teamA.map((player) => player.age ?? unknownAgeValue)) -
-        sum(teamB.map((player) => player.age ?? unknownAgeValue));
+        scaleA * sum(teamA.map((player) => player.age ?? unknownAgeValue)) -
+        scaleB * sum(teamB.map((player) => player.age ?? unknownAgeValue));
 
     return [
         Math.abs(diffGoalies),
@@ -91,18 +109,25 @@ const compareTuple = (left: number[], right: number[]) => {
     return 0;
 };
 
+// Every distinct split, matching production findBestSplit. Even squad: teamA is
+// half the squad with player[0] pinned to it (one representative per mirrored
+// pair). Odd squad: teamA is the larger side (⌈n/2⌉) and the two sides differ
+// in size, so all C(n, ⌈n/2⌉) subsets are enumerated.
 const uniqueSplits = (playerIdsInOrder: number[]) => {
-    if (playerIdsInOrder.length % 2 !== 0 || playerIdsInOrder.length < 2)
-        return [] as { teamA: number[]; teamB: number[] }[];
+    const n = playerIdsInOrder.length;
+    if (n < 2) return [] as { teamA: number[]; teamB: number[] }[];
 
-    const teamSize = playerIdsInOrder.length / 2;
-    const first = playerIdsInOrder[0];
-    const remaining = playerIdsInOrder.slice(1);
+    const teamASize = Math.ceil(n / 2);
+    const evenSquad = n % 2 === 0;
+    const pool = evenSquad ? playerIdsInOrder.slice(1) : playerIdsInOrder;
+    const need = evenSquad ? teamASize - 1 : teamASize;
     const result: { teamA: number[]; teamB: number[] }[] = [];
 
     const walk = (start: number, needed: number, prefix: number[]) => {
         if (needed === 0) {
-            const teamA = [first, ...prefix];
+            const teamA = evenSquad
+                ? [playerIdsInOrder[0], ...prefix]
+                : [...prefix];
             const teamASet = new Set(teamA);
             const teamB = playerIdsInOrder.filter(
                 (playerId) => !teamASet.has(playerId),
@@ -111,12 +136,12 @@ const uniqueSplits = (playerIdsInOrder: number[]) => {
             return;
         }
 
-        for (let index = start; index <= remaining.length - needed; index++) {
-            walk(index + 1, needed - 1, [...prefix, remaining[index]]);
+        for (let index = start; index <= pool.length - needed; index++) {
+            walk(index + 1, needed - 1, [...prefix, pool[index]]);
         }
     };
 
-    walk(0, teamSize - 1, []);
+    walk(0, need, []);
     return result;
 };
 
@@ -217,10 +242,47 @@ const buildCandidatesUsingPlayedAllTime = async ({
     return candidates;
 };
 
+/**
+ * Reconstructs the trailing-window points list `getRecentAverage` sums for a
+ * player, game by game, so a divergence can be traced to the exact prior
+ * games (and their stored result/team) that feed the average. Mirrors
+ * `getRecentGamePoints` + `getRecentAverage`: prior games only, team assigned,
+ * newest first, capped at `history`, with 1.45 credited per missing game.
+ */
+const recentGameBreakdown = async (
+    playerId: number,
+    gameDayId: number,
+    history: number,
+) => {
+    const all = await outcomeService.getByPlayer(playerId);
+    const contributing = all
+        .filter((row) => row.gameDayId < gameDayId && row.team !== null)
+        .sort((a, b) => b.gameDayId - a.gameDayId)
+        .slice(0, history)
+        .map((row) => ({
+            gameDayId: row.gameDayId,
+            team: row.team,
+            points: row.points,
+        }));
+    const played = contributing.length;
+    const sumPoints = contributing.reduce(
+        (acc, row) => acc + (row.points ?? 0),
+        0,
+    );
+    const creditedForMissing = 1.45 * (history - played);
+    return {
+        played,
+        sumPoints,
+        creditedForMissing,
+        recomputedAverage: (sumPoints + creditedForMissing) / history,
+        contributing,
+    };
+};
+
 describeIntegration(
     'SubmitPicker parity against historical game outcomes',
     () => {
-        for (const gameDayId of parseGameIds()) {
+        for (const gameDayId of gameDayIds) {
             it(`matches stored teams for game ${gameDayId}`, async () => {
                 const gameDay = await gameDayService.get(gameDayId);
                 expect(gameDay).not.toBeNull();
@@ -236,6 +298,14 @@ describeIntegration(
                 const selectedInput: SubmitPickerInput = historicallyPicked.map(
                     (row) => ({ playerId: row.playerId }),
                 );
+                // A stored team assignment means the player was 'Yes' at pick
+                // time (ontology: "picked" ≡ response 'Yes' AND team not null).
+                // A later Flaked/Injured/Excused amendment is post-game and
+                // must not change who the picker would have chosen, so restore
+                // the pick-time response for these players.
+                const pickedPlayerIds = new Set(
+                    historicallyPicked.map((row) => row.playerId),
+                );
                 const writePayloads: {
                     gameDayId: number;
                     playerId: number;
@@ -247,8 +317,22 @@ describeIntegration(
                         getCurrent: () => Promise.resolve(gameDay),
                     },
                     outcomeService: {
-                        getAdminByGameDay: (id: number) =>
-                            outcomeService.getAdminByGameDay(id),
+                        getAdminByGameDay: async (id: number, asOf?: Date) => {
+                            const rows = await outcomeService.getAdminByGameDay(
+                                id,
+                                asOf,
+                            );
+                            return rows.map((row) =>
+                                pickedPlayerIds.has(row.playerId) &&
+                                row.response !== PlayerResponseSchema.enum.Yes
+                                    ? {
+                                          ...row,
+                                          response:
+                                              PlayerResponseSchema.enum.Yes,
+                                      }
+                                    : row,
+                            );
+                        },
                         getPlayerGamesPlayedBeforeGameDay: (
                             playerId: number,
                             id: number,
@@ -337,8 +421,10 @@ describeIntegration(
                     const selectedPlayerIdsInOrder = selectedInput.map(
                         (item) => item.playerId,
                     );
-                    const adminRows =
-                        await outcomeService.getAdminByGameDay(gameDayId);
+                    const adminRows = await outcomeService.getAdminByGameDay(
+                        gameDayId,
+                        gameDay.date,
+                    );
                     const history = gameDay.pickerGamesHistory ?? 10;
                     const candidates = await buildCandidates({
                         gameDayId,
@@ -373,8 +459,11 @@ describeIntegration(
                         byPlayerId,
                         unknownAgeValue,
                     );
+                    // Both parities are now exhaustively rankable: even squads
+                    // via mirrored splits, odd squads via all C(n, ceil(n/2))
+                    // subsets. Guard only against a squad too small to split.
                     const canRankByExhaustiveSearch =
-                        selectedPlayerIdsInOrder.length % 2 === 0;
+                        selectedPlayerIdsInOrder.length >= 2;
                     const allSplits = canRankByExhaustiveSearch
                         ? uniqueSplits(selectedPlayerIdsInOrder).map(
                               (split) => ({
@@ -412,6 +501,45 @@ describeIntegration(
                                   compareTuple(split.tuple, actualTuple) === 0,
                           ).length
                         : null;
+
+                    // Players who ended up on a different side than history,
+                    // under whichever A/B labelling moves the fewest people.
+                    const actualSideOf = new Map<number, 'A' | 'B'>();
+                    actualTeamA.forEach((id) => actualSideOf.set(id, 'A'));
+                    actualTeamB.forEach((id) => actualSideOf.set(id, 'B'));
+                    const predictedSideOf = new Map<number, 'A' | 'B'>();
+                    predictedTeamA.forEach((id) =>
+                        predictedSideOf.set(id, 'A'),
+                    );
+                    predictedTeamB.forEach((id) =>
+                        predictedSideOf.set(id, 'B'),
+                    );
+                    const flip = (side?: 'A' | 'B') =>
+                        side === 'A' ? 'B' : side === 'B' ? 'A' : side;
+                    const movedDirect = selectedPlayerIdsInOrder.filter(
+                        (id) =>
+                            actualSideOf.get(id) !== predictedSideOf.get(id),
+                    );
+                    const movedSwapped = selectedPlayerIdsInOrder.filter(
+                        (id) =>
+                            actualSideOf.get(id) !==
+                            flip(predictedSideOf.get(id)),
+                    );
+                    const movedPlayerIds =
+                        movedSwapped.length < movedDirect.length
+                            ? movedSwapped
+                            : movedDirect;
+                    const movedPlayers = await Promise.all(
+                        movedPlayerIds.map(async (playerId) => ({
+                            playerId,
+                            candidate: byPlayerId.get(playerId) ?? null,
+                            recentAverageWindow: await recentGameBreakdown(
+                                playerId,
+                                gameDayId,
+                                history,
+                            ),
+                        })),
+                    );
 
                     const candidatesPlayedAllTime =
                         await buildCandidatesUsingPlayedAllTime({
@@ -507,6 +635,7 @@ describeIntegration(
                                     equalToActual,
                                     splitsAtBestTupleCount:
                                         splitsAtBestTuple.length,
+                                    movedPlayers,
                                     candidateSnapshot: candidates
                                         .slice()
                                         .sort(

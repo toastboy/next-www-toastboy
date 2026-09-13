@@ -85,6 +85,25 @@ class OutcomeService {
     }
 
     /**
+     * Retrieves the IDs of every game day where the picker has run and split
+     * the squad — i.e. at least two outcomes carry a non-null team. Used by the
+     * picker parity integration test to enumerate every historically pickable
+     * game.
+     * @returns A promise resolving to the game day IDs, ascending.
+     * @throws An error if there is a failure.
+     */
+    async getGameDayIdsWithTeamsPicked(): Promise<number[]> {
+        const groups = await prisma.outcome.groupBy({
+            by: ['gameDayId'],
+            where: { team: { not: null } },
+            _count: { team: true },
+            having: { team: { _count: { gt: 1 } } },
+            orderBy: { gameDayId: 'asc' },
+        });
+        return groups.map((group) => group.gameDayId);
+    }
+
+    /**
      * Retrieves the last played outcome.
      * @returns A Promise that resolves to the last played Outcome, or null if no outcome is found.
      */
@@ -313,21 +332,34 @@ class OutcomeService {
     }
 
     /**
-     * Retrieves admin response rows for a game day, including active players
-     * who do not yet have an Outcome for that game day.
+     * Retrieves admin response rows for a game day, including players who do
+     * not yet have an Outcome for that game day.
+     *
+     * By default only players who have not finished are included. Pass `asOf`
+     * to instead include every player who had not finished as of that date:
+     * the picker passes the game day's own date so a historical game can be
+     * replayed against the roster as it stood then, rather than filtered by
+     * who is still active now.
      * @param gameDayId - The ID of the game day.
-     * @returns A promise that resolves to one row per active player.
+     * @param asOf - Optional cut-off date. When given, a player is included if
+     * their `finished` is null or on/after this date (so a player is still
+     * included for their own last game); when omitted, only players whose
+     * `finished` is null are included.
+     * @returns A promise that resolves to one row per matching player.
      * @throws If there is an error fetching the data.
      */
-    async getAdminByGameDay(gameDayId: number): Promise<OutcomePlayerType[]> {
+    async getAdminByGameDay(
+        gameDayId: number,
+        asOf?: Date,
+    ): Promise<OutcomePlayerType[]> {
         const validatedGameDayId = z.number().int().min(1).parse(gameDayId);
 
         const [gameDay, activePlayers] = await Promise.all([
             gameDayService.get(validatedGameDayId),
             prisma.player.findMany({
-                where: {
-                    finished: null,
-                },
+                where: asOf
+                    ? { OR: [{ finished: null }, { finished: { gte: asOf } }] }
+                    : { finished: null },
                 orderBy: [{ name: 'asc' }, { id: 'asc' }],
                 include: {
                     outcomes: {

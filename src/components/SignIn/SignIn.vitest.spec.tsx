@@ -210,6 +210,86 @@ describe('SignIn', () => {
         expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
 
+    describe('redirect sanitisation', () => {
+        it('navigates to a safe internal redirect after a successful sign in', async () => {
+            const user = userEvent.setup();
+            const push = vi.fn();
+            vi.mocked(useRouter).mockReturnValue(mockRouter({ push }));
+            (authClient.signIn.email as Mock).mockResolvedValueOnce({
+                user: { id: '123' },
+            });
+
+            render(
+                <Wrapper>
+                    <SignIn redirect="/footy/admin/users" />
+                </Wrapper>,
+            );
+
+            await user.type(
+                screen.getByLabelText(/Email/i),
+                'valid.email@example.com',
+            );
+            await user.type(
+                screen.getByLabelText(/Password/i),
+                'validPassword123',
+            );
+            await user.click(screen.getByRole('button', { name: /Sign In$/i }));
+
+            expect(push).toHaveBeenCalledWith('/footy/admin/users');
+        });
+
+        it('sends a crafted external redirect to the safe default, not the current route', async () => {
+            const user = userEvent.setup();
+            const push = vi.fn();
+            vi.mocked(useRouter).mockReturnValue(mockRouter({ push }));
+            // beforeEach mocks usePathname() to '/footy/auth/signin'; an unsafe
+            // redirect must not fall back to it and loop the user on sign-in.
+            (authClient.signIn.email as Mock).mockResolvedValueOnce({
+                user: { id: '123' },
+            });
+
+            render(
+                <Wrapper>
+                    <SignIn redirect="https://evil.example/steal" />
+                </Wrapper>,
+            );
+
+            await user.type(
+                screen.getByLabelText(/Email/i),
+                'valid.email@example.com',
+            );
+            await user.type(
+                screen.getByLabelText(/Password/i),
+                'validPassword123',
+            );
+            await user.click(screen.getByRole('button', { name: /Sign In$/i }));
+
+            expect(push).toHaveBeenCalledWith('/footy/profile');
+        });
+
+        it('keeps the social callback URL on the app origin for a crafted redirect', async () => {
+            const user = userEvent.setup();
+            render(
+                <Wrapper>
+                    <SignIn redirect="https://evil.example/steal" />
+                </Wrapper>,
+            );
+
+            await user.click(
+                screen.getByRole('button', { name: /Sign in with Google/i }),
+            );
+
+            const callbackURL = (signInWithGoogle as Mock).mock
+                .calls[0][0] as string;
+            expect(callbackURL).not.toContain('evil.example');
+            // getPublicBaseUrl is stubbed to http://localhost in the frontend
+            // test setup; the crafted redirect must resolve against it, not
+            // the attacker origin, and land on the safe default path.
+            expect(new URL(callbackURL).origin).toBe('http://localhost');
+            expect(new URL(callbackURL).pathname).toBe('/footy/profile');
+        });
+    });
+
     it('succeeds when valid credentials are provided', async () => {
         const user = userEvent.setup();
         (authClient.signIn.email as Mock).mockResolvedValueOnce({

@@ -178,7 +178,7 @@
         "playwright": "^1.62.1",
         "postcss-preset-mantine": "^1.18.0",
         "postcss-simple-vars": "^7.0.1",
-        "prettier": "^3.9.6",
+        "prettier": "^3.9.8",
         "storybook": "^10.5.7",
         "supertest": "^7.2.2",
         "ts-node": "^10.9.2",

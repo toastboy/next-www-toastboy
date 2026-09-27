@@ -5,8 +5,13 @@ import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
 import playerService from '@/services/Player';
 
-/** Regenerate the sitemap at most hourly rather than on every request. */
-export const revalidate = 3600;
+/**
+ * Render on demand rather than at build time: the sitemap enumerates every
+ * player and game day, so it needs a live database connection, which isn't
+ * available inside the Docker image build that runs `next build`. Prerendering
+ * it there fails the whole build with a Prisma pool timeout.
+ */
+export const dynamic = 'force-dynamic';
 
 /**
  * Public, indexable pages that always exist, as paths relative to the site

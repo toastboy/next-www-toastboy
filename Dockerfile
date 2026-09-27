@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM --platform=$BUILDPLATFORM node:26.8.1-bookworm-slim AS base
+FROM --platform=$BUILDPLATFORM node:26.8.2-bookworm-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1 \
     npm_config_update_notifier=false \
     npm_config_fund=false

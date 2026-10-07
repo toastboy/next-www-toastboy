@@ -66,7 +66,7 @@
         "@mantine/hooks": "^9.6.3",
         "@mantine/notifications": "^9.6.3",
         "@mantine/tiptap": "^9.6.3",
-        "@next/mdx": "^16.3.6",
+        "@next/mdx": "^16.3.8",
         "@prisma/adapter-mariadb": "^7.10.0",
         "@prisma/client": "^7.10.0",
         "@sentry/nextjs": "^10.71.0",

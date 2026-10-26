@@ -45,13 +45,20 @@ function requireSecret(name: string, value: string | undefined): string {
  */
 function recipientToString(value: SendMailOptions['to']): string | undefined {
     if (!value) return undefined;
+    return flattenRecipient(value) || undefined;
+}
+
+/**
+ * Recursively flattens a nodemailer address value (string, `Address`, group,
+ * or nested arrays of any of these) into a comma-separated string.
+ */
+function flattenRecipient(value: NonNullable<SendMailOptions['to']>): string {
     if (typeof value === 'string') return value;
     if (Array.isArray(value)) {
-        return value
-            .map((v) => (typeof v === 'string' ? v : v.address))
-            .join(',');
+        return value.map(flattenRecipient).filter(Boolean).join(',');
     }
-    return value.address;
+    if (value.group) return flattenRecipient(value.group);
+    return value.address ?? '';
 }
 
 /**

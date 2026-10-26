@@ -236,6 +236,31 @@ describe('coreSendEmail', () => {
         );
     });
 
+    it('flattens nested and group recipients for Graph API', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('CI', '');
+
+        await coreSendEmail({
+            to: [['a@example.com'], [{ address: 'b@example.com', name: 'B' }]],
+            cc: {
+                name: 'Team',
+                group: [{ address: 'c@example.com' }, { address: 'd@example.com' }],
+            },
+            bcc: [{ name: 'No address' }],
+            subject: 'Nested recipients',
+            html: '<p>Hi</p>',
+        });
+
+        expect(sendViaGraphApiMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                to: 'a@example.com,b@example.com',
+                cc: 'c@example.com,d@example.com',
+                bcc: undefined,
+            }),
+            expect.anything(),
+        );
+    });
+
     it('converts Address object to string for Graph API', async () => {
         vi.stubEnv('NODE_ENV', 'production');
         vi.stubEnv('CI', '');

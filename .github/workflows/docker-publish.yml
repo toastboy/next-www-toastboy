@@ -56,7 +56,7 @@ jobs:
                   MAIL_GRAPH_CLIENT_SECRET: "op://next-www-toastboy/App - Mail/credential"
 
             - name: Log in to GHCR
-              uses: docker/login-action@v4.6.0
+              uses: docker/login-action@v4.7.0
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}
@@ -133,7 +133,7 @@ jobs:
                   echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
 
             - name: Log in to GHCR
-              uses: docker/login-action@v4.6.0
+              uses: docker/login-action@v4.7.0
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}
@@ -190,7 +190,7 @@ jobs:
                   merge-multiple: true
 
             - name: Log in to GHCR
-              uses: docker/login-action@v4.6.0
+              uses: docker/login-action@v4.7.0
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}
@@ -231,7 +231,7 @@ jobs:
                   merge-multiple: true
 
             - name: Log in to GHCR
-              uses: docker/login-action@v4.6.0
+              uses: docker/login-action@v4.7.0
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}

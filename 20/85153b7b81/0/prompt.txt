@@ -1,0 +1,44 @@
+I need to fix this build error: 
+
+ Executing task: op run --env-file ./.env -- sh -c 'npm run build' 
+
+
+> build
+> npm run generate && DEBUG=app:* next build
+
+
+> generate
+> prisma generate
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+✅ Zod schemas generated successfully with filtering applied
+
+
+✔ Generated Prisma Client (7.10.1) to ./prisma/generated in 78ms
+
+✔ Generated Prisma Zod Generator to ./prisma/zod in 676ms
+
+▲ Next.js 16.4.3 (Turbopack)
+- Environments: .env.local, .env
+✓ Running next.config.mjs took 740ms
+- Experiments (use with caution):
+  · clientTraceMetadata
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 19.3s
+  Running next.config.js provided runAfterProductionCompile ...
+✓ Completed runAfterProductionCompile in 17.1s
+  Running TypeScript ...
+src/lib/core/sendEmail/sendEmail.ts(51,56): error TS2339: Property 'address' does not exist on type 'MimeNodeAddress | MimeNodeAddressInput[]'.
+  Property 'address' does not exist on type 'MimeNodeAddressInput[]'.
+Failed to type check.
+
+
+ *  The terminal process "/opt/homebrew/bin/zsh '-l', '-c', 'op run --env-file ./.env -- sh -c 'npm run build''" terminated with exit code: 1. 
+ *  Terminal will be reused by tasks, press any key to close it.
+
+---
+
+What are the consequences of that behaviour change?

@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { TableScore } from '@/components/TableScore/TableScore';
-import { Wrapper } from '@/tests/components/lib/common';
+import { hoverForTooltip, Wrapper } from '@/tests/components/lib/common';
 import {
     defaultPlayerRecord,
     minimalPlayerRecord,
@@ -35,11 +34,9 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(
+        const tooltip = await hoverForTooltip(
             screen.getByText(String(defaultPlayerRecord.scorePoints)),
         );
-        const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
             `P${defaultPlayerRecord.played ?? 0}`,
         );
@@ -58,9 +55,7 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('paragraph'));
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('paragraph'));
         expect(tooltip).toHaveTextContent('P0');
         expect(tooltip).toHaveTextContent('W0');
         expect(tooltip).toHaveTextContent('D0');
@@ -81,13 +76,11 @@ describe('TableScore', () => {
         const expectedAverage = defaultPlayerRecord.scoreAverages.toFixed(3);
         expect(screen.getByText(expectedAverage)).toBeInTheDocument();
 
-        const user = userEvent.setup();
-        await user.hover(
+        const tooltip = await hoverForTooltip(
             screen.getByText(
                 String(defaultPlayerRecord.scoreAverages.toFixed(3)),
             ),
         );
-        const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
             `P${defaultPlayerRecord.played ?? 0}`,
         );
@@ -106,11 +99,9 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(
+        const tooltip = await hoverForTooltip(
             screen.getByText(defaultPlayerRecord.scoreAverages.toFixed(3)),
         );
-        const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
             `P${defaultPlayerRecord.played ?? 0}`,
         );
@@ -129,9 +120,7 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('paragraph'));
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('paragraph'));
         expect(tooltip).toHaveTextContent('P0');
         expect(tooltip).toHaveTextContent('W0');
         expect(tooltip).toHaveTextContent('D0');
@@ -163,11 +152,9 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(
+        const tooltip = await hoverForTooltip(
             screen.getByText(`${defaultPlayerRecord.scoreStalwart}%`),
         );
-        const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
             `Played ${defaultPlayerRecord.played} of ${defaultPlayerRecord.gamesPlayed}`,
         );
@@ -183,9 +170,7 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('paragraph'));
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('paragraph'));
         expect(tooltip).toHaveTextContent('Played 0 of 10');
     });
 
@@ -218,11 +203,9 @@ describe('TableScore', () => {
 
         const date = new Date(0);
         date.setSeconds(defaultPlayerRecord.scoreSpeedy);
-        const user = userEvent.setup();
-        await user.hover(
+        const tooltip = await hoverForTooltip(
             screen.getByText(date.toISOString().substring(11, 19)),
         );
-        const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent(
             `${defaultPlayerRecord.responses} responses`,
         );
@@ -238,9 +221,7 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('paragraph'));
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('paragraph'));
         expect(tooltip).toHaveTextContent('0 responses');
     });
 

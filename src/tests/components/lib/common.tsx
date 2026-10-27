@@ -1,5 +1,5 @@
 import { MantineProvider } from '@mantine/core';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import type { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { vi } from 'vitest';
@@ -107,4 +107,26 @@ export const extractMockProps = <T,>(id: string) => {
     }
     expect(result.length).toBeGreaterThan(0);
     return result;
+};
+
+const pointerPath = (target: HTMLElement) => {
+    const path: HTMLElement[] = [];
+    for (let el: HTMLElement | null = target; el; el = el.parentElement) {
+        path.push(el);
+    }
+    return path;
+};
+
+/**
+ * Hovers `target` and resolves with the Mantine tooltip it opens. Mantine
+ * listens for a non-bubbling `mouseenter` on the tooltip's own element, so, as
+ * a real pointer would, this enters `target` and each of its ancestors.
+ * @param target - The element (or a descendant of the element) the tooltip is attached to.
+ * @returns The open tooltip element.
+ */
+export const hoverForTooltip = async (target: HTMLElement) => {
+    pointerPath(target)
+        .reverse()
+        .forEach((el) => fireEvent.mouseEnter(el));
+    return waitFor(() => screen.getByRole('tooltip'));
 };

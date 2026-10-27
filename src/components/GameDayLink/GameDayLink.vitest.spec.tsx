@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { formatDate } from '@/lib/dates';
-import { Wrapper } from '@/tests/components/lib/common';
+import { hoverForTooltip, Wrapper } from '@/tests/components/lib/common';
 import { createMockGameDay, defaultGameDay } from '@/tests/mocks/data/gameDay';
 
 describe('GameDayLink', () => {
@@ -114,11 +113,8 @@ describe('GameDayLink', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('link'));
-
         // The tooltip provides the accessible description for the otherwise icon-only link.
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('link'));
         expect(tooltip).toHaveTextContent(formatDate(defaultGameDay.date));
     });
 
@@ -132,11 +128,8 @@ describe('GameDayLink', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('link'));
-
         // The tooltip provides the accessible description for the otherwise icon-only link.
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('link'));
         expect(tooltip).toHaveTextContent(formatDate(defaultGameDay.date));
     });
 
@@ -151,10 +144,7 @@ describe('GameDayLink', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('link'));
-
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('link'));
         expect(tooltip).toHaveTextContent(formatDate(gameDayWithComment.date));
         expect(tooltip).toHaveTextContent('This is a comment');
     });
@@ -168,10 +158,7 @@ describe('GameDayLink', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(screen.getByRole('link'));
-
-        const tooltip = await screen.findByRole('tooltip');
+        const tooltip = await hoverForTooltip(screen.getByRole('link'));
         expect(tooltip).toHaveTextContent(formatDate(gameDayNoComment.date));
         // No stray comment text beyond the date.
         expect(tooltip.textContent?.trim()).toBe(

@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
-import { Wrapper } from '@/tests/components/lib/common';
+import { hoverForTooltip, Wrapper } from '@/tests/components/lib/common';
 
 import { GoalieIndicator } from './GoalieIndicator';
 
@@ -25,12 +24,9 @@ describe('GoalieIndicator', () => {
             </Wrapper>,
         );
 
-        const user = userEvent.setup();
-        await user.hover(
+        const tooltip = await hoverForTooltip(
             screen.getByRole('img', { name: /goalie indicator/i }),
         );
-
-        const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent('Goalie');
     });
 

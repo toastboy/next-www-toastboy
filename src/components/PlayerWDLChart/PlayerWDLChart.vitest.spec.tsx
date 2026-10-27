@@ -1,8 +1,7 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render } from '@testing-library/react';
 
 import { PlayerWDLChart } from '@/components/PlayerWDLChart/PlayerWDLChart';
-import { Wrapper } from '@/tests/components/lib/common';
+import { hoverForTooltip, Wrapper } from '@/tests/components/lib/common';
 import {
     createMockPlayerData,
     defaultPlayerData,
@@ -24,36 +23,26 @@ describe('PlayerWDLChart', () => {
         ).toBeInTheDocument();
     });
 
-    it('shows a single combined P/W/D/L tooltip regardless of which section is hovered', async () => {
-        const user = userEvent.setup();
-        const { container } = render(
-            <Wrapper>
-                <PlayerWDLChart player={defaultPlayerData} />
-            </Wrapper>,
-        );
+    it.each([
+        ['wins', 0],
+        ['draws', 1],
+        ['losses', 2],
+    ])(
+        'shows the combined P/W/D/L tooltip when the %s section is hovered',
+        async (_name, index) => {
+            const { container } = render(
+                <Wrapper>
+                    <PlayerWDLChart player={defaultPlayerData} />
+                </Wrapper>,
+            );
 
-        const [wins, draws, losses] = getProgressSections(container);
-
-        await user.hover(wins);
-        expect(await screen.findByRole('tooltip')).toHaveTextContent(
-            'P90 W50 D20 L20',
-        );
-        await user.unhover(wins);
-
-        await user.hover(draws);
-        expect(await screen.findByRole('tooltip')).toHaveTextContent(
-            'P90 W50 D20 L20',
-        );
-        await user.unhover(draws);
-
-        await user.hover(losses);
-        expect(await screen.findByRole('tooltip')).toHaveTextContent(
-            'P90 W50 D20 L20',
-        );
-    });
+            const section = getProgressSections(container)[index];
+            const tooltip = await hoverForTooltip(section as HTMLElement);
+            expect(tooltip).toHaveTextContent('P90 W50 D20 L20');
+        },
+    );
 
     it('interpolates each count into the tooltip label', async () => {
-        const user = userEvent.setup();
         const player = createMockPlayerData({
             gamesWon: 1,
             gamesDrawn: 1,
@@ -67,11 +56,8 @@ describe('PlayerWDLChart', () => {
         );
 
         const [wins] = getProgressSections(container);
-
-        await user.hover(wins);
-        expect(await screen.findByRole('tooltip')).toHaveTextContent(
-            'P3 W1 D1 L1',
-        );
+        const tooltip = await hoverForTooltip(wins as HTMLElement);
+        expect(tooltip).toHaveTextContent('P3 W1 D1 L1');
     });
 
     it('renders zero-width sections instead of NaN when the player has not played any games', () => {

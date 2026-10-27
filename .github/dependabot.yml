@@ -13,13 +13,13 @@ updates:
           semver-patch-days: 3
           semver-minor-days: 7
           semver-major-days: 14
+      # Majors are taken deliberately (e.g. with `ncu --target major`), not as
+      # PRs: minor and patch updates, including security fixes, still flow.
+      # This also keeps @types/node on the 24.x that matches the runtime.
       ignore:
-          - dependency-name: "eslint"
-            versions:
-                - ">=10"
-          - dependency-name: "@eslint/js"
-            versions:
-                - ">=10"
+          - dependency-name: "*"
+            update-types:
+                - "version-update:semver-major"
       groups:
           eslint-core:
               patterns:
@@ -83,3 +83,10 @@ updates:
       directory: "/"
       schedule:
           interval: "weekly"
+      # Stay on Node 24 (see .nvmrc and engines); a new Node major is a
+      # deliberate change across the Dockerfile, .nvmrc, engines, @types/node
+      # and the workflows' node-version.
+      ignore:
+          - dependency-name: "node"
+            update-types:
+                - "version-update:semver-major"

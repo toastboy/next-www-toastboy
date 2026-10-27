@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM --platform=$BUILDPLATFORM node:26.12.0-bookworm-slim AS base
+FROM --platform=$BUILDPLATFORM node:24.22.1-bookworm-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1 \
     npm_config_update_notifier=false \
     npm_config_fund=false
@@ -77,7 +77,7 @@ CMD ["/usr/local/seeder.sh"]
 # /etc/passwd, which doesn't define it), and CMD/HEALTHCHECK must use exec
 # form (no shell to interpret a string). ENTRYPOINT is preset to `node`, so
 # CMD is arguments to node, not the "node" command itself.
-FROM --platform=$TARGETPLATFORM gcr.io/distroless/nodejs26-debian13:nonroot AS runner
+FROM --platform=$TARGETPLATFORM gcr.io/distroless/nodejs24-debian13:nonroot AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

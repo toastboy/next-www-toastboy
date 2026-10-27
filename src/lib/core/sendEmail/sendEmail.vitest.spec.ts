@@ -244,7 +244,10 @@ describe('coreSendEmail', () => {
             to: [['a@example.com'], [{ address: 'b@example.com', name: 'B' }]],
             cc: {
                 name: 'Team',
-                group: [{ address: 'c@example.com' }, { address: 'd@example.com' }],
+                group: [
+                    { address: 'c@example.com' },
+                    { address: 'd@example.com' },
+                ],
             },
             bcc: [{ name: 'No address' }],
             subject: 'Nested recipients',

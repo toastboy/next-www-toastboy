@@ -98,7 +98,13 @@ describe('sitemap', () => {
         const urls = await urlsFrom();
 
         expect(
-            urls.every((url) => url.startsWith('https://footy.example')),
+            urls.every((url) => {
+                const parsed = new URL(url);
+                return (
+                    parsed.protocol === 'https:' &&
+                    parsed.hostname === 'footy.example'
+                );
+            }),
         ).toBe(true);
         expect(new Set(urls).size).toBe(urls.length);
     });

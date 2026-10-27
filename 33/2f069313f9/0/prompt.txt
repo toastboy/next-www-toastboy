@@ -1,0 +1,9 @@
+Help me fix the vitest tooltip errors
+
+---
+
+Apply the same fix to GoalieIndicator, PlayerWDLChart and TableScore
+
+---
+
+Stop and explain what's different about TableScore compared to the other 3

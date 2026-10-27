@@ -138,7 +138,7 @@
         "@types/debug": "^4.1.13",
         "@types/escape-html": "^1.0.4",
         "@types/mdx": "^2.0.14",
-        "@types/node": "24.x",
+        "@types/node": "26.x",
         "@types/nodemailer": "^8.0.2",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",

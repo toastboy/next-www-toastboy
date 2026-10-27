@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.12.0",
+  "checkpoint_id": "332f069313f9",
+  "session_id": "ce6afbef-b1c6-40dd-abce-30a8e271c1b3",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-27T07:32:07.31857Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "save_step_count": 5,
+  "files_touched": [
+    "src/components/GameDayLink/GameDayLink.vitest.spec.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.vitest.spec.tsx",
+    "src/components/PlayerWDLChart/PlayerWDLChart.vitest.spec.tsx",
+    "src/components/TableScore/TableScore.vitest.spec.tsx",
+    "src/tests/components/lib/common.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "b5192848f111",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 60,
+    "cache_creation_tokens": 80404,
+    "cache_read_tokens": 2027247,
+    "output_tokens": 16083,
+    "api_call_count": 26
+  },
+  "session_metrics": {
+    "turn_count": 5
+  }
+}

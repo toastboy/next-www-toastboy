@@ -1,0 +1,17 @@
+The current diffs are a work in progress for fixing vitest failures in the components category associated with tooltips. 3 files have working fixes but TableScore still has test failures. Investigate.
+
+---
+
+Check the other diffs - they may be able to be simplified along the same lines as you just did for TableScore
+
+---
+
+If there's a way to make the new WDLChart tests more closely match the previous ones then do it
+
+---
+
+Yes, but make a note that I want this inconvenience fixed eventually
+
+---
+
+Commit the fixes under SYS-728

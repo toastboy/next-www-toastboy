@@ -27,12 +27,15 @@ test.describe('Responses admin page', () => {
 
         // Read a group's player count from its h2 heading ("Yes: 15").
         // CSS + text filter works regardless of whether the card has an explicit ARIA role.
+        // Read the text in one non-waiting call: a count() followed by innerText()
+        // races the refresh, which can remove an emptied group's heading in
+        // between and leave innerText() waiting for it until the poll times out.
         const groupCount = async (title: string) => {
-            const heading = page
+            const [text] = await page
                 .locator('h2')
-                .filter({ hasText: new RegExp(`^${title}:\\s*`) });
-            if ((await heading.count()) === 0) return 0;
-            const text = await heading.first().innerText();
+                .filter({ hasText: new RegExp(`^${title}:\\s*`) })
+                .allInnerTexts();
+            if (text === undefined) return 0;
             const match = /:\s*(\d+)$/.exec(text.trim());
             return match ? Number(match[1]) : 0;
         };

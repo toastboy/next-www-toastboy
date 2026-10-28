@@ -118,14 +118,28 @@ test.describe('Responses admin page', () => {
                     .uncheck();
             }
             await playerRow.getByPlaceholder('Comment').fill(comment);
+            // Wait for handleSubmit to fully resolve before the next update:
+            // clicking Update on a loading Mantine button is a no-op. The
+            // success toast alone can't signal this, as the previous update's
+            // toast may still be on screen, so anchor the wait to this save's
+            // own server action response, then to its loading notification
+            // being replaced.
+            const saved = page.waitForResponse(
+                (res) =>
+                    res.request().method() === 'POST' &&
+                    res.url().includes('/footy/admin/responses'),
+                { timeout: 15000 },
+            );
             await playerRow.getByRole('button', { name: 'Update' }).click();
-            // Wait for handleSubmit to fully resolve before the next update.
-            // The server broadcasts before returning its RPC response, so the
-            // SSE-triggered page refresh can arrive while the button is still
-            // loading. Clicking Update on a loading Mantine button is a no-op.
+            await saved;
             await expect(
-                page.getByText('Response updated successfully'),
-            ).toBeVisible({ timeout: 15000 });
+                page
+                    .getByText('Updating response...')
+                    .filter({ visible: true }),
+            ).toHaveCount(0, { timeout: 15000 });
+            await expect(
+                page.getByText('Response updated successfully').first(),
+            ).toBeVisible();
         };
 
         await updatePlayer('Yes', true, 'Can play and cover goal first half');

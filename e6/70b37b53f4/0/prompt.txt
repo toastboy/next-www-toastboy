@@ -1,0 +1,29 @@
+What prettier command is needed to fix this failure? https://github.com/toastboy/next-www-toastboy/actions/runs/40462229656/job/122049270996
+
+---
+
+Only the Playwright failures to fix now: https://github.com/toastboy/next-www-toastboy/actions/runs/40462229667
+
+---
+
+2
+
+---
+
+Actually the latest CI run did pass. I really get frustrated by flaky tests though.
+
+---
+
+/login
+
+---
+
+Yes
+
+---
+
+Make a new ticket under the 'launch the new footy website epic' and record it there.
+
+---
+
+Move it to in progress and commit the changes

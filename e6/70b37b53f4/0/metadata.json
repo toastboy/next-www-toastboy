@@ -1,0 +1,55 @@
+{
+  "cli_version": "0.12.0",
+  "checkpoint_id": "e670b37b53f4",
+  "session_id": "ce6afbef-b1c6-40dd-abce-30a8e271c1b3",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-28T06:55:26.684706Z",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "save_step_count": 3,
+  "files_touched": [
+    "e2e/responses.spec.ts",
+    "playwright.config.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "d6f54c2988b5",
+  "checkpoint_transcript_start": 269,
+  "transcript_lines_at_start": 269,
+  "compact_transcript_start": 35,
+  "token_usage": {
+    "input_tokens": 138,
+    "cache_creation_tokens": 491880,
+    "cache_read_tokens": 9040533,
+    "output_tokens": 31928,
+    "api_call_count": 62
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-login-2026-10-28T06:40:15.250285Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "login"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "f5e921282415",
+      "timestamp": "2026-10-28T06:40:15.250285Z",
+      "native": {
+        "command": "/login"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/login",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 14
+  }
+}

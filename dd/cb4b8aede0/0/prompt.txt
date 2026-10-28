@@ -1,0 +1,21 @@
+On the noted vulnerability, what version of @azure/identity has the patched version of MSAL?
+
+---
+
+Yes, but I suspect it's the client-credentials flow
+
+---
+
+The Playwright CI ran to completion: thanks. Close the ticket.
+
+---
+
+I've dismissed the alert. I missed the stale toast point - what is that?
+
+---
+
+Just make the change.
+
+---
+
+Yes, same ticket.

@@ -97,9 +97,11 @@ describe('sitemap', () => {
     it('produces only absolute, de-duplicated URLs', async () => {
         const urls = await urlsFrom();
 
-        expect(
-            urls.every((url) => url.startsWith('https://footy.example')),
-        ).toBe(true);
+        // Compare parsed origins, not string prefixes: a prefix check would
+        // also accept e.g. https://footy.example.evil.test
+        expect(new Set(urls.map((url) => new URL(url).origin))).toEqual(
+            new Set(['https://footy.example']),
+        );
         expect(new Set(urls).size).toBe(urls.length);
     });
 

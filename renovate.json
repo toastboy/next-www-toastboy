@@ -1,0 +1,38 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "description": "Renovate complements Dependabot (.github/dependabot.yml): Dependabot raises PRs for minor/patch updates and auto-merges them; Renovate only tracks major updates, which wait for approval on the Dependency Dashboard instead of opening PRs, and moves the Node.js version in one grouped PR.",
+    "extends": [":dependencyDashboard"],
+    "enabledManagers": ["nvm", "npm", "dockerfile", "github-actions"],
+    "vulnerabilityAlerts": { "enabled": false },
+    "packageRules": [
+        {
+            "description": "Leave minor and patch updates to Dependabot",
+            "matchUpdateTypes": [
+                "minor",
+                "patch",
+                "pin",
+                "digest",
+                "pinDigest"
+            ],
+            "enabled": false
+        },
+        {
+            "description": "Actions are left to Dependabot, except the Node version the workflows use",
+            "matchManagers": ["github-actions"],
+            "matchPackageNames": ["!node"],
+            "enabled": false
+        },
+        {
+            "description": "Majors are deliberate: list them on the dashboard, open a PR only when approved there",
+            "matchUpdateTypes": ["major"],
+            "dependencyDashboardApproval": true
+        },
+        {
+            "description": "Node.js: one PR moving .nvmrc, engines, @types/node, the Dockerfile and the workflows together; LTS (even) majors only",
+            "matchPackageNames": ["node", "@types/node"],
+            "groupName": "Node.js",
+            "rangeStrategy": "replace",
+            "allowedVersions": "/^\\d*[02468](\\.|$)/"
+        }
+    ]
+}

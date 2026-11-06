@@ -150,7 +150,7 @@
         "@vitest/browser-playwright": "^4.1.12",
         "@vitest/coverage-v8": "^4.1.12",
         "@vitest/ui": "^4.1.12",
-        "chromatic": "^18.13.6",
+        "chromatic": "^18.13.9",
         "debug": "^4.4.3",
         "dotenv": "^18.0.9",
         "eslint": "^9.39.4",

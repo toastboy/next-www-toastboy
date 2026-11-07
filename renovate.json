@@ -99,7 +99,7 @@
         },
         {
             "description": "Node.js: one PR moving .nvmrc, engines, @types/node, the Dockerfile and the workflows together; LTS (even) majors only",
-            "matchPackageNames": ["node", "@types/node"],
+            "matchDepNames": ["node", "@types/node"],
             "groupName": "Node.js",
             "rangeStrategy": "replace",
             "allowedVersions": "/^v?\\d*[02468](\\.|$)/"

@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.28
 
 FROM --platform=$BUILDPLATFORM node:24.22.2-bookworm-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1 \

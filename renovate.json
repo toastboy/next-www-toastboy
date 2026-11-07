@@ -1,7 +1,11 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "description": "Renovate is the only dependency updater (Dependabot security updates stay enabled in the repo settings). Minor and patch updates are grouped and auto-merged once the required checks pass; majors are never auto-merged and wait for approval on the Dependency Dashboard; Node.js moves in one grouped PR.",
-    "extends": ["config:recommended", ":dependencyDashboard"],
+    "extends": [
+        "config:recommended",
+        ":dependencyDashboard",
+        "helpers:pinGitHubActionDigests"
+    ],
     "enabledManagers": [
         "nvm",
         "npm",

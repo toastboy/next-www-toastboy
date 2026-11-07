@@ -25,13 +25,13 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v7
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
             - name: Ensure TF plugin cache dir exists
               run: mkdir -p .terraform.d/plugin-cache
 
             - name: Cache Terraform plugin dir
-              uses: actions/cache@v6
+              uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
               with:
                   path: .terraform.d/plugin-cache
                   key: tf-plugins-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
@@ -40,7 +40,7 @@ jobs:
 
             - name: Load secrets from 1Password and export to environment
               if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-              uses: 1password/load-secrets-action@v5
+              uses: 1password/load-secrets-action@70062d7a876d3eb6334754fa26efd2fbd90c32f2 # v5
               with:
                   export-env: true
               env:
@@ -52,14 +52,14 @@ jobs:
 
             - name: Terraform Plan (Internal PRs)
               if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}
-              uses: dflook/terraform-plan@v3
+              uses: dflook/terraform-plan@738d3a75f0d801d280dca5eb7357b89c8383267f # v3
               with:
                   path: terraform
                   workspace: next-www-toastboy
 
             - name: Terraform Apply (main)
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-              uses: dflook/terraform-apply@v3
+              uses: dflook/terraform-apply@9fdc48d2744ee0528495a136ad2cd31ad8208a67 # v3
               with:
                   path: terraform
                   workspace: next-www-toastboy
@@ -68,14 +68,14 @@ jobs:
             - name: Get Terraform Outputs
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
               id: tf_output
-              uses: dflook/terraform-output@v3
+              uses: dflook/terraform-output@6bac8f5c8d92452f9cb49dc0763228fb5dc0fa8f # v3
               with:
                   path: terraform
                   workspace: next-www-toastboy
 
             - name: Install 1Password CLI
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-              uses: 1password/install-cli-action@v4
+              uses: 1password/install-cli-action@1a3160d5e9de1ae0803eaa08a88746f5ae3daa50 # v4
 
             - name: Sync Terraform outputs to 1Password
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'

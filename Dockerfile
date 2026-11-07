@@ -82,7 +82,7 @@ CMD ["/usr/local/seeder.sh"]
 # /etc/passwd, which doesn't define it), and CMD/HEALTHCHECK must use exec
 # form (no shell to interpret a string). ENTRYPOINT is preset to `node`, so
 # CMD is arguments to node, not the "node" command itself.
-FROM --platform=$TARGETPLATFORM gcr.io/distroless/nodejs${NODE_MAJOR}-debian13:nonroot AS runner
+FROM --platform=$TARGETPLATFORM gcr.io/distroless/nodejs${NODE_MAJOR}-debian13:nonroot@sha256:b8cec4b2f2126ff7bd034ec9ac207ffb3272667dfdc48376e3b035d3270549ba AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

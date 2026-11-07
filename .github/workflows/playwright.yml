@@ -66,21 +66,21 @@ jobs:
             SEEDED_DB_IMAGE: ghcr.io/${{ github.repository_owner }}/next-www-toastboy-db-test-seeded:latest
 
         steps:
-            - uses: actions/checkout@v7
-            - uses: actions/setup-node@v7
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
               with:
                   node-version-file: .nvmrc
             - name: Install dependencies
               run: npm ci
             - name: Cache Next.js build
-              uses: actions/cache@v6
+              uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
               with:
                   path: .next/cache
                   key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.{ts,tsx,js,jsx}', 'prisma/schema.prisma') }}
                   restore-keys: |
                       ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
             - name: Log in to GHCR
-              uses: docker/login-action@v4.7.0
+              uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}
@@ -152,7 +152,7 @@ jobs:
                   # required.
                   SKIP_DB_SEED: ${{ steps.schema_push.outputs.reseed != 'true' && 'true' || '' }}
               run: npx playwright test --project=${{ matrix.project }}
-            - uses: actions/upload-artifact@v7
+            - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
               if: always()
               with:
                   name: playwright-report-${{ matrix.project }}

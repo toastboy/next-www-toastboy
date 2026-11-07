@@ -36,6 +36,11 @@
             "automerge": true
         },
         {
+            "description": "Pinning a digest only fixes the image to what the tag points at now: merge it when the required checks pass, in its own PR",
+            "matchUpdateTypes": ["pin", "pinDigest"],
+            "automerge": true
+        },
+        {
             "description": "Majors are deliberate: list them on the dashboard, open a PR only when approved there, never auto-merge",
             "matchUpdateTypes": ["major"],
             "dependencyDashboardApproval": true,

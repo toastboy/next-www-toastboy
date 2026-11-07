@@ -231,7 +231,7 @@ resource "azurerm_key_vault" "next_www_toastboy" {
     ]
   }
 
-  # I want my identity to have access interactively
+  # I want my identity to have access interactively
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azuread_user.toastboy.object_id

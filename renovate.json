@@ -98,7 +98,7 @@
             "groupName": "vitest"
         },
         {
-            "description": "Node.js: one PR moving .nvmrc, engines, @types/node, the Dockerfile and the workflows together; LTS (even) majors only",
+            "description": "Node.js: one PR moving .nvmrc, engines, @types/node and the Dockerfile together (the workflows follow .nvmrc); LTS (even) majors only",
             "matchDepNames": ["node", "@types/node"],
             "groupName": "Node.js",
             "rangeStrategy": "replace",

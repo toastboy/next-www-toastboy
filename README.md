@@ -83,7 +83,7 @@ Chromatic uses a plain GitHub Actions secret rather than 1Password because it is
 
 - **Minor and patch** updates are grouped into one PR and auto-merged by GitHub's native auto-merge once all required status checks pass. Renovate withholds any version less than 3 days old (`minimumReleaseAge`).
 - **Major** updates (and anything on a `0.x` version) are never auto-merged. They are listed on the Dependency Dashboard (on the Mend site; GitHub issues are not used) and a PR opens only once approved there.
-- **Node.js** moves in a single PR covering `.nvmrc`, `engines`, `@types/node`, the Dockerfile and the workflows, and only to LTS (even) majors.
+- **Node.js** moves in a single PR covering `.nvmrc`, `engines`, `@types/node` and the Dockerfile (the workflows read `.nvmrc` via `node-version-file`), and only to LTS (even) majors.
 - **TypeScript** is held below 7 until the toolchain supports the native compiler.
 
 For auto-merge to work:

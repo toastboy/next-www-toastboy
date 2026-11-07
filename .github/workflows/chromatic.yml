@@ -32,8 +32,3 @@ jobs:
               with:
                   projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
                   exitOnceUploaded: true
-                  # Builds on main become the baseline automatically. Merges
-                  # here are rebases, which Chromatic can't recognise as a PR
-                  # merging, so without this main's baseline never advances
-                  # and every later build is diffed against a stale one.
-                  autoAcceptChanges: main

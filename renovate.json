@@ -13,6 +13,7 @@
     "internalChecksFilter": "strict",
     "platformAutomerge": true,
     "automergeStrategy": "rebase",
+    "postUpdateOptions": ["npmInstallTwice"],
     "vulnerabilityAlerts": { "enabled": true },
     "packageRules": [
         {

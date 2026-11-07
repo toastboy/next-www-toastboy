@@ -45,6 +45,13 @@
             "automerge": true
         },
         {
+            "description": "GitHub Actions run with the repo's secrets and a moved tag is the usual way they get compromised, so a new version or digest is never auto-merged: one grouped PR, reviewed by hand",
+            "matchManagers": ["github-actions"],
+            "matchUpdateTypes": ["minor", "patch", "digest"],
+            "groupName": "github-actions",
+            "automerge": false
+        },
+        {
             "description": "Majors are deliberate: list them on the dashboard, open a PR only when approved there, never auto-merge",
             "matchUpdateTypes": ["major"],
             "dependencyDashboardApproval": true,

@@ -85,7 +85,7 @@ Chromatic uses a plain GitHub Actions secret rather than 1Password because it is
 - **Major** updates (and anything on a `0.x` version) are never auto-merged. They are listed on the Dependency Dashboard (on the Mend site; GitHub issues are not used) and a PR opens only once approved there.
 - **Node.js** moves in a single PR covering `.nvmrc`, `engines`, `@types/node` and the Dockerfile (the build image, and the distroless runtime image via `ARG NODE_MAJOR`; the workflows read `.nvmrc` via `node-version-file`), and only to LTS (even) majors.
 - **Base image digest:** the distroless runtime image is pinned by digest, so OS and Node patches arrive as digest updates that auto-merge.
-- **GitHub Actions** are pinned to full commit SHAs (`uses: owner/action@<sha> # v7`), so a moved or compromised tag can't change what runs. Renovate keeps the SHA and the comment current.
+- **GitHub Actions** are pinned to full commit SHAs (`uses: owner/action@<sha> # v7`), so a moved or compromised tag can't change what runs. Renovate keeps the SHA and the comment current, but those updates are never auto-merged: they arrive as one `github-actions` PR to review, because actions run with the repo's secrets.
 - **TypeScript** is held below 7 until the toolchain supports the native compiler.
 
 For auto-merge to work:

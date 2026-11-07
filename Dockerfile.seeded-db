@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.28
 
 # Base image for the pre-seeded test database published by
 # .github/workflows/publish-seeded-db-image.yml.

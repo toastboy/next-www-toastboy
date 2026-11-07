@@ -4,11 +4,11 @@ import { fileURLToPath } from 'node:url';
 
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
+import eslintComments from '@eslint-community/eslint-plugin-eslint-comments';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import eslintComments from 'eslint-plugin-eslint-comments';
 import importX from 'eslint-plugin-import-x';
 import jestDom from 'eslint-plugin-jest-dom';
 import pluginN from 'eslint-plugin-n';

@@ -1,31 +1,101 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "description": "Renovate complements Dependabot (.github/dependabot.yml): Dependabot raises PRs for minor/patch updates and auto-merges them; Renovate only tracks major updates, which wait for approval on the Dependency Dashboard instead of opening PRs, and moves the Node.js version in one grouped PR.",
-    "extends": [":dependencyDashboard"],
-    "enabledManagers": ["nvm", "npm", "dockerfile", "github-actions"],
-    "vulnerabilityAlerts": { "enabled": false },
+    "description": "Renovate is the only dependency updater (Dependabot security updates stay enabled in the repo settings). Minor and patch updates are grouped and auto-merged once the required checks pass; majors are never auto-merged and wait for approval on the Dependency Dashboard; Node.js moves in one grouped PR.",
+    "extends": ["config:recommended", ":dependencyDashboard"],
+    "enabledManagers": [
+        "nvm",
+        "npm",
+        "dockerfile",
+        "github-actions",
+        "terraform"
+    ],
+    "minimumReleaseAge": "3 days",
+    "internalChecksFilter": "strict",
+    "platformAutomerge": true,
+    "automergeStrategy": "rebase",
+    "vulnerabilityAlerts": { "enabled": true },
     "packageRules": [
         {
-            "description": "Leave minor and patch updates to Dependabot",
-            "matchUpdateTypes": [
-                "minor",
-                "patch",
-                "pin",
-                "digest",
-                "pinDigest"
-            ],
-            "enabled": false
+            "description": "Minor/patch: one grouped PR, merged when the required checks pass. 0.x is excluded: any bump there can break",
+            "matchUpdateTypes": ["minor", "patch", "digest"],
+            "matchCurrentVersion": "!/^0\\./",
+            "groupName": "non-major",
+            "automerge": true
         },
         {
-            "description": "Actions are left to Dependabot, except the Node version the workflows use",
-            "matchManagers": ["github-actions"],
-            "matchPackageNames": ["!node"],
-            "enabled": false
-        },
-        {
-            "description": "Majors are deliberate: list them on the dashboard, open a PR only when approved there",
+            "description": "Majors are deliberate: list them on the dashboard, open a PR only when approved there, never auto-merge",
             "matchUpdateTypes": ["major"],
-            "dependencyDashboardApproval": true
+            "dependencyDashboardApproval": true,
+            "automerge": false,
+            "addLabels": ["major"]
+        },
+        {
+            "description": "Packages that must move together",
+            "matchPackageNames": ["eslint", "@eslint/js"],
+            "groupName": "eslint-core"
+        },
+        {
+            "matchPackageNames": [
+                "eslint-plugin-*",
+                "!eslint-plugin-storybook"
+            ],
+            "groupName": "eslint-plugins"
+        },
+        {
+            "matchPackageNames": ["@mantine/*"],
+            "groupName": "mantine"
+        },
+        {
+            "matchPackageNames": [
+                "next",
+                "@next/eslint-plugin-next",
+                "eslint-config-next"
+            ],
+            "groupName": "next"
+        },
+        {
+            "matchPackageNames": ["@playwright/*"],
+            "groupName": "playwright"
+        },
+        {
+            "matchPackageNames": [
+                "prisma",
+                "@prisma/adapter-mariadb",
+                "@prisma/client"
+            ],
+            "groupName": "prisma"
+        },
+        {
+            "matchPackageNames": ["react", "react-dom", "react-test-renderer"],
+            "groupName": "react-core"
+        },
+        {
+            "matchPackageNames": ["@types/react", "@types/react-dom"],
+            "groupName": "react-types"
+        },
+        {
+            "matchPackageNames": ["@sentry/*"],
+            "groupName": "sentry"
+        },
+        {
+            "matchPackageNames": [
+                "storybook",
+                "@storybook/*",
+                "eslint-plugin-storybook"
+            ],
+            "groupName": "storybook"
+        },
+        {
+            "matchPackageNames": ["@tiptap/*"],
+            "groupName": "tiptap"
+        },
+        {
+            "matchPackageNames": ["@typescript-eslint/*"],
+            "groupName": "typescript-eslint"
+        },
+        {
+            "matchPackageNames": ["vitest", "@vitest/*"],
+            "groupName": "vitest"
         },
         {
             "description": "Node.js: one PR moving .nvmrc, engines, @types/node, the Dockerfile and the workflows together; LTS (even) majors only",
@@ -33,6 +103,11 @@
             "groupName": "Node.js",
             "rangeStrategy": "replace",
             "allowedVersions": "/^v?\\d*[02468](\\.|$)/"
+        },
+        {
+            "description": "Hold TypeScript below 7 (native compiler: no compiler API, which typescript-eslint and Next.js need) until the toolchain supports it",
+            "matchPackageNames": ["typescript"],
+            "allowedVersions": "<7"
         }
     ]
 }

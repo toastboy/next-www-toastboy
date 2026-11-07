@@ -77,20 +77,19 @@ The split between secret stores reflects this:
 
 Chromatic uses a plain GitHub Actions secret rather than 1Password because it is needed for PR branch pushes, where 1Password access is intentionally withheld. The Chromatic credential is low-sensitivity (it only allows publishing snapshots to the Chromatic project).
 
-### Dependabot auto-merge
+### Dependency updates (Renovate)
 
-Dependabot PRs are automatically merged once all required status checks pass, using GitHub's native auto-merge feature ([`.github/workflows/dependabot-auto-merge.yml`](.github/workflows/dependabot-auto-merge.yml)). The workflow only enables the auto-merge flag — no code is checked out or run. For this to work:
+[Renovate](renovate.json) is the only dependency updater, run by the hosted Mend Renovate GitHub app. Dependabot security updates stay enabled in the repo settings, but there is no `dependabot.yml`.
+
+- **Minor and patch** updates are grouped into one PR and auto-merged by GitHub's native auto-merge once all required status checks pass. Renovate withholds any version less than 3 days old (`minimumReleaseAge`).
+- **Major** updates (and anything on a `0.x` version) are never auto-merged. They are listed on the Dependency Dashboard (on the Mend site; GitHub issues are not used) and a PR opens only once approved there.
+- **Node.js** moves in a single PR covering `.nvmrc`, `engines`, `@types/node`, the Dockerfile and the workflows, and only to LTS (even) majors.
+- **TypeScript** is held below 7 until the toolchain supports the native compiler.
+
+For auto-merge to work:
 
 - **Allow auto-merge** must be enabled in repo Settings → General.
 - The `main` branch protection rule must have **required status checks** configured; auto-merge fires only once all of them pass.
-
-### Minimum package age
-
-As a defence against supply-chain attacks (where a malicious version is published and quickly flagged by the community), auto-merge is withheld for any npm package whose new version was published less than **7 days ago**. The workflow queries the npm registry for the publish timestamp of each updated package and posts a comment on the PR if any package is too new, listing which ones and how old they are. The check re-runs on each push; once all packages have aged past the threshold, auto-merge is enabled automatically without further intervention.
-
-Non-npm dependencies (GitHub Actions updates) are not subject to the age check, as they are pinned to exact SHAs and carry a different risk profile.
-
-The threshold is controlled by `MIN_AGE_DAYS` at the top of the age-check step in [`.github/workflows/dependabot-auto-merge.yml`](.github/workflows/dependabot-auto-merge.yml).
 
 ## Run the App
 

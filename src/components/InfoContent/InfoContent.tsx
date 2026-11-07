@@ -36,6 +36,9 @@ export const InfoContent = ({ onSendEnquiry }: Props) => {
                     allowFullScreen={true}
                     title="Kelsey Kerridge Sports Centre"
                     referrerPolicy="no-referrer-when-downgrade"
+                    // Live third-party map: renders differently from one
+                    // Chromatic capture to the next, so leave it out of the diff.
+                    data-chromatic="ignore"
                 />
             </Container>
             <Text>

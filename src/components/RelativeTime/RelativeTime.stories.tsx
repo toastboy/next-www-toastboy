@@ -16,6 +16,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        date: new Date(),
+        // Two hours back, not new Date(): "a few seconds ago" can tip over to
+        // "a minute ago" if the snapshot is taken late, whereas "2 hours ago"
+        // holds for well over the time a capture takes.
+        date: new Date(Date.now() - 2 * 60 * 60 * 1000),
     },
 };

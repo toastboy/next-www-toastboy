@@ -16,6 +16,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// A fixed date that is always in the future. Computing it from the clock
+// (now + 7 days) shows a different day number every day, so Chromatic would
+// report a change on every build.
+const FUTURE_DATE = new Date('2099-06-20T19:00:00Z');
+
 export const PastGame: Story = {
     args: {
         gameDay: createMockGameDay({}),
@@ -42,7 +47,7 @@ export const PastCancelled: Story = {
 export const FutureGame: Story = {
     args: {
         gameDay: createMockGameDay({
-            date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            date: FUTURE_DATE,
         }),
     },
 };
@@ -51,7 +56,7 @@ export const FutureNoGame: Story = {
     args: {
         gameDay: createMockGameDay({
             status: 'NoGame',
-            date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            date: FUTURE_DATE,
         }),
     },
 };

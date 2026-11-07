@@ -173,7 +173,9 @@ const nextConfig = {
 
 // Injected content via Sentry wizard below
 
-import { withSentryConfig } from '@sentry/nextjs';
+// Sentry 11 moved withSentryConfig out of the main entry point; the /config
+// subpath already exists in 10.x, so this works on both.
+import { withSentryConfig } from '@sentry/nextjs/config';
 
 const sentryConfig = {
     // For all available options, see:

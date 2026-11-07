@@ -55,6 +55,9 @@ Sentry.init({
     // Scrub sensitive values from payloads before events are sent.
     beforeSend: (event) => scrubSentryEvent(event),
     beforeSendTransaction: (event) => scrubSentryEvent(event),
+    // Sentry 11 streams spans by default and then ignores beforeSendTransaction,
+    // which would silently stop the scrubbing above. Stay on transactions.
+    traceLifecycle: 'static',
 
     // Setting this option to true will print useful information to the console while you're setting up Sentry.
     debug: false,

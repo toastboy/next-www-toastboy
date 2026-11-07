@@ -86,7 +86,21 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
             - name: Start docker stack (database, mailpit, etc.)
-              run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+              # Retried: on a fresh runner `up` has occasionally failed with
+              # "failed to bind host port 0.0.0.0:33306: address already in
+              # use", which a clean teardown and second attempt clears.
+              run: |
+                  compose="docker compose -f docker-compose.yml -f docker-compose.ci.yml"
+                  for attempt in 1 2 3; do
+                    if $compose up -d; then
+                      exit 0
+                    fi
+                    echo "Attempt $attempt failed; port 33306 listeners:"
+                    (ss -ltnp 2>/dev/null | grep ':33306 ') || true
+                    $compose down --remove-orphans || true
+                    sleep 5
+                  done
+                  exit 1
             - name: Wait for database
               run: |
                   for i in {1..30}; do

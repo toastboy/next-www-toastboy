@@ -23,7 +23,10 @@ const navIsOpen = (page: Page) =>
 
 const overflowPages = [
     '/footy/info', // static text, Google Maps iframe, enquiry form
-    '/footy/games', // game day list
+    // Game day list. The canonical URL, not bare /footy/games: that always
+    // redirects to ?year=0, and the redirect can land as a client-side
+    // navigation after domcontentloaded, destroying the page mid-evaluate.
+    '/footy/games?year=0',
     '/footy/table/points', // data table — most likely to overflow on mobile
     '/footy/turnout', // chart / visualisation
 ];
@@ -100,12 +103,20 @@ test.describe('No horizontal overflow', () => {
                 'Turnout chart overflows on narrow viewports — responsive polish pending',
             );
             await asGuest(page, path);
-            const hasOverflow = await page.evaluate(
-                () =>
-                    document.documentElement.scrollWidth >
-                    document.documentElement.clientWidth,
-            );
-            expect(hasOverflow, `${path} has horizontal overflow`).toBe(false);
+            // asGuest resolves at domcontentloaded, so a late navigation or
+            // hydration can still destroy the execution context under
+            // evaluate(). Retry the whole measurement rather than failing on
+            // that; a page that really overflows still fails after the timeout.
+            await expect(async () => {
+                const hasOverflow = await page.evaluate(
+                    () =>
+                        document.documentElement.scrollWidth >
+                        document.documentElement.clientWidth,
+                );
+                expect(hasOverflow, `${path} has horizontal overflow`).toBe(
+                    false,
+                );
+            }).toPass({ timeout: 10000 });
         });
     }
 });

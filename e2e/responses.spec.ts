@@ -19,6 +19,12 @@ test.describe('Responses admin page', () => {
     test('admin can update responses form through realistic response changes', async ({
         page,
     }) => {
+        // Four save-and-verify rounds, each with waits of up to 15s, add up to
+        // far more than the 30s default and WebKit is the slowest. Without
+        // this the test times out part-way through a poll that was still going
+        // to pass, reporting a misleading assertion failure.
+        test.slow();
+
         await asAdmin(page, '/footy/admin/responses');
 
         await expect(

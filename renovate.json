@@ -7,7 +7,19 @@
         "npm",
         "dockerfile",
         "github-actions",
-        "terraform"
+        "terraform",
+        "custom.regex"
+    ],
+    "customManagers": [
+        {
+            "description": "The Node.js major in the Dockerfile's distroless runtime image name, which the dockerfile manager can't bump: track the ARG against Node.js releases",
+            "customType": "regex",
+            "managerFilePatterns": ["/(^|/)Dockerfile$/"],
+            "matchStrings": ["ARG NODE_MAJOR=(?<currentValue>\\d+)\\s"],
+            "datasourceTemplate": "node-version",
+            "depNameTemplate": "node",
+            "versioningTemplate": "node"
+        }
     ],
     "minimumReleaseAge": "3 days",
     "internalChecksFilter": "strict",
@@ -97,6 +109,11 @@
         {
             "matchPackageNames": ["vitest", "@vitest/*"],
             "groupName": "vitest"
+        },
+        {
+            "description": "distroless tags float (:nonroot), so pin the digest: OS and Node patches then arrive as digest updates that auto-merge",
+            "matchPackageNames": ["gcr.io/distroless/**"],
+            "pinDigests": true
         },
         {
             "description": "Node.js: one PR moving .nvmrc, engines, @types/node and the Dockerfile together (the workflows follow .nvmrc); LTS (even) majors only",

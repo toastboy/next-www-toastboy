@@ -32,8 +32,9 @@
     "postUpdateOptions": ["npmInstallTwice"],
     "vulnerabilityAlerts": { "enabled": true },
     "lockFileMaintenance": {
-        "description": "Refresh transitive dependencies, which the rules below never see (Dependabot security updates are off). Not auto-merged: minimumReleaseAge doesn't apply to a lockfile refresh, so it is reviewed by hand",
+        "description": "Refresh transitive dependencies, which the rules below never see (Dependabot security updates are off). Renovate can't date a lockfile refresh, so the 3-day wait is enforced by npm itself (min-release-age in .npmrc) and the always-pending stability check is switched off; reviewed by hand, not auto-merged",
         "enabled": true,
+        "minimumReleaseAge": null,
         "automerge": false,
         "rebaseWhen": "behind-base-branch",
         "schedule": ["before 6am on thursday"]

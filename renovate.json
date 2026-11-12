@@ -35,6 +35,7 @@
         "description": "Refresh transitive dependencies, which the rules below never see (Dependabot security updates are off). Not auto-merged: minimumReleaseAge doesn't apply to a lockfile refresh, so it is reviewed by hand",
         "enabled": true,
         "automerge": false,
+        "rebaseWhen": "behind-base-branch",
         "schedule": ["before 6am on thursday"]
     },
     "packageRules": [

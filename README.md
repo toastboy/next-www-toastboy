@@ -87,6 +87,7 @@ Chromatic uses a plain GitHub Actions secret rather than 1Password because it is
 - **Base image digest:** the distroless runtime image is pinned by digest, so OS and Node patches arrive as digest updates that auto-merge.
 - **GitHub Actions** are pinned to full commit SHAs (`uses: owner/action@<sha> # v7`), so a moved or compromised tag can't change what runs. Renovate keeps the SHA and the comment current, but those updates are never auto-merged: they arrive as one `github-actions` PR to review, because actions run with the repo's secrets. The PR is rebased whenever `main` moves, so it is always ready to merge.
 - **Transitive dependencies** are refreshed by a weekly lockfile maintenance PR (Thursday morning). Renovate can't date a lockfile refresh, so the 3-day wait comes from npm itself (`min-release-age=3` in `.npmrc`, npm 11.10 or later), which also applies to local `npm install`. The PR isn't auto-merged.
+- **Urgent security fix younger than 3 days:** npm refuses to install it (`ETARGET`), so Renovate's PR for it is likely to fail to build its lockfile. Install it by hand with the age window switched off for that one command: `npm install <package>@<fixed version> --min-release-age=0`, then commit `package.json` and `package-lock.json`.
 - **TypeScript** is held below 7 until the toolchain supports the native compiler.
 
 For auto-merge to work:

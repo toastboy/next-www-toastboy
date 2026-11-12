@@ -31,6 +31,12 @@
     "automergeStrategy": "rebase",
     "postUpdateOptions": ["npmInstallTwice"],
     "vulnerabilityAlerts": { "enabled": true },
+    "lockFileMaintenance": {
+        "description": "Refresh transitive dependencies, which the rules below never see (Dependabot security updates are off). Not auto-merged: minimumReleaseAge doesn't apply to a lockfile refresh, so it is reviewed by hand",
+        "enabled": true,
+        "automerge": false,
+        "schedule": ["before 6am on monday"]
+    },
     "packageRules": [
         {
             "description": "Minor/patch: one grouped PR, merged when the required checks pass. 0.x is excluded: any bump there can break",
@@ -49,7 +55,8 @@
             "matchManagers": ["github-actions"],
             "matchUpdateTypes": ["minor", "patch", "digest"],
             "groupName": "github-actions",
-            "automerge": false
+            "automerge": false,
+            "rebaseWhen": "behind-base-branch"
         },
         {
             "description": "Majors are deliberate: list them on the dashboard, open a PR only when approved there, never auto-merge",

@@ -79,13 +79,14 @@ Chromatic uses a plain GitHub Actions secret rather than 1Password because it is
 
 ### Dependency updates (Renovate)
 
-[Renovate](renovate.json) is the only dependency updater, run by the hosted Mend Renovate GitHub app. Dependabot security updates stay enabled in the repo settings, but there is no `dependabot.yml`.
+[Renovate](renovate.json) is the only dependency updater, run by the hosted Mend Renovate GitHub app. Dependabot security updates are switched off in the repo settings (Dependabot alerts stay on) and there is no `dependabot.yml`.
 
 - **Minor and patch** updates are grouped into one PR and auto-merged by GitHub's native auto-merge once all required status checks pass. Renovate withholds any version less than 3 days old (`minimumReleaseAge`).
 - **Major** updates (and anything on a `0.x` version) are never auto-merged. They are listed on the Dependency Dashboard (on the Mend site; GitHub issues are not used) and a PR opens only once approved there.
 - **Node.js** moves in a single PR covering `.nvmrc`, `engines`, `@types/node` and the Dockerfile (the build image, and the distroless runtime image via `ARG NODE_MAJOR`; the workflows read `.nvmrc` via `node-version-file`), and only to LTS (even) majors.
 - **Base image digest:** the distroless runtime image is pinned by digest, so OS and Node patches arrive as digest updates that auto-merge.
-- **GitHub Actions** are pinned to full commit SHAs (`uses: owner/action@<sha> # v7`), so a moved or compromised tag can't change what runs. Renovate keeps the SHA and the comment current, but those updates are never auto-merged: they arrive as one `github-actions` PR to review, because actions run with the repo's secrets.
+- **GitHub Actions** are pinned to full commit SHAs (`uses: owner/action@<sha> # v7`), so a moved or compromised tag can't change what runs. Renovate keeps the SHA and the comment current, but those updates are never auto-merged: they arrive as one `github-actions` PR to review, because actions run with the repo's secrets. The PR is rebased whenever `main` moves, so it is always ready to merge.
+- **Transitive dependencies** are refreshed by a weekly lockfile maintenance PR (Monday morning). It isn't auto-merged, because the 3-day wait can't be applied to a lockfile refresh.
 - **TypeScript** is held below 7 until the toolchain supports the native compiler.
 
 For auto-merge to work:

@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.28
+# syntax=docker/dockerfile:1.29
 
 # Node.js major for the runtime image. distroless puts the major in the image
 # name rather than the tag, so Renovate can't bump the image itself: it tracks

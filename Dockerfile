@@ -5,7 +5,7 @@
 # this value instead (renovate.json), together with the build image below.
 ARG NODE_MAJOR=24
 
-FROM --platform=$BUILDPLATFORM node:24.22.2-bookworm-slim AS base
+FROM --platform=$BUILDPLATFORM node:24.22.3-bookworm-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1 \
     npm_config_update_notifier=false \
     npm_config_fund=false

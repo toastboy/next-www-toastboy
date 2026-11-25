@@ -176,7 +176,7 @@ jobs:
 
     merge-app:
         timeout-minutes: 10
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         needs: [build-app]
         permissions:
             contents: read
@@ -217,7 +217,7 @@ jobs:
 
     merge-seeder:
         timeout-minutes: 10
-        runs-on: ubuntu-24.04
+        runs-on: ubuntu-26.04
         needs: [build-seeder]
         permissions:
             contents: read

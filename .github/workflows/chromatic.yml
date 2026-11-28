@@ -28,7 +28,7 @@ jobs:
               run: npm run generate
 
             - name: Run Chromatic
-              uses: chromaui/action@2b75e3340bcec86b4ae38c6a10f14831114e8137 # v18.14.3
+              uses: chromaui/action@0a7067e5ffc663a631b14db505d8a94b26e1bf2f # v18.15.3
               with:
                   projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
                   exitOnceUploaded: true
